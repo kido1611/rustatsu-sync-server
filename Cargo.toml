@@ -13,7 +13,7 @@ name = "rustatsu-sync"
 
 [dependencies]
 anyhow = "1.0.86"
-axum = "0.7.5"
+axum = { version = "0.7.5", features = ["http2", "macros"] }
 chrono = "0.4.38"
 figment = { version = "0.10.19", features = ["yaml", "env"] }
 secrecy = { version = "0.8.0", features = ["serde"] }
