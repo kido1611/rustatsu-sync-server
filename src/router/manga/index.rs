@@ -1,19 +1,19 @@
-use axum::debug_handler;
 use axum::extract::{Query, State};
-use axum::response::IntoResponse;
 use axum::Json;
 use serde_aux::field_attributes::deserialize_option_number_from_string;
 use sqlx::MySqlPool;
 
+use crate::util::MangaError;
+
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
 pub struct Parameters {
     #[serde(default, deserialize_with = "deserialize_option_number_from_string")]
-    offset: Option<i16>,
+    offset: Option<u16>,
     #[serde(default, deserialize_with = "deserialize_option_number_from_string")]
-    limit: Option<i16>,
+    limit: Option<u16>,
 }
 
-#[derive(serde::Serialize, Clone)]
+#[derive(serde::Serialize, Clone, Debug)]
 pub struct MangaEntity {
     pub id: i64,
     pub title: String,
@@ -64,6 +64,7 @@ pub struct Tag {
 }
 
 impl Manga {
+    #[tracing::instrument(name = "Transform manga", skip(tags, entity), fields(manga_id=entity.id))]
     pub fn from_entity(entity: MangaEntity, tags: &Vec<TagEntity>) -> Self {
         let manga_tags: Vec<Tag> = tags
             .iter()
@@ -94,7 +95,6 @@ impl Manga {
     }
 }
 
-#[tracing::instrument(name = "Transform manga", skip_all)]
 fn transform_manga_entity_into_manga(manga: Vec<MangaEntity>, tags: &Vec<TagEntity>) -> Vec<Manga> {
     manga
         .into_iter()
@@ -103,16 +103,19 @@ fn transform_manga_entity_into_manga(manga: Vec<MangaEntity>, tags: &Vec<TagEnti
 }
 
 #[tracing::instrument(name = "Get manga", skip(pool))]
-#[debug_handler]
 pub async fn get_manga(
     State(pool): State<MySqlPool>,
     Query(parameters): Query<Parameters>,
-) -> impl IntoResponse {
-    let manga = get_manga_list(&pool, parameters).await.unwrap();
+) -> Result<Json<Vec<Manga>>, MangaError> {
+    let manga = get_manga_list(&pool, parameters)
+        .await
+        .map_err(|e| MangaError::UnexpectedError(e.into()))?;
     let manga_id: Vec<i64> = manga.clone().iter().map(|m| m.id).collect();
-    let tags = get_manga_tags_by_manga_id(&pool, manga_id).await.unwrap();
+    let tags = get_manga_tags_by_manga_id(&pool, manga_id)
+        .await
+        .map_err(|e| MangaError::UnexpectedError(e.into()))?;
 
-    Json(transform_manga_entity_into_manga(manga, &tags))
+    Ok(Json(transform_manga_entity_into_manga(manga, &tags)))
 }
 
 #[tracing::instrument(name = "Get manga list", skip(pool))]
@@ -121,7 +124,7 @@ async fn get_manga_list(
     parameters: Parameters,
 ) -> Result<Vec<MangaEntity>, sqlx::Error> {
     let limit = parameters.limit.unwrap_or(20);
-    let skip = parameters.offset.unwrap_or(0) * parameters.limit.unwrap_or(20);
+    let skip = parameters.offset.unwrap_or(0) * limit;
 
     sqlx::query_as!(
         MangaEntity,
