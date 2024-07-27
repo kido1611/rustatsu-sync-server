@@ -7,7 +7,7 @@ use tracing::Level;
 
 use crate::{
     configuration::{Config, Database},
-    router::{get_manga, get_manga_by_id, index},
+    router::{auth, get_manga, get_manga_by_id, index},
 };
 
 pub struct Application {
@@ -62,6 +62,7 @@ fn create_router(db_pool: MySqlPool) -> Router {
                 .route("/", axum::routing::get(get_manga))
                 .route("/:id", axum::routing::get(get_manga_by_id)),
         )
+        .route("/auth", axum::routing::post(auth))
         .with_state(db_pool)
         .layer(
             TraceLayer::new_for_http()

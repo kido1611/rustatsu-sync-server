@@ -12,6 +12,18 @@ pub enum MangaError {
     UnexpectedError(#[from] anyhow::Error),
 }
 
+#[derive(thiserror::Error, ErrorStatus)]
+pub enum AuthError {
+    #[error("User is missing")]
+    #[status(StatusCode::BAD_REQUEST)]
+    UserMissing(#[source] anyhow::Error),
+    #[error("Invalid credential")]
+    #[status(StatusCode::BAD_REQUEST)]
+    InvalidPassword(#[source] anyhow::Error),
+    #[error("Something went wrong")]
+    #[status(StatusCode::INTERNAL_SERVER_ERROR)]
+    UnexpectedError(#[from] anyhow::Error),
+}
 
 impl std::fmt::Debug for MangaError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
