@@ -23,6 +23,15 @@ pub enum AuthError {
     #[error("Something went wrong")]
     #[status(StatusCode::INTERNAL_SERVER_ERROR)]
     UnexpectedError(#[from] anyhow::Error),
+    #[error("Auth header is missing")]
+    #[status(StatusCode::FORBIDDEN)]
+    EmptyAuthHeader(#[source] anyhow::Error),
+    #[error("Auth token is missing")]
+    #[status(StatusCode::FORBIDDEN)]
+    EmptyAuthToken(#[source] anyhow::Error),
+    #[error("Invalid Credentiial")]
+    #[status(StatusCode::FORBIDDEN)]
+    InvalidCredential(#[source] anyhow::Error),
 }
 
 impl std::fmt::Debug for MangaError {
