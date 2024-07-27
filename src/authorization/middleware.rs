@@ -9,7 +9,6 @@ pub async fn jwt_authorization_middleware(
     next: Next,
 ) -> Result<Response<Body>, AuthError> {
     let auth_header = req.headers_mut().get(axum::http::header::AUTHORIZATION);
-    dbg!(auth_header);
     let auth_header = match auth_header {
         Some(header) => header
             .to_str()
