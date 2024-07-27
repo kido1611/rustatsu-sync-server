@@ -13,10 +13,13 @@ name = "rustatsu-sync"
 
 [dependencies]
 anyhow = "1.0.86"
+argon2 = { version = "0.5.3", features = ["std"] }
 axum = { version = "0.7.5", features = ["http2", "macros"] }
 axum_thiserror = "0.1.0"
 chrono = "0.4.38"
 figment = { version = "0.10.19", features = ["yaml", "env"] }
+jsonwebtoken = "9.3.0"
+rand = "0.8.5"
 secrecy = { version = "0.8.0", features = ["serde"] }
 serde = { version = "1.0.204", features = ["derive"] }
 serde-aux = "4.5.0"
