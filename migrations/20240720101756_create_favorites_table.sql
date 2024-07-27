@@ -5,7 +5,7 @@ CREATE TABLE favourites (
     sort_key        int         NOT NULL,
     created_at      bigint      NOT NULL,
     deleted_at      bigint      NOT NULL,
-    user_id         int         NOT NULL,
+    user_id         bigint      NOT NULL,
 
     PRIMARY KEY (manga_id, category_id, user_id),
 

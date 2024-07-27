@@ -5,7 +5,7 @@ CREATE TABLE categories (
     sort_key        int             NOT NULL,
     title           varchar(120)    NOT NULL,
     `order`         char(16)        NOT NULL,
-    user_id         int             NOT NULL,
+    user_id         bigint          NOT NULL,
     track           tinyint(1)      NOT NULL,
     show_in_lib     tinyint(1)      NOT NULL,
     deleted_at      bigint          NOT NULL,
