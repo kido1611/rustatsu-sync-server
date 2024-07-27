@@ -149,6 +149,10 @@ pub async fn get_manga_tags_by_manga_id(
     pool: &MySqlPool,
     manga_id: Vec<i64>,
 ) -> Result<Vec<TagEntity>, sqlx::Error> {
+    if manga_id.is_empty() {
+        return Ok(Vec::new());
+    }
+
     let params = manga_id
         .iter()
         .map(|_| "?")
