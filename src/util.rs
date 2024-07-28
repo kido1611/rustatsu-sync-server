@@ -17,6 +17,15 @@ pub enum AuthError {
     #[error("User is missing")]
     #[status(StatusCode::BAD_REQUEST)]
     UserMissing(#[source] anyhow::Error),
+    #[error("Incorrect email format")]
+    #[status(StatusCode::BAD_REQUEST)]
+    ValidationEmailInvalid(#[source] anyhow::Error),
+    #[error("Email length must be between 3 and 128 characters")]
+    #[status(StatusCode::BAD_REQUEST)]
+    ValidationEmailLength(#[source] anyhow::Error),
+    #[error("Password length must be between 8 and 128 characters")]
+    #[status(StatusCode::BAD_REQUEST)]
+    ValidationPasswordLength(#[source] anyhow::Error),
     #[error("Invalid credential")]
     #[status(StatusCode::BAD_REQUEST)]
     InvalidPassword(#[source] anyhow::Error),
@@ -29,7 +38,7 @@ pub enum AuthError {
     #[error("Auth token is missing")]
     #[status(StatusCode::FORBIDDEN)]
     EmptyAuthToken(#[source] anyhow::Error),
-    #[error("Invalid Credentiial")]
+    #[error("Invalid Credential")]
     #[status(StatusCode::FORBIDDEN)]
     InvalidCredential(#[source] anyhow::Error),
 }

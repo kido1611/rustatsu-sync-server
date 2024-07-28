@@ -2,6 +2,7 @@ use anyhow::Context;
 use axum::{extract::State, Json};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::MySqlPool;
+use validator::{ValidateEmail, ValidateLength};
 
 use crate::{
     authorization::{compute_password_hash, create_token, verify_password_hash, User},
@@ -16,6 +17,33 @@ pub struct AuthForm {
     pub password: Secret<String>,
 }
 
+impl AuthForm {
+    pub fn validate(&self) -> Result<(), AuthError> {
+        let email = self.email.clone();
+
+        if !email.validate_email() {
+            return Err(AuthError::ValidationEmailInvalid(anyhow::anyhow!(
+                "Incorrect email format"
+            )));
+        }
+
+        if !email.validate_length(Some(3), Some(128), None) {
+            return Err(AuthError::ValidationEmailLength(anyhow::anyhow!(
+                "Email length must be between 3 to 128 characters"
+            )));
+        }
+
+        let password = self.password.expose_secret();
+        if !password.validate_length(Some(8), Some(128), None) {
+            return Err(AuthError::ValidationPasswordLength(anyhow::anyhow!(
+                "Password length must be between 8 to 128 characters"
+            )));
+        }
+
+        Ok(())
+    }
+}
+
 #[derive(serde::Serialize)]
 pub struct AuthResult {
     token: String,
@@ -26,6 +54,9 @@ pub async fn auth(
     State(app_state): State<AppState>,
     axum::extract::Json(form): axum::extract::Json<AuthForm>,
 ) -> Result<Json<AuthResult>, AuthError> {
+    // Validation
+    form.validate()?;
+
     // get or create user
     let (user, user_password) = match get_or_create_user(
         &app_state.pool,
@@ -44,9 +75,10 @@ pub async fn auth(
     spawn_blocking_with_tracing(move || verify_password_hash(user_password, form.password))
         .await
         .context("Failed when verifying password")
-        .map_err(AuthError::UnexpectedError)??;
+        .map_err(AuthError::UnexpectedError)?
+        .map_err(AuthError::InvalidPassword)?;
 
-    // let token = create_token(user)?;
+    // Create token
     let token = spawn_blocking_with_tracing(move || create_token(user, app_state.config.jwt))
         .await
         .context("Failed generating JWT token")
