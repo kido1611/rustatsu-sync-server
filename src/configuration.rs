@@ -6,20 +6,29 @@ use secrecy::{ExposeSecret, Secret};
 use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::mysql::MySqlConnectOptions;
 
-#[derive(serde::Deserialize, Clone)]
+#[derive(serde::Deserialize, Clone, Debug)]
 pub struct Config {
     pub application: Application,
     pub database: Database,
+    pub jwt: Jwt,
 }
 
-#[derive(serde::Deserialize, Clone)]
+#[derive(serde::Deserialize, Clone, Debug)]
 pub struct Application {
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub port: u16,
     pub host: String,
+    pub allow_registration: bool,
 }
 
-#[derive(serde::Deserialize, Clone)]
+#[derive(serde::Deserialize, Clone, Debug)]
+pub struct Jwt {
+    pub secret: Secret<String>,
+    pub iss: Secret<String>,
+    pub aud: Secret<String>,
+}
+
+#[derive(serde::Deserialize, Clone, Debug)]
 pub struct Database {
     pub username: String,
     pub password: Secret<String>,
@@ -85,6 +94,6 @@ pub fn read_config() -> Result<Config, figment::Error> {
     Figment::new()
         .merge(Yaml::file(config_directory.join("base.yaml")))
         .merge(Yaml::file(config_directory.join(environment_filename)))
-        .merge(Env::prefixed("APP_"))
+        .merge(Env::raw().split("__"))
         .extract()
 }
