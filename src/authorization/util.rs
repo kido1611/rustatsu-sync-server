@@ -1,12 +1,28 @@
 use anyhow::Context;
 use chrono::{Duration, Utc};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, Validation};
+use sqlx::MySqlPool;
 
 use crate::util::AuthError;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct UserId(pub i64);
 
+impl UserId {
+    pub async fn to_user(&self, pool: &MySqlPool) -> Result<Option<User>, sqlx::Error> {
+        sqlx::query_as!(
+            User,
+            r#"
+                SELECT id, email, nickname
+                FROM users
+            "#,
+        )
+        .fetch_optional(pool)
+        .await
+    }
+}
+
+#[derive(serde::Serialize)]
 pub struct User {
     pub id: i64,
     pub email: String,

@@ -4,6 +4,7 @@ use crate::{authorization::util::UserId, util::AuthError};
 
 use super::util::decode_jwt;
 
+#[tracing::instrument(name = "JWT auth middleware")]
 pub async fn jwt_authorization_middleware(
     mut req: Request,
     next: Next,

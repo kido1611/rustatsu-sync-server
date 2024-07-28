@@ -1,13 +1,14 @@
 use anyhow::Context;
-use axum::{body::Body, http::Request, serve::Serve, Router};
+use axum::{body::Body, http::Request, middleware, serve::Serve, Router};
 use sqlx::{mysql::MySqlPoolOptions, MySqlPool};
 use tokio::net::TcpListener;
 use tower_http::trace::{self, DefaultOnFailure, TraceLayer};
 use tracing::Level;
 
 use crate::{
+    authorization::jwt_authorization_middleware,
     configuration::{Config, Database},
-    router::{auth, get_manga, get_manga_by_id, index},
+    router::{auth, get_manga, get_manga_by_id, get_user, index},
 };
 
 pub struct Application {
@@ -63,6 +64,12 @@ fn create_router(db_pool: MySqlPool) -> Router {
                 .route("/:id", axum::routing::get(get_manga_by_id)),
         )
         .route("/auth", axum::routing::post(auth))
+        .nest(
+            "/",
+            Router::new()
+                .route("/me", axum::routing::get(get_user))
+                .layer(middleware::from_fn(jwt_authorization_middleware)),
+        )
         .with_state(db_pool)
         .layer(
             TraceLayer::new_for_http()
@@ -86,6 +93,9 @@ fn create_router(db_pool: MySqlPool) -> Router {
                 .on_response(trace::DefaultOnResponse::new().level(Level::INFO))
                 .on_failure(DefaultOnFailure::new().level(Level::INFO)),
         )
+    // TODO: Layer compression
+    // TODO: Layer JWT
+    // Tracing to jaeger
 }
 
 async fn create_server(
