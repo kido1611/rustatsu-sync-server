@@ -1,5 +1,5 @@
 use anyhow::Context;
-use axum::{debug_handler, extract::State, Extension, Json};
+use axum::{extract::State, Extension, Json};
 use sqlx::MySqlPool;
 
 use crate::{
