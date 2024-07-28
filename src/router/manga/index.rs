@@ -3,6 +3,7 @@ use axum::Json;
 use serde_aux::field_attributes::deserialize_option_number_from_string;
 use sqlx::MySqlPool;
 
+use crate::startup::AppState;
 use crate::util::MangaError;
 
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
@@ -102,16 +103,16 @@ fn transform_manga_entity_into_manga(manga: Vec<MangaEntity>, tags: &Vec<TagEnti
         .collect()
 }
 
-#[tracing::instrument(name = "Get manga", skip(pool))]
+#[tracing::instrument(name = "Get manga", skip(app_state))]
 pub async fn get_manga(
-    State(pool): State<MySqlPool>,
+    State(app_state): State<AppState>,
     Query(parameters): Query<Parameters>,
 ) -> Result<Json<Vec<Manga>>, MangaError> {
-    let manga = get_manga_list(&pool, parameters)
+    let manga = get_manga_list(&app_state.pool, parameters)
         .await
         .map_err(|e| MangaError::UnexpectedError(e.into()))?;
     let manga_id: Vec<i64> = manga.clone().iter().map(|m| m.id).collect();
-    let tags = get_manga_tags_by_manga_id(&pool, manga_id)
+    let tags = get_manga_tags_by_manga_id(&app_state.pool, manga_id)
         .await
         .map_err(|e| MangaError::UnexpectedError(e.into()))?;
 

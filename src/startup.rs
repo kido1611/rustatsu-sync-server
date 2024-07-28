@@ -1,5 +1,11 @@
 use anyhow::Context;
-use axum::{body::Body, http::Request, middleware, serve::Serve, Router};
+use axum::{
+    body::Body,
+    http::Request,
+    middleware::{self},
+    serve::Serve,
+    Router,
+};
 use sqlx::{mysql::MySqlPoolOptions, MySqlPool};
 use tokio::net::TcpListener;
 use tower_http::trace::{self, DefaultOnFailure, TraceLayer};
@@ -17,6 +23,12 @@ pub struct Application {
     server: Serve<Router, Router>,
 }
 
+#[derive(Clone)]
+pub struct AppState {
+    pub pool: MySqlPool,
+    pub config: Config,
+}
+
 impl Application {
     pub async fn build(config: Config) -> Result<Self, anyhow::Error> {
         let connection_pool = get_connection_pool(&config.database);
@@ -32,7 +44,7 @@ impl Application {
         let port = address.port();
         let host = address.ip().to_string();
 
-        let server = create_server(listener, connection_pool).await?;
+        let server = create_server(listener, connection_pool, config).await?;
 
         Ok(Application { port, host, server })
     }
@@ -54,7 +66,12 @@ pub fn get_connection_pool(database: &Database) -> MySqlPool {
     MySqlPoolOptions::new().connect_lazy_with(database.with_db())
 }
 
-fn create_router(db_pool: MySqlPool) -> Router {
+fn create_router(db_pool: MySqlPool, config: Config) -> Router {
+    let state = AppState {
+        pool: db_pool,
+        config,
+    };
+
     Router::new()
         .route("/", axum::routing::get(index))
         .nest(
@@ -68,9 +85,12 @@ fn create_router(db_pool: MySqlPool) -> Router {
             "/",
             Router::new()
                 .route("/me", axum::routing::get(get_user))
-                .layer(middleware::from_fn(jwt_authorization_middleware)),
+                .layer(middleware::from_fn_with_state(
+                    state.clone(),
+                    jwt_authorization_middleware,
+                )),
         )
-        .with_state(db_pool)
+        .with_state(state)
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(
@@ -101,8 +121,9 @@ fn create_router(db_pool: MySqlPool) -> Router {
 async fn create_server(
     listener: TcpListener,
     db_pool: MySqlPool,
+    config: Config,
 ) -> Result<Serve<Router, Router>, anyhow::Error> {
-    let router = create_router(db_pool);
+    let router = create_router(db_pool, config);
 
     Ok(axum::serve(listener, router))
 }

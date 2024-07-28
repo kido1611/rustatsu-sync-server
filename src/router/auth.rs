@@ -1,10 +1,11 @@
 use anyhow::Context;
-use axum::{debug_handler, extract::State, Json};
+use axum::{extract::State, Json};
 use secrecy::{ExposeSecret, Secret};
 use sqlx::MySqlPool;
 
 use crate::{
     authorization::{compute_password_hash, create_token, verify_password_hash, User},
+    startup::AppState,
     telemetry::spawn_blocking_with_tracing,
     util::AuthError,
 };
@@ -20,23 +21,24 @@ pub struct AuthResult {
     token: String,
 }
 
-#[tracing::instrument(name = "Authentication", skip(pool, form), fields(form.email))]
-#[debug_handler]
+#[tracing::instrument(name = "Authentication", skip(app_state, form), fields(form.email))]
 pub async fn auth(
-    State(pool): State<MySqlPool>,
+    State(app_state): State<AppState>,
     axum::extract::Json(form): axum::extract::Json<AuthForm>,
 ) -> Result<Json<AuthResult>, AuthError> {
-    // TODO: get allow registration from config
-
     // get or create user
-    let (user, user_password) =
-        match get_or_create_user(&pool, true, form.email, form.password.clone())
-            .await
-            .map_err(|e| AuthError::UnexpectedError(e.into()))?
-        {
-            Some(u) => u,
-            None => return Err(AuthError::UserMissing(anyhow::anyhow!("User not found"))),
-        };
+    let (user, user_password) = match get_or_create_user(
+        &app_state.pool,
+        app_state.config.application.allow_registration,
+        form.email,
+        form.password.clone(),
+    )
+    .await
+    .map_err(|e| AuthError::UnexpectedError(e.into()))?
+    {
+        Some(u) => u,
+        None => return Err(AuthError::UserMissing(anyhow::anyhow!("User not found"))),
+    };
 
     // verify password
     spawn_blocking_with_tracing(move || verify_password_hash(user_password, form.password))
@@ -45,7 +47,7 @@ pub async fn auth(
         .map_err(AuthError::UnexpectedError)??;
 
     // let token = create_token(user)?;
-    let token = spawn_blocking_with_tracing(move || create_token(user))
+    let token = spawn_blocking_with_tracing(move || create_token(user, app_state.config.jwt))
         .await
         .context("Failed generating JWT token")
         .map_err(AuthError::UnexpectedError)??;

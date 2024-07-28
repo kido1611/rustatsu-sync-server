@@ -5,19 +5,19 @@ use axum::{
 use sqlx::MySqlPool;
 
 use super::index::{get_manga_tags_by_manga_id, Manga, MangaEntity};
-use crate::util::MangaError;
+use crate::{startup::AppState, util::MangaError};
 
 #[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct UrlPath {
     id: i64,
 }
 
-#[tracing::instrument(name = "Get manga by id", skip(pool))]
+#[tracing::instrument(name = "Get manga by id", skip(app_state))]
 pub async fn get_manga_by_id(
-    State(pool): State<MySqlPool>,
+    State(app_state): State<AppState>,
     Path(path): Path<UrlPath>,
 ) -> Result<Json<Manga>, MangaError> {
-    let manga = get_manga(&pool, path.id)
+    let manga = get_manga(&app_state.pool, path.id)
         .await
         .map_err(|e| MangaError::UnexpectedError(e.into()))?;
 
@@ -28,7 +28,7 @@ pub async fn get_manga_by_id(
 
     let manga_id = Vec::from([manga.id]);
 
-    let tags = get_manga_tags_by_manga_id(&pool, manga_id)
+    let tags = get_manga_tags_by_manga_id(&app_state.pool, manga_id)
         .await
         .map_err(|e| MangaError::UnexpectedError(e.into()))?;
 

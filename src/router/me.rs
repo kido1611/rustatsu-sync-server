@@ -1,19 +1,19 @@
 use anyhow::Context;
 use axum::{extract::State, Extension, Json};
-use sqlx::MySqlPool;
 
 use crate::{
     authorization::{User, UserId},
+    startup::AppState,
     util::AuthError,
 };
 
-#[tracing::instrument(name = "Get user", skip(pool))]
+#[tracing::instrument(name = "Get user", skip(app_state))]
 pub async fn get_user(
-    State(pool): State<MySqlPool>,
+    State(app_state): State<AppState>,
     Extension(user): Extension<UserId>,
 ) -> Result<Json<User>, AuthError> {
     let user = user
-        .to_user(&pool)
+        .to_user(&app_state.pool)
         .await
         .context("User is missing")
         .map_err(AuthError::UnexpectedError)?;
