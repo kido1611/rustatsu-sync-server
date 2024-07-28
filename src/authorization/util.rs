@@ -16,7 +16,9 @@ impl UserId {
             r#"
                 SELECT id, email, nickname
                 FROM users
+                WHERE id = ?
             "#,
+            self.0
         )
         .fetch_optional(pool)
         .await

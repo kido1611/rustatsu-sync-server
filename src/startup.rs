@@ -8,7 +8,10 @@ use axum::{
 };
 use sqlx::{mysql::MySqlPoolOptions, MySqlPool};
 use tokio::net::TcpListener;
-use tower_http::trace::{self, DefaultOnFailure, TraceLayer};
+use tower_http::{
+    compression::{Compression, CompressionLayer},
+    trace::{self, DefaultOnFailure, TraceLayer},
+};
 use tracing::Level;
 
 use crate::{
@@ -91,6 +94,7 @@ fn create_router(db_pool: MySqlPool, config: Config) -> Router {
                 )),
         )
         .with_state(state)
+        .layer(CompressionLayer::new())
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(
@@ -113,8 +117,6 @@ fn create_router(db_pool: MySqlPool, config: Config) -> Router {
                 .on_response(trace::DefaultOnResponse::new().level(Level::INFO))
                 .on_failure(DefaultOnFailure::new().level(Level::INFO)),
         )
-    // TODO: Layer compression
-    // TODO: Layer JWT
     // Tracing to jaeger
 }
 
