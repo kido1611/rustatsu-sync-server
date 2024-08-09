@@ -39,9 +39,9 @@ pub struct TagEntity {
     pub source: String,
 }
 
-#[derive(serde::Serialize)]
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct Manga {
-    pub id: i64,
+    pub manga_id: i64,
     pub title: String,
     pub alt_title: Option<String>,
     pub url: String,
@@ -56,9 +56,65 @@ pub struct Manga {
     pub tags: Vec<Tag>,
 }
 
-#[derive(serde::Serialize)]
+impl PartialEq for Manga {
+    fn eq(&self, other: &Self) -> bool {
+        if self.manga_id != other.manga_id {
+            return false;
+        }
+
+        if self.title != other.title {
+            return false;
+        }
+
+        if self.alt_title != other.alt_title {
+            return false;
+        }
+
+        if self.url != other.url {
+            return false;
+        }
+
+        if self.public_url != other.public_url {
+            return false;
+        }
+
+        if self.nsfw != other.nsfw {
+            return false;
+        }
+
+        if self.cover_url != other.cover_url {
+            return false;
+        }
+
+        if self.large_cover_url != other.large_cover_url {
+            return false;
+        }
+
+        if self.state != other.state {
+            return false;
+        }
+
+        if self.author != other.author {
+            return false;
+        }
+
+        if self.source != other.source {
+            return false;
+        }
+
+        if self.tags != other.tags {
+            return false;
+        }
+
+        true
+    }
+}
+
+impl Eq for Manga {}
+
+#[derive(serde::Serialize, serde::Deserialize, PartialEq, Eq)]
 pub struct Tag {
-    pub id: i64,
+    pub tag_id: i64,
     pub title: String,
     pub key: String,
     pub source: String,
@@ -71,7 +127,7 @@ impl Manga {
             .iter()
             .filter(|t| t.manga_id == entity.id)
             .map(|t| Tag {
-                id: t.id,
+                tag_id: t.id,
                 title: t.title.clone(),
                 key: t.key.clone(),
                 source: t.source.clone(),
@@ -79,7 +135,7 @@ impl Manga {
             .collect();
 
         Manga {
-            id: entity.id,
+            manga_id: entity.id,
             title: entity.title,
             alt_title: entity.alt_title,
             url: entity.url,
@@ -145,7 +201,7 @@ async fn get_manga_list(
     .await
 }
 
-#[tracing::instrument(name = "Get manga tags by manga id", skip(pool))]
+#[tracing::instrument(name = "Get manga tags by manga id", skip(pool, manga_id))]
 pub async fn get_manga_tags_by_manga_id(
     pool: &MySqlPool,
     manga_id: Vec<i64>,

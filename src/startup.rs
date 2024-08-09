@@ -1,6 +1,7 @@
 use anyhow::Context;
 use axum::{
     body::Body,
+    extract::DefaultBodyLimit,
     http::Request,
     middleware::{self},
     serve::Serve,
@@ -9,7 +10,7 @@ use axum::{
 use sqlx::{mysql::MySqlPoolOptions, MySqlPool};
 use tokio::net::TcpListener;
 use tower_http::{
-    compression::{Compression, CompressionLayer},
+    compression::CompressionLayer,
     trace::{self, DefaultOnFailure, TraceLayer},
 };
 use tracing::Level;
@@ -17,7 +18,9 @@ use tracing::Level;
 use crate::{
     authorization::jwt_authorization_middleware,
     configuration::{Config, Database},
-    router::{auth, get_manga, get_manga_by_id, get_user, index},
+    router::{
+        auth, get_favourites_package, get_manga, get_manga_by_id, get_user, index, post_favourites,
+    },
 };
 
 pub struct Application {
@@ -88,6 +91,18 @@ fn create_router(db_pool: MySqlPool, config: Config) -> Router {
             "/",
             Router::new()
                 .route("/me", axum::routing::get(get_user))
+                .nest(
+                    "/resource",
+                    Router::new().nest(
+                        "/favourites",
+                        Router::new().route(
+                            "/",
+                            axum::routing::get(get_favourites_package)
+                                .post(post_favourites)
+                                .layer(DefaultBodyLimit::max(52_428_800)),
+                        ),
+                    ),
+                )
                 .layer(middleware::from_fn_with_state(
                     state.clone(),
                     jwt_authorization_middleware,

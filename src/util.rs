@@ -10,6 +10,14 @@ pub enum MangaError {
     #[error("Something went wrong")]
     #[status(StatusCode::INTERNAL_SERVER_ERROR)]
     UnexpectedError(#[from] anyhow::Error),
+
+    #[error("Invalid Credential")]
+    #[status(StatusCode::UNAUTHORIZED)]
+    InvalidCredential(#[source] anyhow::Error),
+
+    #[error("Content Equal")]
+    #[status(StatusCode::NO_CONTENT)]
+    ContentEqual(#[source] anyhow::Error),
 }
 
 #[derive(thiserror::Error, ErrorStatus)]
@@ -33,13 +41,13 @@ pub enum AuthError {
     #[status(StatusCode::INTERNAL_SERVER_ERROR)]
     UnexpectedError(#[from] anyhow::Error),
     #[error("Auth header is missing")]
-    #[status(StatusCode::FORBIDDEN)]
+    #[status(StatusCode::UNAUTHORIZED)]
     EmptyAuthHeader(#[source] anyhow::Error),
     #[error("Auth token is missing")]
-    #[status(StatusCode::FORBIDDEN)]
+    #[status(StatusCode::UNAUTHORIZED)]
     EmptyAuthToken(#[source] anyhow::Error),
     #[error("Invalid Credential")]
-    #[status(StatusCode::FORBIDDEN)]
+    #[status(StatusCode::UNAUTHORIZED)]
     InvalidCredential(#[source] anyhow::Error),
 }
 
