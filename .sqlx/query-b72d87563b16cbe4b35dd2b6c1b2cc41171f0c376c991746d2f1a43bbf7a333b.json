@@ -1,0 +1,12 @@
+{
+  "db_name": "MySQL",
+  "query": "\n        UPDATE users\n            set favourites_sync_timestamp = ?\n        WHERE id = ?",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "b72d87563b16cbe4b35dd2b6c1b2cc41171f0c376c991746d2f1a43bbf7a333b"
+}

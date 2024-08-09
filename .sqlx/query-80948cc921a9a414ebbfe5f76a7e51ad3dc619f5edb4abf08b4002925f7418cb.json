@@ -1,0 +1,12 @@
+{
+  "db_name": "MySQL",
+  "query": "\n                    INSERT INTO\n                        categories (id, created_at, sort_key, title, `order`, user_id, track, show_in_lib, deleted_at)\n                    VALUES\n                        (?, ?, ?, ?, ?, ?, ?, ?, ?)\n                    ON DUPLICATE KEY UPDATE\n                        created_at = ?,\n                        sort_key = ?,\n                        title = ?,\n                        `order` = ?,\n                        user_id = ?,\n                        track = ?,\n                        show_in_lib = ?,\n                        deleted_at = ?\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 17
+    },
+    "nullable": []
+  },
+  "hash": "80948cc921a9a414ebbfe5f76a7e51ad3dc619f5edb4abf08b4002925f7418cb"
+}

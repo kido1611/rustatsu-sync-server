@@ -1,0 +1,12 @@
+{
+  "db_name": "MySQL",
+  "query": "\n            INSERT INTO manga\n                (id, title, alt_title,\n                url, public_url,\n                rating, is_nsfw,\n                cover_url, large_cover_url,\n                state, author, source)\n            VALUES\n                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n            ON DUPLICATE KEY UPDATE\n                title = ?,\n                alt_title = ?,\n                url = ?,\n                public_url = ?,\n                rating = ?,\n                is_nsfw = ?,\n                cover_url = ?,\n                large_cover_url = ?,\n                state = ?,\n                author = ?,\n                source = ?\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 23
+    },
+    "nullable": []
+  },
+  "hash": "2d9aa9b9e3bc21517e7bebb2a9c5974819964d07ae4c410da11a8a31c365cf4c"
+}

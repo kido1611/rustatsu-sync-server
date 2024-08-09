@@ -1,20 +1,30 @@
 {
   "db_name": "MySQL",
-  "query": "\n        SELECT id, nickname, email FROM users where email = ? LIMIT 1\n        ",
+  "query": "\n        SELECT id, email, nickname, password\n        FROM users\n        where email = ?\n        LIMIT 1\n        ",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
         "name": "id",
         "type_info": {
-          "type": "Long",
+          "type": "LongLong",
           "flags": "NOT_NULL | PRIMARY_KEY | AUTO_INCREMENT",
           "char_set": 63,
-          "max_size": 11
+          "max_size": 20
         }
       },
       {
         "ordinal": 1,
+        "name": "email",
+        "type_info": {
+          "type": "VarString",
+          "flags": "NOT_NULL | UNIQUE_KEY | NO_DEFAULT_VALUE",
+          "char_set": 224,
+          "max_size": 480
+        }
+      },
+      {
+        "ordinal": 2,
         "name": "nickname",
         "type_info": {
           "type": "VarString",
@@ -24,13 +34,13 @@
         }
       },
       {
-        "ordinal": 2,
-        "name": "email",
+        "ordinal": 3,
+        "name": "password",
         "type_info": {
           "type": "VarString",
-          "flags": "NOT_NULL | UNIQUE_KEY | NO_DEFAULT_VALUE",
+          "flags": "NOT_NULL | NO_DEFAULT_VALUE",
           "char_set": 224,
-          "max_size": 480
+          "max_size": 1020
         }
       }
     ],
@@ -39,9 +49,10 @@
     },
     "nullable": [
       false,
+      false,
       true,
       false
     ]
   },
-  "hash": "a6f744e232c8aa2ebd91c8e2b3456c635a55e930ebc580f1b1a8e1e661e1fda3"
+  "hash": "97e6d66a4579cf515b0318732ff317b325479d9596df3f54557d3fabe5381ce8"
 }
