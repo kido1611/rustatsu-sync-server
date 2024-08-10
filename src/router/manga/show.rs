@@ -12,8 +12,8 @@ pub struct UrlPath {
     id: i64,
 }
 
-#[tracing::instrument(name = "Get manga by id", skip(app_state))]
-pub async fn get_manga_by_id(
+#[tracing::instrument(name = "get manga id route", skip(app_state))]
+pub async fn get_manga_id_route(
     State(app_state): State<AppState>,
     Path(path): Path<UrlPath>,
 ) -> Result<Json<Manga>, MangaError> {
@@ -35,7 +35,7 @@ pub async fn get_manga_by_id(
     Ok(Json(Manga::from_entity(manga, &tags)))
 }
 
-#[tracing::instrument(name = "Find manga by id", skip(pool))]
+#[tracing::instrument(name = "get manga by id", skip(pool))]
 async fn get_manga(pool: &MySqlPool, id: i64) -> Result<Option<MangaEntity>, sqlx::Error> {
     sqlx::query_as!(
         MangaEntity,

@@ -74,11 +74,11 @@ impl PartialEq for History {
 impl Eq for History {}
 
 #[tracing::instrument(
-    name = "get history package",
+    name = "get history route",
     skip(app_state, user),
     fields(user_id = user.0)
 )]
-pub async fn get_history_package(
+pub async fn get_history_route(
     State(app_state): State<AppState>,
     Extension(user): Extension<UserId>,
 ) -> Result<Json<HistoryPackage>, MangaError> {
@@ -97,7 +97,7 @@ pub async fn get_history_package(
         }
     };
 
-    let history_package = get_history_package_by_user(&app_state.pool, &user).await?;
+    let history_package = get_user_history_package(&app_state.pool, &user).await?;
 
     Ok(Json(history_package))
 }
@@ -107,11 +107,11 @@ pub async fn get_history_package(
     skip(pool, user),
     fields(user_id = user.id)
 )]
-pub async fn get_history_package_by_user(
+pub async fn get_user_history_package(
     pool: &MySqlPool,
     user: &User,
 ) -> Result<HistoryPackage, MangaError> {
-    let histories = get_history(pool, user)
+    let histories = get_user_history_manga(pool, user)
         .await
         .context("Error fetching history")
         .map_err(MangaError::UnexpectedError)?;
@@ -129,6 +129,11 @@ pub async fn get_history_package_by_user(
     Ok(history_package)
 }
 
+#[tracing::instrument(
+    name = "get user history synchronize time",
+    skip(pool, user),
+    fields(user_id=user.id)
+)]
 async fn get_user_last_history_sync_time(
     pool: &MySqlPool,
     user: &User,
@@ -147,7 +152,15 @@ async fn get_user_last_history_sync_time(
     Ok(user_history.history_sync_timestamp.unwrap_or(0))
 }
 
-async fn get_history(pool: &MySqlPool, user: &User) -> Result<Vec<History>, sqlx::Error> {
+#[tracing::instrument(
+    name = "get user history manga",
+    skip(pool, user),
+    fields(user_id=user.id)
+)]
+async fn get_user_history_manga(
+    pool: &MySqlPool,
+    user: &User,
+) -> Result<Vec<History>, sqlx::Error> {
     let history_raw = sqlx::query!(
         r#"
             SELECT *

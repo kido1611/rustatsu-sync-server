@@ -10,7 +10,7 @@ use crate::{
 };
 
 #[derive(serde::Serialize, serde::Deserialize, PartialEq, Eq)]
-pub struct FavouritesPackage {
+pub struct FavouritePackage {
     pub favourite_categories: Vec<Category>,
     pub favourites: Vec<Favourite>,
     pub timestamp: i64,
@@ -38,10 +38,15 @@ pub struct Favourite {
     pub deleted_at: i64,
 }
 
-pub async fn get_favourites_package(
+#[tracing::instrument(
+    name = "get favourites route",
+    skip(app_state, user),
+    fields(user_id = user.0)
+)]
+pub async fn get_favourites_route(
     State(app_state): State<AppState>,
     Extension(user): Extension<UserId>,
-) -> Result<Json<FavouritesPackage>, MangaError> {
+) -> Result<Json<FavouritePackage>, MangaError> {
     let user = user
         .to_user(&app_state.pool)
         .await
@@ -57,21 +62,26 @@ pub async fn get_favourites_package(
         }
     };
 
-    let favourites_package = get_favourites_package_by_user(&app_state.pool, &user).await?;
+    let favourites_package = get_user_favourites_package(&app_state.pool, &user).await?;
 
     Ok(Json(favourites_package))
 }
 
-pub async fn get_favourites_package_by_user(
+#[tracing::instrument(
+    name = "get user favourite package",
+    skip(pool, user),
+    fields(user_id = user.id)
+)]
+pub async fn get_user_favourites_package(
     pool: &MySqlPool,
     user: &User,
-) -> Result<FavouritesPackage, MangaError> {
-    let categories = get_categories(pool, user)
+) -> Result<FavouritePackage, MangaError> {
+    let categories = get_user_categories(pool, user)
         .await
         .context("Error fetching categories")
         .map_err(MangaError::UnexpectedError)?;
 
-    let favourites = get_favourite_mangas(pool, user)
+    let favourites = get_user_favourite_manga(pool, user)
         .await
         .map_err(MangaError::UnexpectedError)?;
 
@@ -80,7 +90,7 @@ pub async fn get_favourites_package_by_user(
         .context("Failed fetching user last favourite sync time")
         .map_err(MangaError::UnexpectedError)?;
 
-    let favourite_package = FavouritesPackage {
+    let favourite_package = FavouritePackage {
         favourite_categories: categories,
         favourites,
         timestamp: favourite_time,
@@ -89,6 +99,11 @@ pub async fn get_favourites_package_by_user(
     Ok(favourite_package)
 }
 
+#[tracing::instrument(
+    name = "get user favourite synchronize time",
+    skip(pool, user),
+    fields(user_id=user.id)
+)]
 async fn get_user_last_favourite_sync_time(
     pool: &MySqlPool,
     user: &User,
@@ -107,7 +122,12 @@ async fn get_user_last_favourite_sync_time(
     Ok(time)
 }
 
-async fn get_categories(pool: &MySqlPool, user: &User) -> Result<Vec<Category>, sqlx::Error> {
+#[tracing::instrument(
+    name = "get user categories",
+    skip(pool, user),
+    fields(user_id=user.id)
+)]
+async fn get_user_categories(pool: &MySqlPool, user: &User) -> Result<Vec<Category>, sqlx::Error> {
     sqlx::query_as!(
         Category,
         r#"
@@ -124,7 +144,12 @@ async fn get_categories(pool: &MySqlPool, user: &User) -> Result<Vec<Category>, 
     .await
 }
 
-async fn get_favourite_mangas(
+#[tracing::instrument(
+    name = "get user favourite manga",
+    skip(pool, user),
+    fields(user_id=user.id)
+)]
+async fn get_user_favourite_manga(
     pool: &MySqlPool,
     user: &User,
 ) -> Result<Vec<Favourite>, anyhow::Error> {

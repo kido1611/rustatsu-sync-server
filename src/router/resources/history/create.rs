@@ -9,14 +9,14 @@ use crate::{
     util::MangaError,
 };
 
-use super::index::{get_history_package_by_user, History, HistoryPackage};
+use super::index::{get_user_history_package, History, HistoryPackage};
 
 #[tracing::instrument(
-    name = "update history",
+    name = "post history route",
     skip(app_state, user, history_package),
     fields(user_id=user.0)
 )]
-pub async fn post_history_package(
+pub async fn post_history_route(
     State(app_state): State<AppState>,
     Extension(user): Extension<UserId>,
     axum::extract::Json(history_package): axum::extract::Json<HistoryPackage>,
@@ -43,7 +43,7 @@ pub async fn post_history_package(
         .context("Failed when creating database transaction")
         .map_err(MangaError::UnexpectedError)?;
 
-    upsert_histories(&mut transaction, &user, &history_package.history)
+    upsert_user_history_manga(&mut transaction, &user, &history_package.history)
         .await
         .context("Failed when upserting history")
         .map_err(MangaError::UnexpectedError)?;
@@ -54,7 +54,7 @@ pub async fn post_history_package(
         .context("Failed when committing transaction")
         .map_err(MangaError::UnexpectedError)?;
 
-    let latest_history_package = get_history_package_by_user(&app_state.pool, &user).await?;
+    let latest_history_package = get_user_history_package(&app_state.pool, &user).await?;
 
     update_user_history_synchronize_time(&app_state.pool, &user)
         .await
@@ -95,11 +95,11 @@ async fn update_user_history_synchronize_time(
 }
 
 #[tracing::instrument(
-    name = "upsert history",
+    name = "upsert user history manga",
     skip(transaction, user, histories),
     fields(user_id=user.id)
 )]
-async fn upsert_histories(
+async fn upsert_user_history_manga(
     transaction: &mut Transaction<'_, MySql>,
     user: &User,
     histories: &Vec<History>,

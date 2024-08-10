@@ -19,8 +19,8 @@ use crate::{
     authorization::jwt_authorization_middleware,
     configuration::{Config, Database},
     router::{
-        auth, get_favourites_package, get_history_package, get_manga, get_manga_by_id, get_user,
-        index, post_favourites, post_history_package,
+        get_favourites_route, get_history_route, get_manga_id_route, get_manga_route, get_me_route,
+        index, post_auth_route, post_favourites_route, post_history_route,
     },
 };
 
@@ -84,35 +84,35 @@ fn create_router(db_pool: MySqlPool, config: Config) -> Router {
         .nest(
             "/manga",
             Router::new()
-                .route("/", axum::routing::get(get_manga))
-                .route("/:id", axum::routing::get(get_manga_by_id)),
+                .route("/", axum::routing::get(get_manga_route))
+                .route("/:id", axum::routing::get(get_manga_id_route)),
         )
-        .route("/auth", axum::routing::post(auth))
+        .route("/auth", axum::routing::post(post_auth_route))
         .nest(
             "/",
             Router::new()
-                .route("/me", axum::routing::get(get_user))
+                .route("/me", axum::routing::get(get_me_route))
                 .nest(
                     "/resource",
                     Router::new()
                         .nest(
                             "/favourites",
                             Router::new()
-                                .route("/", axum::routing::get(get_favourites_package))
+                                .route("/", axum::routing::get(get_favourites_route))
                                 .route(
                                     "/",
-                                    axum::routing::post(post_favourites)
-                                        .layer(DefaultBodyLimit::max(52_428_800)),
+                                    axum::routing::post(post_favourites_route)
+                                        .layer(DefaultBodyLimit::max(52_428_800)), // 50MB in binary bytes. https://www.gbmb.org/mb-to-bytes
                                 ),
                         )
                         .nest(
                             "/history",
                             Router::new()
-                                .route("/", axum::routing::get(get_history_package))
+                                .route("/", axum::routing::get(get_history_route))
                                 .route(
                                     "/",
-                                    axum::routing::post(post_history_package)
-                                        .layer(DefaultBodyLimit::max(52_428_800)),
+                                    axum::routing::post(post_history_route)
+                                        .layer(DefaultBodyLimit::max(52_428_800)), // 50MB in binary bytes. https://www.gbmb.org/mb-to-bytes
                                 ),
                         ),
                 )
@@ -145,7 +145,8 @@ fn create_router(db_pool: MySqlPool, config: Config) -> Router {
                 .on_response(trace::DefaultOnResponse::new().level(Level::INFO))
                 .on_failure(DefaultOnFailure::new().level(Level::INFO)),
         )
-    // Tracing to jaeger
+    // TODO: custom body limit size from config
+    // TODO: Tracing to jaeger
 }
 
 async fn create_server(

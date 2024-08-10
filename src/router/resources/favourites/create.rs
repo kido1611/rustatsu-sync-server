@@ -2,10 +2,7 @@ use anyhow::Context;
 use axum::{extract::State, Extension, Json};
 use sqlx::{Executor, MySql, MySqlPool, Transaction};
 
-use super::{
-    get_favourites_package_by_user,
-    index::{Category, Favourite, FavouritesPackage},
-};
+use super::index::{get_user_favourites_package, Category, Favourite, FavouritePackage};
 use crate::{
     authorization::{User, UserId},
     router::manga::{Manga, Tag},
@@ -14,15 +11,15 @@ use crate::{
 };
 
 #[tracing::instrument(
-    name = "Update Favourites",
+    name = "post favourite route",
     skip(app_state, user, favourites_package),
     fields(user_id=user.0)
 )]
-pub async fn post_favourites(
+pub async fn post_favourites_route(
     State(app_state): State<AppState>,
     Extension(user): Extension<UserId>,
-    axum::extract::Json(favourites_package): axum::extract::Json<FavouritesPackage>,
-) -> Result<Json<FavouritesPackage>, MangaError> {
+    axum::extract::Json(favourites_package): axum::extract::Json<FavouritePackage>,
+) -> Result<Json<FavouritePackage>, MangaError> {
     let user = user
         .to_user(&app_state.pool)
         .await
@@ -45,7 +42,7 @@ pub async fn post_favourites(
         .context("Failed when creating database transaction")
         .map_err(MangaError::UnexpectedError)?;
 
-    upsert_categories(
+    upsert_user_categories(
         &mut transaction,
         &user,
         &favourites_package.favourite_categories,
@@ -54,7 +51,7 @@ pub async fn post_favourites(
     .context("Failed when updating categories")
     .map_err(MangaError::UnexpectedError)?;
 
-    upsert_favourites(&mut transaction, &user, &favourites_package.favourites)
+    upsert_user_favourite_manga(&mut transaction, &user, &favourites_package.favourites)
         .await
         .context("Failed when updating favourites")
         .map_err(MangaError::UnexpectedError)?;
@@ -65,7 +62,7 @@ pub async fn post_favourites(
         .context("Failed when commiting transaction")
         .map_err(MangaError::UnexpectedError)?;
 
-    let latest_favourites_package = get_favourites_package_by_user(&app_state.pool, &user).await?;
+    let latest_favourites_package = get_user_favourites_package(&app_state.pool, &user).await?;
 
     update_user_favourite_synchonize_time(&app_state.pool, &user)
         .await
@@ -79,6 +76,11 @@ pub async fn post_favourites(
     Ok(Json(latest_favourites_package))
 }
 
+#[tracing::instrument(
+    name = "update user favourite synchronize time",
+    skip(pool, user),
+    fields(user_id=user.id)
+)]
 async fn update_user_favourite_synchonize_time(
     pool: &MySqlPool,
     user: &User,
@@ -100,11 +102,11 @@ async fn update_user_favourite_synchonize_time(
 }
 
 #[tracing::instrument(
-    name = "Upsert Categories",
+    name = "upsert user categories",
     skip(transaction, user, categories),
     fields(user_id=user.id),
 )]
-async fn upsert_categories(
+async fn upsert_user_categories(
     transaction: &mut Transaction<'_, MySql>,
     user: &User,
     categories: &Vec<Category>,
@@ -152,11 +154,11 @@ async fn upsert_categories(
 }
 
 #[tracing::instrument(
-    name = "Upsert favourite",
+    name = "upsert user favourite manga",
     skip(transaction, user, favourites),
     fields(user_id=user.id)
 )]
-async fn upsert_favourites(
+async fn upsert_user_favourite_manga(
     transaction: &mut Transaction<'_, MySql>,
     user: &User,
     favourites: &Vec<Favourite>,
@@ -192,6 +194,11 @@ async fn upsert_favourites(
     Ok(())
 }
 
+#[tracing::instrument(
+    name = "upsert manga",
+    skip(transaction, manga),
+    fields(manga_id = manga.manga_id)
+)]
 pub async fn upsert_manga(
     transaction: &mut Transaction<'_, MySql>,
     manga: &Manga,
@@ -269,12 +276,17 @@ pub async fn upsert_manga(
     );
     transaction.execute(query).await?;
 
-    upsert_tags(transaction, &manga, &manga.tags).await?;
+    upsert_manga_tags(transaction, &manga, &manga.tags).await?;
 
     Ok(())
 }
 
-async fn upsert_tags(
+#[tracing::instrument(
+    name = "upsert manga tags",
+    skip(transaction, manga, tags),
+    fields(manga_id=manga.manga_id)
+)]
+async fn upsert_manga_tags(
     transaction: &mut Transaction<'_, MySql>,
     manga: &Manga,
     tags: &Vec<Tag>,

@@ -7,8 +7,8 @@ use crate::{
     util::AuthError,
 };
 
-#[tracing::instrument(name = "Get user", skip(app_state))]
-pub async fn get_user(
+#[tracing::instrument(name = "get me route", skip(app_state, user), fields(user_id=user.0))]
+pub async fn get_me_route(
     State(app_state): State<AppState>,
     Extension(user): Extension<UserId>,
 ) -> Result<Json<User>, AuthError> {

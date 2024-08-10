@@ -125,7 +125,7 @@ pub struct Tag {
 }
 
 impl Manga {
-    #[tracing::instrument(name = "Transform manga", skip(tags, entity), fields(manga_id=entity.id))]
+    #[tracing::instrument(name = "transform manga", skip(tags, entity), fields(manga_id=entity.id))]
     pub fn from_entity(entity: MangaEntity, tags: &Vec<TagEntity>) -> Self {
         let manga_tags: Vec<Tag> = tags
             .iter()
@@ -163,8 +163,8 @@ fn transform_manga_entity_into_manga(manga: Vec<MangaEntity>, tags: &Vec<TagEnti
         .collect()
 }
 
-#[tracing::instrument(name = "Get manga", skip(app_state))]
-pub async fn get_manga(
+#[tracing::instrument(name = "get manga route", skip(app_state))]
+pub async fn get_manga_route(
     State(app_state): State<AppState>,
     Query(parameters): Query<Parameters>,
 ) -> Result<Json<Vec<Manga>>, MangaError> {
@@ -179,7 +179,7 @@ pub async fn get_manga(
     Ok(Json(transform_manga_entity_into_manga(manga, &tags)))
 }
 
-#[tracing::instrument(name = "Get manga list", skip(pool))]
+#[tracing::instrument(name = "get manga list", skip(pool))]
 async fn get_manga_list(
     pool: &MySqlPool,
     parameters: Parameters,
@@ -205,7 +205,7 @@ async fn get_manga_list(
     .await
 }
 
-#[tracing::instrument(name = "Get manga tags by manga id", skip(pool, manga_id))]
+#[tracing::instrument(name = "get manga tags by manga id", skip(pool, manga_id))]
 pub async fn get_manga_tags_by_manga_id(
     pool: &MySqlPool,
     manga_id: Vec<i64>,

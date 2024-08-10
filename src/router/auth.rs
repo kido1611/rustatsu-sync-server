@@ -49,8 +49,8 @@ pub struct AuthResult {
     token: String,
 }
 
-#[tracing::instrument(name = "Authentication", skip(app_state, form), fields(form.email))]
-pub async fn auth(
+#[tracing::instrument(name = "post auth route", skip(app_state, form), fields(form.email))]
+pub async fn post_auth_route(
     State(app_state): State<AppState>,
     axum::extract::Json(form): axum::extract::Json<AuthForm>,
 ) -> Result<Json<AuthResult>, AuthError> {
@@ -87,7 +87,7 @@ pub async fn auth(
     Ok(Json(AuthResult { token }))
 }
 
-#[tracing::instrument(name = "get user", skip(pool, allow_registration, password))]
+#[tracing::instrument(name = "get or create user", skip(pool, allow_registration, password))]
 async fn get_or_create_user(
     pool: &MySqlPool,
     allow_registration: bool,

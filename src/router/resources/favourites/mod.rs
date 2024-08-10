@@ -1,5 +1,5 @@
 mod create;
 mod index;
 
-pub use create::{post_favourites, upsert_manga};
-pub use index::{get_favourites_package, get_favourites_package_by_user};
+pub use create::{post_favourites_route, upsert_manga};
+pub use index::get_favourites_route;

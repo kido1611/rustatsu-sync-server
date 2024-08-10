@@ -41,7 +41,7 @@ pub struct Claim {
     pub iat: usize,
 }
 
-#[tracing::instrument(name = "Create JWT token", skip(user), fields(user.id))]
+#[tracing::instrument(name = "create jwt token", skip(user, jwt), fields(user.id))]
 pub fn create_token(user: User, jwt: Jwt) -> Result<String, AuthError> {
     let now = Utc::now();
     let expire: chrono::TimeDelta = Duration::hours(24);
@@ -67,7 +67,7 @@ pub fn create_token(user: User, jwt: Jwt) -> Result<String, AuthError> {
     Ok(result)
 }
 
-#[tracing::instrument(name = "Decode JWT token", skip(jwt_token))]
+#[tracing::instrument(name = "decode jwt token", skip(jwt_token, jwt))]
 pub fn decode_jwt(jwt_token: String, jwt: Jwt) -> Result<TokenData<Claim>, AuthError> {
     let mut validation = Validation::default();
     validation.set_issuer(&[jwt.iss.expose_secret()]);

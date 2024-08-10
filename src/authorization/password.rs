@@ -19,7 +19,7 @@ pub fn compute_password_hash(password: Secret<String>) -> Result<Secret<String>,
     Ok(Secret::new(password_hash))
 }
 
-#[tracing::instrument(name = "verify password", skip_all)]
+#[tracing::instrument(name = "verify password hash", skip_all)]
 pub fn verify_password_hash(
     expected_password: Secret<String>,
     password: Secret<String>,
