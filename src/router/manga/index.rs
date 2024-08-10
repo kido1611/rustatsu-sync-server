@@ -78,6 +78,10 @@ impl PartialEq for Manga {
             return false;
         }
 
+        if self.rating != other.rating {
+            return false;
+        }
+
         if self.nsfw != other.nsfw {
             return false;
         }
