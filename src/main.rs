@@ -6,7 +6,7 @@ use rustatsu_sync::{
 
 #[tokio::main]
 async fn main() {
-    let subscriber = get_subscriber("kotatsu-sync".into(), "info".into(), std::io::stdout);
+    let subscriber = get_subscriber("rustatsu-sync".into(), "info".into(), std::io::stdout);
     init_subscriber(subscriber);
 
     let config = read_config().expect("Failed to read configuration.");
