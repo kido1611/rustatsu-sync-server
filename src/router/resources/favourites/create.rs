@@ -191,7 +191,7 @@ async fn upsert_favourites(
     Ok(())
 }
 
-async fn upsert_manga(
+pub async fn upsert_manga(
     transaction: &mut Transaction<'_, MySql>,
     manga: &Manga,
 ) -> Result<(), sqlx::Error> {

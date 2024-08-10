@@ -19,7 +19,8 @@ use crate::{
     authorization::jwt_authorization_middleware,
     configuration::{Config, Database},
     router::{
-        auth, get_favourites_package, get_manga, get_manga_by_id, get_user, index, post_favourites,
+        auth, get_favourites_package, get_history_package, get_manga, get_manga_by_id, get_user,
+        index, post_favourites, post_history_package,
     },
 };
 
@@ -93,15 +94,27 @@ fn create_router(db_pool: MySqlPool, config: Config) -> Router {
                 .route("/me", axum::routing::get(get_user))
                 .nest(
                     "/resource",
-                    Router::new().nest(
-                        "/favourites",
-                        Router::new().route(
-                            "/",
-                            axum::routing::get(get_favourites_package)
-                                .post(post_favourites)
-                                .layer(DefaultBodyLimit::max(52_428_800)),
+                    Router::new()
+                        .nest(
+                            "/favourites",
+                            Router::new()
+                                .route("/", axum::routing::get(get_favourites_package))
+                                .route(
+                                    "/",
+                                    axum::routing::post(post_favourites)
+                                        .layer(DefaultBodyLimit::max(52_428_800)),
+                                ),
+                        )
+                        .nest(
+                            "/history",
+                            Router::new()
+                                .route("/", axum::routing::get(get_history_package))
+                                .route(
+                                    "/",
+                                    axum::routing::post(post_history_package)
+                                        .layer(DefaultBodyLimit::max(52_428_800)),
+                                ),
                         ),
-                    ),
                 )
                 .layer(middleware::from_fn_with_state(
                     state.clone(),
