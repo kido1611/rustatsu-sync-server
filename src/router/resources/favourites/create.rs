@@ -162,13 +162,16 @@ async fn upsert_favourites(
     favourites: &Vec<Favourite>,
 ) -> Result<(), sqlx::Error> {
     for favourite in favourites {
+        upsert_manga(transaction, &favourite.manga).await?;
+
         let query = sqlx::query!(
             r#"
             INSERT INTO favourites
                 (manga_id, category_id, sort_key, created_at, deleted_at, user_id)
             VALUES
                 (?, ?, ?, ?, ?, ?)
-            ON DUPLICATE KEY UPDATE
+            ON DUPLICATE KEY
+            UPDATE
                 sort_key = ?,
                 created_at = ?,
                 deleted_at = ?
@@ -184,8 +187,6 @@ async fn upsert_favourites(
             favourite.deleted_at,
         );
         transaction.execute(query).await?;
-
-        upsert_manga(transaction, &favourite.manga).await?;
     }
 
     Ok(())
