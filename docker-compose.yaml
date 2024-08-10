@@ -1,0 +1,19 @@
+services:
+  rustatsu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      network: host
+    image: rustatsu-sync
+    ports:
+      - "18000:8000"
+    environment:
+      - DATABASE__HOST=mariadb
+      - DATABASE__PORT=3306
+    networks:
+      - server
+
+networks:
+  server:
+    name: server
+    external: true
