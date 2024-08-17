@@ -12,6 +12,7 @@ services:
       - DATABASE__PORT=3306
     networks:
       - server
+    restart: always
 
 networks:
   server:
