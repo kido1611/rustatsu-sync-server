@@ -39,7 +39,7 @@ pub struct TagEntity {
     pub source: String,
 }
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(serde::Serialize, serde::Deserialize, Debug)]
 pub struct Manga {
     pub manga_id: i64,
     pub title: String,
@@ -116,7 +116,7 @@ impl PartialEq for Manga {
 
 impl Eq for Manga {}
 
-#[derive(serde::Serialize, serde::Deserialize, PartialEq, Eq)]
+#[derive(serde::Serialize, serde::Deserialize, PartialEq, Eq, Debug)]
 pub struct Tag {
     pub tag_id: i64,
     pub title: String,
