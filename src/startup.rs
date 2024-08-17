@@ -129,7 +129,7 @@ fn create_router(db_pool: MySqlPool, config: Config) -> Router {
                     |request: &Request<Body>| {
                         let request_id = uuid::Uuid::new_v4();
                         tracing::span!(
-                            Level::DEBUG,
+                            Level::INFO,
                             "request",
                             method = tracing::field::display(request.method()),
                             uri = tracing::field::display(request.uri()),
