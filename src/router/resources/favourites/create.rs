@@ -1,3 +1,5 @@
+use std::fs::OpenOptions;
+
 use anyhow::Context;
 use axum::{extract::State, Extension, Json};
 use sqlx::{Executor, MySql, MySqlPool, Transaction};
@@ -34,6 +36,8 @@ pub async fn post_favourites_route(
             )))
         }
     };
+
+    // write_to_file(&favourites_package).await?;
 
     let mut transaction = app_state
         .pool
@@ -74,6 +78,18 @@ pub async fn post_favourites_route(
     }
 
     Ok(Json(latest_favourites_package))
+}
+
+#[tracing::instrument(name = "Write to file", skip_all)]
+async fn write_to_file(favourite_package: &FavouritePackage) -> Result<(), anyhow::Error> {
+    let file = OpenOptions::new()
+        .create_new(true)
+        .write(true)
+        .append(false)
+        .open("favourite_package.json")
+        .context("Failed to open file")?;
+    serde_json::to_writer_pretty(file, favourite_package).context("Failed to write")?;
+    Ok(())
 }
 
 #[tracing::instrument(
@@ -244,11 +260,11 @@ pub async fn upsert_manga(
         manga
             .state
             .clone()
-            .map(|d| d.chars().take(84).collect::<String>()),
+            .map(|d| d.chars().take(24).collect::<String>()),
         manga
             .author
             .clone()
-            .map(|d| d.chars().take(84).collect::<String>()),
+            .map(|d| d.chars().take(32).collect::<String>()),
         manga.source.chars().take(32).collect::<String>(),
         manga.title.chars().take(84).collect::<String>(),
         manga
@@ -267,16 +283,18 @@ pub async fn upsert_manga(
         manga
             .state
             .clone()
-            .map(|d| d.chars().take(84).collect::<String>()),
+            .map(|d| d.chars().take(24).collect::<String>()),
         manga
             .author
             .clone()
-            .map(|d| d.chars().take(84).collect::<String>()),
+            .map(|d| d.chars().take(32).collect::<String>()),
         manga.source.chars().take(32).collect::<String>()
     );
-    transaction.execute(query).await?;
 
-    upsert_manga_tags(transaction, &manga, &manga.tags).await?;
+    let manga_result = transaction.execute(query).await?;
+    if manga_result.rows_affected() > 0 {
+        upsert_manga_tags(transaction, &manga, &manga.tags).await?;
+    }
 
     Ok(())
 }
@@ -312,19 +330,21 @@ async fn upsert_manga_tags(
             tag.source.chars().take(32).collect::<String>(),
         );
 
-        transaction.execute(query).await?;
+        let tag_result = transaction.execute(query).await?;
 
-        let query_manga_tag = sqlx::query!(
-            r#"
-            INSERT IGNORE INTO manga_tags
-                (manga_id, tag_id)
-            VALUES
-                (?, ?)
-            "#,
-            manga.manga_id,
-            tag.tag_id,
-        );
-        transaction.execute(query_manga_tag).await?;
+        if tag_result.rows_affected() > 0 {
+            let query_manga_tag = sqlx::query!(
+                r#"
+                INSERT IGNORE INTO manga_tags
+                    (manga_id, tag_id)
+                VALUES
+                    (?, ?)
+                "#,
+                manga.manga_id,
+                tag.tag_id,
+            );
+            transaction.execute(query_manga_tag).await?;
+        }
     }
     Ok(())
 }
