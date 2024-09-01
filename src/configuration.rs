@@ -19,6 +19,7 @@ pub struct Application {
     pub port: u16,
     pub host: String,
     pub allow_registration: bool,
+    pub run_migration: bool,
 }
 
 #[derive(serde::Deserialize, Clone, Debug)]

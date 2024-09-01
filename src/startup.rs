@@ -40,8 +40,10 @@ impl Application {
     pub async fn build(config: Config) -> Result<Self, anyhow::Error> {
         let connection_pool = get_connection_pool(&config.database);
 
-        println!("Running migrations");
-        sqlx::migrate!("./migrations").run(&connection_pool).await?;
+        if config.application.run_migration {
+            println!("Running migrations");
+            sqlx::migrate!("./migrations").run(&connection_pool).await?;
+        }
 
         let address = format!("{}:{}", config.application.host, config.application.port);
 
