@@ -6,6 +6,7 @@ RUN cargo build --release
 FROM gcr.io/distroless/cc-debian12 AS runtime
 COPY --from=builder /app/target/release/rustatsu-sync /
 COPY configuration configuration
+COPY migrations migrations
 
 ENV APP_ENVIRONMENT=production
 EXPOSE 8000
