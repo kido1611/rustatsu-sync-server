@@ -10,6 +10,7 @@ services:
     environment:
       - DATABASE__HOST=mariadb
       - DATABASE__PORT=3306
+      - RUST_LOG=error
     networks:
       - server
     restart: always
