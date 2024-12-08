@@ -2,7 +2,7 @@ use figment::{
     providers::{Env, Format, Yaml},
     Figment,
 };
-use secrecy::{ExposeSecret, Secret};
+use secrecy::{ExposeSecret, SecretString};
 use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::mysql::MySqlConnectOptions;
 
@@ -24,15 +24,15 @@ pub struct Application {
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Jwt {
-    pub secret: Secret<String>,
-    pub iss: Secret<String>,
-    pub aud: Secret<String>,
+    pub secret: SecretString,
+    pub iss: SecretString,
+    pub aud: SecretString,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Database {
     pub username: String,
-    pub password: Secret<String>,
+    pub password: SecretString,
     pub host: String,
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub port: u16,

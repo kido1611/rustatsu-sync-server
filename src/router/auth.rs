@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use anyhow::Context;
 use axum::{extract::State, Json};
-use secrecy::{ExposeSecret, Secret};
+use secrecy::{ExposeSecret, SecretString};
 use sqlx::MySqlPool;
 use validator::{ValidateEmail, ValidateLength};
 
@@ -16,7 +16,7 @@ use crate::{
 #[derive(serde::Deserialize, Debug)]
 pub struct AuthForm {
     pub email: String,
-    pub password: Secret<String>,
+    pub password: SecretString,
 }
 
 impl AuthForm {
@@ -94,8 +94,8 @@ async fn get_or_create_user(
     pool: &MySqlPool,
     allow_registration: bool,
     email: String,
-    password: Secret<String>,
-) -> Result<Option<(User, Secret<String>)>, ApiError> {
+    password: SecretString,
+) -> Result<Option<(User, SecretString)>, ApiError> {
     let user_row = sqlx::query!(
         r#"
         SELECT id, email, nickname, password
@@ -108,7 +108,14 @@ async fn get_or_create_user(
     .fetch_optional(pool)
     .await
     .context("Failed when retrieve user")?
-    .map(|row| (row.id, row.email, row.nickname, Secret::from(row.password)));
+    .map(|row| {
+        (
+            row.id,
+            row.email,
+            row.nickname,
+            SecretString::from(row.password),
+        )
+    });
 
     if user_row.is_some() {
         let user_row = user_row.unwrap();
@@ -136,8 +143,8 @@ async fn get_or_create_user(
 async fn create_user(
     pool: &MySqlPool,
     email: String,
-    password: Secret<String>,
-) -> Result<(User, Secret<String>), ApiError> {
+    password: SecretString,
+) -> Result<(User, SecretString), ApiError> {
     let password_hash = spawn_blocking_with_tracing(move || compute_password_hash(password))
         .await
         .context("Failed calculating password hash")?

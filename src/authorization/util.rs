@@ -50,8 +50,8 @@ pub fn create_token(user: User, jwt: Jwt) -> Result<String, ApiError> {
 
     let claim = Claim {
         user_id: user.id,
-        aud: jwt.aud.expose_secret().into(),
-        iss: jwt.iss.expose_secret().into(),
+        aud: jwt.aud.expose_secret().to_string(),
+        iss: jwt.iss.expose_secret().to_string(),
         iat,
         exp,
     };
@@ -59,7 +59,7 @@ pub fn create_token(user: User, jwt: Jwt) -> Result<String, ApiError> {
     let result = encode(
         &Header::default(),
         &claim,
-        &EncodingKey::from_secret(jwt.secret.expose_secret().as_ref()),
+        &EncodingKey::from_secret(jwt.secret.expose_secret().as_bytes()),
     )
     .context("Failed wncoding token")
     .map_err(ApiError::UnexpectedError)?;
