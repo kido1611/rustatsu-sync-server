@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use anyhow::Context;
 use axum::{extract::State, Json};
 use secrecy::{ExposeSecret, Secret};
@@ -6,9 +8,9 @@ use validator::{ValidateEmail, ValidateLength};
 
 use crate::{
     authorization::{compute_password_hash, create_token, verify_password_hash, User},
+    error::ApiError,
     startup::AppState,
     telemetry::spawn_blocking_with_tracing,
-    util::AuthError,
 };
 
 #[derive(serde::Deserialize, Debug)]
@@ -18,24 +20,24 @@ pub struct AuthForm {
 }
 
 impl AuthForm {
-    pub fn validate(&self) -> Result<(), AuthError> {
+    pub fn validate(&self) -> Result<(), ApiError> {
         let email = self.email.clone();
 
         if !email.validate_email() {
-            return Err(AuthError::ValidationEmailInvalid(anyhow::anyhow!(
+            return Err(ApiError::ValidationEmailInvalid(anyhow::anyhow!(
                 "Incorrect email format"
             )));
         }
 
         if !email.validate_length(Some(3), Some(128), None) {
-            return Err(AuthError::ValidationEmailLength(anyhow::anyhow!(
+            return Err(ApiError::ValidationEmailLength(anyhow::anyhow!(
                 "Email length must be between 3 to 128 characters"
             )));
         }
 
         let password = self.password.expose_secret();
         if !password.validate_length(Some(8), Some(128), None) {
-            return Err(AuthError::ValidationPasswordLength(anyhow::anyhow!(
+            return Err(ApiError::ValidationPasswordLength(anyhow::anyhow!(
                 "Password length must be between 8 to 128 characters"
             )));
         }
@@ -51,9 +53,9 @@ pub struct AuthResult {
 
 #[tracing::instrument(name = "post auth route", skip(app_state, form), fields(form.email))]
 pub async fn post_auth_route(
-    State(app_state): State<AppState>,
+    State(app_state): State<Arc<AppState>>,
     axum::extract::Json(form): axum::extract::Json<AuthForm>,
-) -> Result<Json<AuthResult>, AuthError> {
+) -> Result<Json<AuthResult>, ApiError> {
     // Validation
     form.validate()?;
 
@@ -64,25 +66,25 @@ pub async fn post_auth_route(
         form.email,
         form.password.clone(),
     )
-    .await
-    .map_err(|e| AuthError::UnexpectedError(e.into()))?
+    .await?
     {
         Some(u) => u,
-        None => return Err(AuthError::UserMissing(anyhow::anyhow!("User not found"))),
+        None => return Err(ApiError::UserMissing(anyhow::anyhow!("User not found"))),
     };
 
     // verify password
     spawn_blocking_with_tracing(move || verify_password_hash(user_password, form.password))
         .await
         .context("Failed when verifying password")
-        .map_err(AuthError::UnexpectedError)?
-        .map_err(AuthError::InvalidPassword)?;
+        .map_err(ApiError::UnexpectedError)?
+        .map_err(ApiError::InvalidPassword)?;
 
     // Create token
-    let token = spawn_blocking_with_tracing(move || create_token(user, app_state.config.jwt))
-        .await
-        .context("Failed generating JWT token")
-        .map_err(AuthError::UnexpectedError)??;
+    let token =
+        spawn_blocking_with_tracing(move || create_token(user, app_state.config.jwt.clone()))
+            .await
+            .context("Failed generating JWT token")
+            .map_err(ApiError::UnexpectedError)??;
 
     Ok(Json(AuthResult { token }))
 }
@@ -93,7 +95,7 @@ async fn get_or_create_user(
     allow_registration: bool,
     email: String,
     password: Secret<String>,
-) -> Result<Option<(User, Secret<String>)>, anyhow::Error> {
+) -> Result<Option<(User, Secret<String>)>, ApiError> {
     let user_row = sqlx::query!(
         r#"
         SELECT id, email, nickname, password
@@ -125,9 +127,8 @@ async fn get_or_create_user(
         return Ok(None);
     }
 
-    let new_user = create_user(pool, email, password)
-        .await
-        .map_err(|e| AuthError::UnexpectedError(e.into()))?;
+    let new_user = create_user(pool, email, password).await?;
+    // .map_err(|e| ApiError::UnexpectedError(e.into()))?;
     Ok(Some(new_user))
 }
 
@@ -136,11 +137,11 @@ async fn create_user(
     pool: &MySqlPool,
     email: String,
     password: Secret<String>,
-) -> Result<(User, Secret<String>), AuthError> {
+) -> Result<(User, Secret<String>), ApiError> {
     let password_hash = spawn_blocking_with_tracing(move || compute_password_hash(password))
         .await
         .context("Failed calculating password hash")?
-        .map_err(|e| AuthError::UnexpectedError(e.into()))?;
+        .map_err(|e| ApiError::UnexpectedError(e.into()))?;
 
     let user_id = sqlx::query!(
         r#"
@@ -154,7 +155,7 @@ async fn create_user(
     )
     .execute(pool)
     .await
-    .map_err(|e| AuthError::UnexpectedError(e.into()))?
+    .map_err(|e| ApiError::UnexpectedError(e.into()))?
     .last_insert_id();
 
     Ok((

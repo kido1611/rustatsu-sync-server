@@ -1,42 +1,16 @@
+use std::sync::Arc;
+
 use anyhow::Context;
 use axum::{extract::State, Extension, Json};
 use sqlx::MySqlPool;
 
 use crate::{
     authorization::{User, UserId},
-    router::manga::{get_manga_tags_by_manga_id, Manga, Tag},
+    error::ApiError,
+    model::{Category, Favourite, FavouritePackage, Manga, Tag},
+    router::manga::get_manga_tags_by_manga_id,
     startup::AppState,
-    util::MangaError,
 };
-
-#[derive(serde::Serialize, serde::Deserialize, PartialEq, Eq)]
-pub struct FavouritePackage {
-    pub favourite_categories: Vec<Category>,
-    pub favourites: Vec<Favourite>,
-    pub timestamp: i64,
-}
-
-#[derive(serde::Serialize, serde::Deserialize, Debug, PartialEq, Eq)]
-pub struct Category {
-    pub category_id: i64,
-    pub created_at: i64,
-    pub sort_key: i32,
-    pub track: i8,
-    pub title: String,
-    pub order: String,
-    pub deleted_at: i64,
-    pub show_in_lib: i8,
-}
-
-#[derive(serde::Serialize, serde::Deserialize, PartialEq, Eq)]
-pub struct Favourite {
-    pub manga_id: i64,
-    pub manga: Manga,
-    pub category_id: i64,
-    pub sort_key: i32,
-    pub created_at: i64,
-    pub deleted_at: i64,
-}
 
 #[tracing::instrument(
     name = "get favourites route",
@@ -44,19 +18,19 @@ pub struct Favourite {
     fields(user_id = user.0)
 )]
 pub async fn get_favourites_route(
-    State(app_state): State<AppState>,
+    State(app_state): State<Arc<AppState>>,
     Extension(user): Extension<UserId>,
-) -> Result<Json<FavouritePackage>, MangaError> {
+) -> Result<Json<FavouritePackage>, ApiError> {
     let user = user
         .to_user(&app_state.pool)
         .await
         .context("User is missing")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let user = match user {
         Some(user) => user,
         None => {
-            return Err(MangaError::InvalidCredential(anyhow::anyhow!(
+            return Err(ApiError::InvalidCredential(anyhow::anyhow!(
                 "User not found"
             )))
         }
@@ -75,20 +49,20 @@ pub async fn get_favourites_route(
 pub async fn get_user_favourites_package(
     pool: &MySqlPool,
     user: &User,
-) -> Result<FavouritePackage, MangaError> {
+) -> Result<FavouritePackage, ApiError> {
     let categories = get_user_categories(pool, user)
         .await
         .context("Error fetching categories")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let favourites = get_user_favourite_manga(pool, user)
         .await
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let favourite_time = get_user_last_favourite_sync_time(pool, user)
         .await
         .context("Failed fetching user last favourite sync time")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let favourite_package = FavouritePackage {
         favourite_categories: categories,
@@ -175,30 +149,30 @@ async fn get_user_favourite_manga(
     let favourite = favourites_with_manga
         .iter()
         .map(|f| {
-            let manga_tags: Vec<Tag> = tags
+            let manga_tags = tags
                 .iter()
                 .filter(|t| t.manga_id == f.manga_id)
                 .map(|t| Tag {
                     tag_id: t.id,
-                    title: t.title.clone(),
-                    key: t.key.clone(),
-                    source: t.source.clone(),
+                    title: t.title.to_owned(),
+                    key: t.key.to_owned(),
+                    source: t.source.to_owned(),
                 })
-                .collect();
+                .collect::<Vec<Tag>>();
 
             let manga = Manga {
                 manga_id: f.manga_id,
-                title: f.title.clone(),
-                alt_title: f.alt_title.clone(),
-                url: f.url.clone(),
-                public_url: f.public_url.clone(),
-                cover_url: f.cover_url.clone(),
-                large_cover_url: f.large_cover_url.clone(),
+                title: f.title.to_owned(),
+                alt_title: f.alt_title.to_owned(),
+                url: f.url.to_owned(),
+                public_url: f.public_url.to_owned(),
+                cover_url: f.cover_url.to_owned(),
+                large_cover_url: f.large_cover_url.to_owned(),
                 rating: f.rating,
                 nsfw: f.is_nsfw,
-                state: f.state.clone(),
-                author: f.author.clone(),
-                source: f.source.clone(),
+                state: f.state.to_owned(),
+                author: f.author.to_owned(),
+                source: f.source.to_owned(),
                 tags: manga_tags,
             };
 

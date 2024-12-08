@@ -1,15 +1,15 @@
-use std::fs::OpenOptions;
+use std::{fs::OpenOptions, sync::Arc};
 
 use anyhow::Context;
 use axum::{extract::State, Extension, Json};
 use sqlx::{Executor, MySql, MySqlPool, Transaction};
 
-use super::index::{get_user_favourites_package, Category, Favourite, FavouritePackage};
+use super::index::get_user_favourites_package;
 use crate::{
     authorization::{User, UserId},
-    router::manga::{Manga, Tag},
+    error::ApiError,
+    model::{Category, Favourite, FavouritePackage, Manga, Tag},
     startup::AppState,
-    util::MangaError,
 };
 
 #[tracing::instrument(
@@ -18,24 +18,26 @@ use crate::{
     fields(user_id=user.0)
 )]
 pub async fn post_favourites_route(
-    State(app_state): State<AppState>,
+    State(app_state): State<Arc<AppState>>,
     Extension(user): Extension<UserId>,
     axum::extract::Json(favourites_package): axum::extract::Json<FavouritePackage>,
-) -> Result<Json<FavouritePackage>, MangaError> {
+) -> Result<Json<FavouritePackage>, ApiError> {
     let user = user
         .to_user(&app_state.pool)
         .await
         .context("User is missing")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let user = match user {
         Some(user) => user,
         None => {
-            return Err(MangaError::InvalidCredential(anyhow::anyhow!(
+            return Err(ApiError::InvalidCredential(anyhow::anyhow!(
                 "User not found"
             )))
         }
     };
+
+    println!("favourite data: {}", &favourites_package.favourites.len());
 
     // write_to_file(&favourites_package).await?;
 
@@ -44,7 +46,7 @@ pub async fn post_favourites_route(
         .begin()
         .await
         .context("Failed when creating database transaction")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     upsert_user_categories(
         &mut transaction,
@@ -53,28 +55,28 @@ pub async fn post_favourites_route(
     )
     .await
     .context("Failed when updating categories")
-    .map_err(MangaError::UnexpectedError)?;
+    .map_err(ApiError::UnexpectedError)?;
 
     upsert_user_favourite_manga(&mut transaction, &user, &favourites_package.favourites)
         .await
         .context("Failed when updating favourites")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     transaction
         .commit()
         .await
         .context("Failed when commiting transaction")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let latest_favourites_package = get_user_favourites_package(&app_state.pool, &user).await?;
 
     update_user_favourite_synchonize_time(&app_state.pool, &user)
         .await
         .context("Failed when updating user favourite timestamp")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     if latest_favourites_package == favourites_package {
-        return Err(MangaError::ContentEqual(anyhow::anyhow!("Content Equal")));
+        return Err(ApiError::ContentEqual(anyhow::anyhow!("Content Equal")));
     }
 
     Ok(Json(latest_favourites_package))
@@ -219,6 +221,16 @@ pub async fn upsert_manga(
     transaction: &mut Transaction<'_, MySql>,
     manga: &Manga,
 ) -> Result<(), sqlx::Error> {
+    // Helper function to truncate strings
+    fn truncate(s: &str, max_len: usize) -> String {
+        s.chars().take(max_len).collect()
+    }
+
+    // Helper function to truncate optional strings
+    fn truncate_opt(s: &Option<String>, max_len: usize) -> Option<String> {
+        s.clone().map(|d| truncate(&d, max_len))
+    }
+
     let query = sqlx::query!(
         r#"
             INSERT INTO manga
@@ -230,70 +242,35 @@ pub async fn upsert_manga(
             VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
-                title = ?,
-                alt_title = ?,
-                url = ?,
-                public_url = ?,
-                rating = ?,
-                is_nsfw = ?,
-                cover_url = ?,
-                large_cover_url = ?,
-                state = ?,
-                author = ?,
-                source = ?
+                title = VALUES(title),
+                alt_title = VALUES(alt_title),
+                url = VALUES(url),
+                public_url = VALUES(public_url),
+                rating = VALUES(rating),
+                is_nsfw = VALUES(is_nsfw),
+                cover_url = VALUES(cover_url),
+                large_cover_url = VALUES(large_cover_url),
+                state = VALUES(state),
+                author = VALUES(author),
+                source = VALUES(source)
             "#,
         manga.manga_id,
-        manga.title.chars().take(84).collect::<String>(),
-        manga
-            .alt_title
-            .clone()
-            .map(|d| d.chars().take(84).collect::<String>()),
-        manga.url.chars().take(255).collect::<String>(),
-        manga.public_url.chars().take(255).collect::<String>(),
+        truncate(&manga.title, 84),
+        truncate_opt(&manga.alt_title, 84),
+        truncate(&manga.url, 255),
+        truncate(&manga.public_url, 255),
         manga.rating,
         manga.nsfw,
-        manga.cover_url.chars().take(255).collect::<String>(),
-        manga
-            .large_cover_url
-            .clone()
-            .map(|d| d.chars().take(84).collect::<String>()),
-        manga
-            .state
-            .clone()
-            .map(|d| d.chars().take(24).collect::<String>()),
-        manga
-            .author
-            .clone()
-            .map(|d| d.chars().take(32).collect::<String>()),
-        manga.source.chars().take(32).collect::<String>(),
-        manga.title.chars().take(84).collect::<String>(),
-        manga
-            .alt_title
-            .clone()
-            .map(|d| d.chars().take(84).collect::<String>()),
-        manga.url.chars().take(255).collect::<String>(),
-        manga.public_url.chars().take(255).collect::<String>(),
-        manga.rating,
-        manga.nsfw,
-        manga.cover_url.chars().take(255).collect::<String>(),
-        manga
-            .large_cover_url
-            .clone()
-            .map(|d| d.chars().take(84).collect::<String>()),
-        manga
-            .state
-            .clone()
-            .map(|d| d.chars().take(24).collect::<String>()),
-        manga
-            .author
-            .clone()
-            .map(|d| d.chars().take(32).collect::<String>()),
-        manga.source.chars().take(32).collect::<String>()
+        truncate(&manga.cover_url, 255),
+        truncate_opt(&manga.large_cover_url, 84),
+        truncate_opt(&manga.state, 24),
+        truncate_opt(&manga.author, 32),
+        truncate(&manga.source, 32)
     );
 
     let manga_result = transaction.execute(query).await?;
     if manga_result.rows_affected() > 0 {
-        upsert_manga_tags(transaction, &manga, &manga.tags).await?;
+        upsert_manga_tags(transaction, manga, &manga.tags).await?;
     }
 
     Ok(())

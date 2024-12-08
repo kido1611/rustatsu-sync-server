@@ -1,77 +1,16 @@
+use std::sync::Arc;
+
 use anyhow::Context;
 use axum::{extract::State, Extension, Json};
 use sqlx::MySqlPool;
 
 use crate::{
     authorization::{User, UserId},
-    router::manga::{get_manga_tags_by_manga_id, Manga, Tag},
+    error::ApiError,
+    model::{History, HistoryPackage, Manga, Tag},
+    router::manga::get_manga_tags_by_manga_id,
     startup::AppState,
-    util::MangaError,
 };
-
-#[derive(serde::Serialize, serde::Deserialize, PartialEq, Eq)]
-pub struct HistoryPackage {
-    pub history: Vec<History>,
-    pub timestamp: i64,
-}
-
-#[derive(serde::Serialize, serde::Deserialize)]
-pub struct History {
-    pub manga_id: i64,
-    pub manga: Manga,
-    pub created_at: i64,
-    pub updated_at: i64,
-    pub chapter_id: i64,
-    pub page: i16,
-    pub scroll: f64,
-    pub percent: f64,
-    pub chapters: i32,
-    pub deleted_at: i64,
-}
-
-impl PartialEq for History {
-    fn eq(&self, other: &Self) -> bool {
-        if self.manga_id != other.manga_id {
-            return false;
-        }
-
-        if self.created_at != other.created_at {
-            return false;
-        }
-
-        if self.updated_at != other.updated_at {
-            return false;
-        }
-
-        if self.chapter_id != other.chapter_id {
-            return false;
-        }
-
-        if self.page != other.page {
-            return false;
-        }
-
-        if self.scroll != other.scroll {
-            return false;
-        }
-
-        if self.percent != other.percent {
-            return false;
-        }
-
-        if self.chapters != other.chapters {
-            return false;
-        }
-
-        if self.deleted_at != other.deleted_at {
-            return false;
-        }
-
-        true
-    }
-}
-
-impl Eq for History {}
 
 #[tracing::instrument(
     name = "get history route",
@@ -79,19 +18,19 @@ impl Eq for History {}
     fields(user_id = user.0)
 )]
 pub async fn get_history_route(
-    State(app_state): State<AppState>,
+    State(app_state): State<Arc<AppState>>,
     Extension(user): Extension<UserId>,
-) -> Result<Json<HistoryPackage>, MangaError> {
+) -> Result<Json<HistoryPackage>, ApiError> {
     let user = user
         .to_user(&app_state.pool)
         .await
         .context("User is missing")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let user = match user {
         Some(user) => user,
         None => {
-            return Err(MangaError::InvalidCredential(anyhow::anyhow!(
+            return Err(ApiError::InvalidCredential(anyhow::anyhow!(
                 "User not found"
             )))
         }
@@ -110,16 +49,16 @@ pub async fn get_history_route(
 pub async fn get_user_history_package(
     pool: &MySqlPool,
     user: &User,
-) -> Result<HistoryPackage, MangaError> {
+) -> Result<HistoryPackage, ApiError> {
     let histories = get_user_history_manga(pool, user)
         .await
         .context("Error fetching history")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let user_history_time = get_user_last_history_sync_time(pool, user)
         .await
         .context("Error fething user history sync time")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let history_package = HistoryPackage {
         history: histories,

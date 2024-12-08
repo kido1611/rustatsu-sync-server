@@ -1,15 +1,18 @@
+use std::sync::Arc;
+
 use anyhow::Context;
 use axum::{extract::State, Extension, Json};
 use sqlx::{Executor, MySql, MySqlPool, Transaction};
 
 use crate::{
     authorization::{User, UserId},
+    error::ApiError,
+    model::{History, HistoryPackage},
     router::resources::favourites::upsert_manga,
     startup::AppState,
-    util::MangaError,
 };
 
-use super::index::{get_user_history_package, History, HistoryPackage};
+use super::index::get_user_history_package;
 
 #[tracing::instrument(
     name = "post history route",
@@ -17,20 +20,20 @@ use super::index::{get_user_history_package, History, HistoryPackage};
     fields(user_id=user.0)
 )]
 pub async fn post_history_route(
-    State(app_state): State<AppState>,
+    State(app_state): State<Arc<AppState>>,
     Extension(user): Extension<UserId>,
     axum::extract::Json(history_package): axum::extract::Json<HistoryPackage>,
-) -> Result<Json<HistoryPackage>, MangaError> {
+) -> Result<Json<HistoryPackage>, ApiError> {
     let user = user
         .to_user(&app_state.pool)
         .await
         .context("User is missing")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let user = match user {
         Some(user) => user,
         None => {
-            return Err(MangaError::InvalidCredential(anyhow::anyhow!(
+            return Err(ApiError::InvalidCredential(anyhow::anyhow!(
                 "User not found"
             )))
         }
@@ -41,28 +44,28 @@ pub async fn post_history_route(
         .begin()
         .await
         .context("Failed when creating database transaction")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     upsert_user_history_manga(&mut transaction, &user, &history_package.history)
         .await
         .context("Failed when upserting history")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     transaction
         .commit()
         .await
         .context("Failed when committing transaction")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     let latest_history_package = get_user_history_package(&app_state.pool, &user).await?;
 
     update_user_history_synchronize_time(&app_state.pool, &user)
         .await
         .context("Failed when updating user history timestamp")
-        .map_err(MangaError::UnexpectedError)?;
+        .map_err(ApiError::UnexpectedError)?;
 
     if latest_history_package == history_package {
-        return Err(MangaError::ContentEqual(anyhow::anyhow!("Content Equal")));
+        return Err(ApiError::ContentEqual(anyhow::anyhow!("Content Equal")));
     }
 
     Ok(Json(latest_history_package))

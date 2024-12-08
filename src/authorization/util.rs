@@ -4,7 +4,7 @@ use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, TokenData, 
 use secrecy::ExposeSecret;
 use sqlx::MySqlPool;
 
-use crate::{configuration::Jwt, util::AuthError};
+use crate::{configuration::Jwt, error::ApiError};
 
 #[derive(Clone, Debug)]
 pub struct UserId(pub i64);
@@ -42,7 +42,7 @@ pub struct Claim {
 }
 
 #[tracing::instrument(name = "create jwt token", skip(user, jwt), fields(user.id))]
-pub fn create_token(user: User, jwt: Jwt) -> Result<String, AuthError> {
+pub fn create_token(user: User, jwt: Jwt) -> Result<String, ApiError> {
     let now = Utc::now();
     let expire: chrono::TimeDelta = Duration::hours(24);
     let exp: usize = (now + expire).timestamp() as usize;
@@ -62,13 +62,13 @@ pub fn create_token(user: User, jwt: Jwt) -> Result<String, AuthError> {
         &EncodingKey::from_secret(jwt.secret.expose_secret().as_ref()),
     )
     .context("Failed wncoding token")
-    .map_err(AuthError::UnexpectedError)?;
+    .map_err(ApiError::UnexpectedError)?;
 
     Ok(result)
 }
 
 #[tracing::instrument(name = "decode jwt token", skip(jwt_token, jwt))]
-pub fn decode_jwt(jwt_token: String, jwt: Jwt) -> Result<TokenData<Claim>, AuthError> {
+pub fn decode_jwt(jwt_token: String, jwt: Jwt) -> Result<TokenData<Claim>, ApiError> {
     let mut validation = Validation::default();
     validation.set_issuer(&[jwt.iss.expose_secret()]);
     validation.set_audience(&[jwt.aud.expose_secret()]);
@@ -78,7 +78,7 @@ pub fn decode_jwt(jwt_token: String, jwt: Jwt) -> Result<TokenData<Claim>, AuthE
         &DecodingKey::from_secret(jwt.secret.expose_secret().as_ref()),
         &validation,
     )
-    .map_err(|e| AuthError::UnexpectedError(e.into()));
+    .map_err(|e| ApiError::InvalidAuthToken(e.into()));
 
     result
 }
