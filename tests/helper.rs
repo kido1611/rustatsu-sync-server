@@ -1,4 +1,4 @@
-use rustatsu_sync::{configuration::read_config, startup::Application};
+use rustatsu_sync::{configuration::Config, startup::Application};
 
 pub struct TestApp {
     pub address: String,
@@ -7,7 +7,7 @@ pub struct TestApp {
 
 pub async fn spawn_app() -> TestApp {
     let config = {
-        let mut c = read_config().expect("Failed to read configuration");
+        let mut c = Config::new().expect("Failed to read configuration");
         c.application.port = 0;
         c
     };
