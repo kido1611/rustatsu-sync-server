@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use anyhow::Context;
 use axum::{
     body::Body,
@@ -79,10 +81,12 @@ pub fn get_connection_pool(database: &Database) -> MySqlPool {
 }
 
 fn create_router(db_pool: MySqlPool, config: Config) -> Router {
-    let state = AppState {
+    let state = Arc::new(AppState {
         pool: db_pool,
         config,
-    };
+    });
+
+    // TODO: wrap state using Arc before passed into with_state
 
     Router::new()
         .route("/", axum::routing::get(index))
@@ -126,7 +130,7 @@ fn create_router(db_pool: MySqlPool, config: Config) -> Router {
                     jwt_authorization_middleware,
                 )),
         )
-        .with_state(state)
+        .with_state(state.clone())
         .layer(CompressionLayer::new())
         .layer(
             TraceLayer::new_for_http()
