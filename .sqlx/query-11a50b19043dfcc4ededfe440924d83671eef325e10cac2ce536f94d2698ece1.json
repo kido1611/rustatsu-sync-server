@@ -1,0 +1,12 @@
+{
+  "db_name": "MySQL",
+  "query": "\n        UPDATE users\n        SET history_sync_timestamp = ?\n        WHERE id = ?\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "11a50b19043dfcc4ededfe440924d83671eef325e10cac2ce536f94d2698ece1"
+}

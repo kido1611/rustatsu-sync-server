@@ -1,0 +1,12 @@
+{
+  "db_name": "MySQL",
+  "query": "\n                INSERT IGNORE INTO manga_tags\n                    (manga_id, tag_id)\n                VALUES\n                    (?, ?)\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 2
+    },
+    "nullable": []
+  },
+  "hash": "dccf676f0225ff2be2208f7c76e7f18b0dda44f3f23e84ce7db1b545d550676c"
+}

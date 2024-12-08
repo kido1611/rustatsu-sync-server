@@ -1,0 +1,25 @@
+{
+  "db_name": "MySQL",
+  "query": "\n        SELECT history_sync_timestamp\n        FROM users\n        WHERE id = ?\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "history_sync_timestamp",
+        "type_info": {
+          "type": "LongLong",
+          "flags": "",
+          "char_set": 63,
+          "max_size": 20
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "3b624315aca3fa0d5dfd03a2d5732ef655f1cfeaa217625479e5ee376e44fce4"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "MySQL",
+  "query": "\n                INSERT INTO history\n                    (manga_id, created_at, updated_at, chapter_id, page, scroll, percent, chapters, deleted_at, user_id)\n                VALUES\n                    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)\n                ON DUPLICATE KEY UPDATE\n                    created_at = ?,\n                    updated_at = ?,\n                    chapter_id = ?,\n                    page = ?,\n                    scroll = ?,\n                    percent = ?,\n                    chapters = ?,\n                    deleted_at = ?\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 18
+    },
+    "nullable": []
+  },
+  "hash": "041ba51856bb7a01247a602abe8f7a04eeb9946249cad1263a19ea7e5076f012"
+}

@@ -1,0 +1,12 @@
+{
+  "db_name": "MySQL",
+  "query": "\n            INSERT INTO favourites\n                (manga_id, category_id, sort_key, created_at, deleted_at, user_id)\n            VALUES\n                (?, ?, ?, ?, ?, ?)\n            ON DUPLICATE KEY\n            UPDATE\n                sort_key = ?,\n                created_at = ?,\n                deleted_at = ?\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 9
+    },
+    "nullable": []
+  },
+  "hash": "b928937885cc637084645a19f45ace0489b2a1d6669784c3968deb57025d93e7"
+}
