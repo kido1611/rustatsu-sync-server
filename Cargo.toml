@@ -1,7 +1,7 @@
 [package]
 name = "rustatsu-sync"
 version = "0.1.3"
-edition = "2021"
+edition = "2024"
 authors = ["Muhammad Abdusy Syukur <hi@abdusy.dev>"]
 
 [lib]
