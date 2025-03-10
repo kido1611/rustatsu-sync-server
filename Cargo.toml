@@ -25,10 +25,10 @@ serde = { version = "1.0.204", features = ["derive"] }
 serde-aux = "4.5.0"
 serde_json = "1.0.120"
 sqlx = { version = "0.8.2", features = [
-  "runtime-tokio-rustls",
+  "runtime-tokio",
+  "tls-rustls",
   "macros",
-  "mysql",
-  "uuid",
+  "postgres",
   "chrono",
   "migrate",
 ] }
