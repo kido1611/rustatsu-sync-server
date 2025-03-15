@@ -1,2 +1,6 @@
 database:
-  database_name: kotatsu
+  username: ahmad
+  password: ahmad
+  database_name: rustatsu2
+  host: 127.0.0.1
+  port: 5432
