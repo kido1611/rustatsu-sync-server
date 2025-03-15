@@ -2,16 +2,11 @@ use std::sync::Arc;
 
 use axum::{
     Router,
-    body::Body,
-    extract::{DefaultBodyLimit, Request},
+    extract::DefaultBodyLimit,
     middleware,
     routing::{get, post},
 };
-use tower_http::{
-    compression::CompressionLayer,
-    trace::{self, DefaultOnFailure, TraceLayer},
-};
-use tracing::Level;
+use tower_http::compression::CompressionLayer;
 
 use crate::{middlewares::jwt_auth_middleware, state::AppState};
 
