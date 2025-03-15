@@ -1,0 +1,76 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n            manga_id, created_at, updated_at,\n            chapter_id, page, scroll,\n            percent, chapters, deleted_at,\n            user_id\n        FROM\n            history\n        WHERE \n            user_id = $1\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "manga_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "updated_at",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "chapter_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "page",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 5,
+        "name": "scroll",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 6,
+        "name": "percent",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 7,
+        "name": "chapters",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "deleted_at",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 9,
+        "name": "user_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "39c8ba62d04103f2d1b20dca9f7197290552c20323a524577474bfe7ec2a1695"
+}

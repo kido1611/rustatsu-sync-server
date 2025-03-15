@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n            manga_id\n        FROM\n            favourites\n        WHERE\n            user_id = $1\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "manga_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "52d045ab77dba54cdcba6e2dc349ad3ba7f7b3d387c5500a01cacbf7763b1e7d"
+}

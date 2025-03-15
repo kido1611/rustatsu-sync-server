@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE users\n        SET\n            favourites_sync_timestamp = $1\n        WHERE \n            id = $2;\n    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "c03fe31ecff9d45051e4a6468c671eebb667259b79b4c756c77d19645b70d3de"
+}

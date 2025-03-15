@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            tags.id, tags.title, tags.\"key\", tags.source\n        FROM\n            manga_tags\n        INNER JOIN\n            tags ON manga_tags.tag_id = tags.id\n        WHERE \n            manga_tags.manga_id = $1; \n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "key",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "source",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "a60f4e4f4e3b190ff7d5907305233ab0febd313ad28a0102e92f583367079872"
+}

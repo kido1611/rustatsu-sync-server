@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        UPDATE users\n        SET\n            history_sync_timestamp = $1\n        WHERE \n            id = $2;\n    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "9375aaa42606c8f0bcea585d92562e2ac785f2e69a471b5b1b1364feebc35759"
+}

@@ -1,0 +1,88 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT\n            id, title, alt_title,\n            url, public_url, rating,\n            is_nsfw, cover_url, large_cover_url,\n            state, author, source\n        FROM\n            mangas\n        WHERE\n            id = $1;\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "alt_title",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "url",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "public_url",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "rating",
+        "type_info": "Float4"
+      },
+      {
+        "ordinal": 6,
+        "name": "is_nsfw",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "cover_url",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 8,
+        "name": "large_cover_url",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 9,
+        "name": "state",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 10,
+        "name": "author",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 11,
+        "name": "source",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      false
+    ]
+  },
+  "hash": "47f9f17f7427a7cef8a86b7d66b7a356c09aabab7280f3343e4671a10cb83229"
+}

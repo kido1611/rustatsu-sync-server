@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT \n            manga_id, category_id, user_id,\n            sort_key, created_at, deleted_at\n        FROM\n            favourites\n        WHERE \n            user_id = $1\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "manga_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "category_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "sort_key",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "created_at",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "deleted_at",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "76070cc323773b69ccd788a7d01b30618d31c8618ab337ba7c79846d8e988a54"
+}
