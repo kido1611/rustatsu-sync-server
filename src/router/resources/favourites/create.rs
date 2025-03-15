@@ -1,13 +1,13 @@
 use std::{fs::OpenOptions, sync::Arc};
 
 use anyhow::Context;
-use axum::{extract::State, Extension, Json};
+use axum::{Extension, Json, extract::State};
 use sqlx::{Executor, MySql, MySqlPool, Transaction};
 
 use super::index::get_user_favourites_package;
 use crate::{
     authorization::{User, UserId},
-    error::ApiError,
+    error::Error,
     model::{Category, Favourite, FavouritePackage, Manga, Tag},
     startup::AppState,
 };
@@ -21,20 +21,16 @@ pub async fn post_favourites_route(
     State(app_state): State<Arc<AppState>>,
     Extension(user): Extension<UserId>,
     axum::extract::Json(favourites_package): axum::extract::Json<FavouritePackage>,
-) -> Result<Json<FavouritePackage>, ApiError> {
+) -> Result<Json<FavouritePackage>, Error> {
     let user = user
         .to_user(&app_state.pool)
         .await
         .context("User is missing")
-        .map_err(ApiError::UnexpectedError)?;
+        .map_err(Error::UnexpectedError)?;
 
     let user = match user {
         Some(user) => user,
-        None => {
-            return Err(ApiError::InvalidCredential(anyhow::anyhow!(
-                "User not found"
-            )))
-        }
+        None => return Err(Error::InvalidCredential(anyhow::anyhow!("User not found"))),
     };
 
     println!("favourite data: {}", &favourites_package.favourites.len());
@@ -46,7 +42,7 @@ pub async fn post_favourites_route(
         .begin()
         .await
         .context("Failed when creating database transaction")
-        .map_err(ApiError::UnexpectedError)?;
+        .map_err(Error::UnexpectedError)?;
 
     upsert_user_categories(
         &mut transaction,
@@ -55,28 +51,28 @@ pub async fn post_favourites_route(
     )
     .await
     .context("Failed when updating categories")
-    .map_err(ApiError::UnexpectedError)?;
+    .map_err(Error::UnexpectedError)?;
 
     upsert_user_favourite_manga(&mut transaction, &user, &favourites_package.favourites)
         .await
         .context("Failed when updating favourites")
-        .map_err(ApiError::UnexpectedError)?;
+        .map_err(Error::UnexpectedError)?;
 
     transaction
         .commit()
         .await
         .context("Failed when commiting transaction")
-        .map_err(ApiError::UnexpectedError)?;
+        .map_err(Error::UnexpectedError)?;
 
     let latest_favourites_package = get_user_favourites_package(&app_state.pool, &user).await?;
 
     update_user_favourite_synchonize_time(&app_state.pool, &user)
         .await
         .context("Failed when updating user favourite timestamp")
-        .map_err(ApiError::UnexpectedError)?;
+        .map_err(Error::UnexpectedError)?;
 
     if latest_favourites_package == favourites_package {
-        return Err(ApiError::ContentEqual(anyhow::anyhow!("Content Equal")));
+        return Err(Error::ContentEqual(anyhow::anyhow!("Content Equal")));
     }
 
     Ok(Json(latest_favourites_package))

@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
 use anyhow::Context;
-use axum::{extract::State, Extension, Json};
+use axum::{Extension, Json, extract::State};
 use sqlx::MySqlPool;
 
 use crate::{
     authorization::{User, UserId},
-    error::ApiError,
+    error::Error,
     model::{Category, Favourite, FavouritePackage, Manga, Tag},
     router::manga::get_manga_tags_by_manga_id,
     startup::AppState,
@@ -20,20 +20,16 @@ use crate::{
 pub async fn get_favourites_route(
     State(app_state): State<Arc<AppState>>,
     Extension(user): Extension<UserId>,
-) -> Result<Json<FavouritePackage>, ApiError> {
+) -> Result<Json<FavouritePackage>, Error> {
     let user = user
         .to_user(&app_state.pool)
         .await
         .context("User is missing")
-        .map_err(ApiError::UnexpectedError)?;
+        .map_err(Error::UnexpectedError)?;
 
     let user = match user {
         Some(user) => user,
-        None => {
-            return Err(ApiError::InvalidCredential(anyhow::anyhow!(
-                "User not found"
-            )))
-        }
+        None => return Err(Error::InvalidCredential(anyhow::anyhow!("User not found"))),
     };
 
     let favourites_package = get_user_favourites_package(&app_state.pool, &user).await?;
@@ -49,20 +45,20 @@ pub async fn get_favourites_route(
 pub async fn get_user_favourites_package(
     pool: &MySqlPool,
     user: &User,
-) -> Result<FavouritePackage, ApiError> {
+) -> Result<FavouritePackage, Error> {
     let categories = get_user_categories(pool, user)
         .await
         .context("Error fetching categories")
-        .map_err(ApiError::UnexpectedError)?;
+        .map_err(Error::UnexpectedError)?;
 
     let favourites = get_user_favourite_manga(pool, user)
         .await
-        .map_err(ApiError::UnexpectedError)?;
+        .map_err(Error::UnexpectedError)?;
 
     let favourite_time = get_user_last_favourite_sync_time(pool, user)
         .await
         .context("Failed fetching user last favourite sync time")
-        .map_err(ApiError::UnexpectedError)?;
+        .map_err(Error::UnexpectedError)?;
 
     let favourite_package = FavouritePackage {
         favourite_categories: categories,

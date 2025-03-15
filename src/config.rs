@@ -1,10 +1,10 @@
 use figment::{
-    providers::{Env, Format, Yaml},
     Figment,
+    providers::{Env, Format, Yaml},
 };
 use secrecy::{ExposeSecret, SecretString};
 use serde_aux::field_attributes::deserialize_number_from_string;
-use sqlx::mysql::MySqlConnectOptions;
+use sqlx::postgres::PgConnectOptions;
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Config {
@@ -20,6 +20,12 @@ pub struct Application {
     pub host: String,
     pub allow_registration: bool,
     pub run_migration: bool,
+}
+
+impl Application {
+    pub fn get_address(&self) -> String {
+        format!("{}:{}", self.host, self.port)
+    }
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -40,14 +46,14 @@ pub struct Database {
 }
 
 impl Database {
-    pub fn without_db(&self) -> MySqlConnectOptions {
-        MySqlConnectOptions::new()
+    pub fn without_db(&self) -> PgConnectOptions {
+        PgConnectOptions::new()
             .host(&self.host)
             .port(self.port)
             .username(&self.username)
             .password(self.password.expose_secret())
     }
-    pub fn with_db(&self) -> MySqlConnectOptions {
+    pub fn with_db(&self) -> PgConnectOptions {
         self.without_db().database(&self.database_name)
     }
 }

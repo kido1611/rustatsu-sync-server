@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
-use axum::extract::{Query, State};
 use axum::Json;
+use axum::extract::{Query, State};
 use serde_aux::field_attributes::deserialize_option_number_from_string;
 use sqlx::MySqlPool;
 
-use crate::error::ApiError;
-use crate::model::{transform_manga_entity_into_manga, Manga, MangaEntity, TagEntity};
+use crate::error::Error;
+use crate::model::{Manga, MangaEntity, TagEntity, transform_manga_entity_into_manga};
 use crate::startup::AppState;
 
 #[derive(serde::Deserialize, serde::Serialize, Debug)]
@@ -21,14 +21,14 @@ pub struct Parameters {
 pub async fn get_manga_route(
     State(app_state): State<Arc<AppState>>,
     Query(parameters): Query<Parameters>,
-) -> Result<Json<Vec<Manga>>, ApiError> {
+) -> Result<Json<Vec<Manga>>, Error> {
     let manga = get_manga_list(&app_state.pool, parameters)
         .await
-        .map_err(|e| ApiError::UnexpectedError(e.into()))?;
+        .map_err(|e| Error::UnexpectedError(e.into()))?;
     let manga_id: Vec<i64> = manga.iter().map(|m| m.id).collect();
     let tags = get_manga_tags_by_manga_id(&app_state.pool, manga_id)
         .await
-        .map_err(|e| ApiError::UnexpectedError(e.into()))?;
+        .map_err(|e| Error::UnexpectedError(e.into()))?;
 
     Ok(Json(transform_manga_entity_into_manga(manga, &tags)))
 }

@@ -1,14 +1,14 @@
 use std::sync::Arc;
 
 use axum::{
-    extract::{Path, State},
     Json,
+    extract::{Path, State},
 };
 use sqlx::MySqlPool;
 
 use super::index::get_manga_tags_by_manga_id;
 use crate::{
-    error::ApiError,
+    error::Error,
     model::{Manga, MangaEntity},
     startup::AppState,
 };
@@ -22,21 +22,21 @@ pub struct UrlPath {
 pub async fn get_manga_id_route(
     State(app_state): State<Arc<AppState>>,
     Path(path): Path<UrlPath>,
-) -> Result<Json<Manga>, ApiError> {
+) -> Result<Json<Manga>, Error> {
     let manga = get_manga(&app_state.pool, path.id)
         .await
-        .map_err(|e| ApiError::UnexpectedError(e.into()))?;
+        .map_err(|e| Error::UnexpectedError(e.into()))?;
 
     let manga = match manga {
         Some(m) => m,
-        None => return Err(ApiError::Missing(anyhow::anyhow!("Manga is missing"))),
+        None => return Err(Error::Missing(anyhow::anyhow!("Manga is missing"))),
     };
 
     let manga_id = Vec::from([manga.id]);
 
     let tags = get_manga_tags_by_manga_id(&app_state.pool, manga_id)
         .await
-        .map_err(|e| ApiError::UnexpectedError(e.into()))?;
+        .map_err(|e| Error::UnexpectedError(e.into()))?;
 
     Ok(Json(Manga::from_entity(manga, &tags)))
 }

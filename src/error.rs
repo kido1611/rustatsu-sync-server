@@ -1,73 +1,90 @@
-use axum::http::StatusCode;
-use axum_thiserror::ErrorStatus;
+use axum::{http::StatusCode, response::IntoResponse};
+use validator::ValidationErrors;
 
-#[derive(thiserror::Error, ErrorStatus)]
-pub enum ApiError {
-    #[error("Manga is missing")]
-    #[status(StatusCode::NOT_FOUND)]
-    Missing(#[source] anyhow::Error),
+use crate::{auth::error::AuthError, db::error::DatabaseError};
 
-    #[error("Something went wrong")]
-    #[status(StatusCode::INTERNAL_SERVER_ERROR)]
-    UnexpectedError(#[from] anyhow::Error),
+#[derive(thiserror::Error, Debug)]
+pub enum Error {
+    #[error("Database error")]
+    Database(DatabaseError),
 
-    #[error("Invalid Credential")]
-    #[status(StatusCode::UNAUTHORIZED)]
-    InvalidCredential(#[source] anyhow::Error),
+    #[error("Auth error")]
+    Auth(AuthError),
 
-    #[error("Invalid Credential")]
-    #[status(StatusCode::UNAUTHORIZED)]
-    InvalidAuthToken(#[source] anyhow::Error),
+    #[error("Validation error")]
+    Validation(ValidationErrors),
 
-    #[error("Content Equal")]
-    #[status(StatusCode::NO_CONTENT)]
-    ContentEqual(#[source] anyhow::Error),
-
-    #[error("User is missing")]
-    #[status(StatusCode::BAD_REQUEST)]
-    UserMissing(#[source] anyhow::Error),
-
-    #[error("Incorrect email format")]
-    #[status(StatusCode::BAD_REQUEST)]
-    ValidationEmailInvalid(#[source] anyhow::Error),
-
-    #[error("Email length must be between 3 and 128 characters")]
-    #[status(StatusCode::BAD_REQUEST)]
-    ValidationEmailLength(#[source] anyhow::Error),
-
-    #[error("Password length must be between 8 and 128 characters")]
-    #[status(StatusCode::BAD_REQUEST)]
-    ValidationPasswordLength(#[source] anyhow::Error),
-
-    #[error("Invalid credential")]
-    #[status(StatusCode::BAD_REQUEST)]
-    InvalidPassword(#[source] anyhow::Error),
-
-    #[error("Auth header is missing")]
-    #[status(StatusCode::UNAUTHORIZED)]
-    EmptyAuthHeader(#[source] anyhow::Error),
-
-    #[error("Auth token is missing")]
-    #[status(StatusCode::UNAUTHORIZED)]
-    EmptyAuthToken(#[source] anyhow::Error),
+    #[error("Other error: {0}")]
+    Other(anyhow::Error),
 }
 
-impl std::fmt::Debug for ApiError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        error_chain_fmt(self, f)
+impl From<DatabaseError> for Error {
+    fn from(value: DatabaseError) -> Self {
+        Self::Database(value)
     }
 }
 
-pub fn error_chain_fmt(
-    e: &impl std::error::Error,
-    f: &mut std::fmt::Formatter<'_>,
-) -> std::fmt::Result {
-    writeln!(f, "{}\n", e)?;
-    let mut current = e.source();
-    while let Some(cause) = current {
-        writeln!(f, "Caused by:\n\t{}", cause)?;
-        current = cause.source();
-    }
+impl IntoResponse for Error {
+    fn into_response(self) -> axum::response::Response {
+        match self {
+            Error::Database(database_error) => match database_error {
+                DatabaseError::DatabaseError(error) => {
+                    eprintln!("{}", error);
 
-    Ok(())
+                    tracing::error!(err.msg = %error, err.details=?error, "Database Error");
+
+                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                }
+                DatabaseError::NotFound => StatusCode::NOT_FOUND.into_response(),
+            },
+            Error::Auth(auth_error) => match auth_error {
+                AuthError::TokenMissing(error) => {
+                    (StatusCode::UNAUTHORIZED, error.to_string()).into_response()
+                }
+                AuthError::JwtError(error) => {
+                    tracing::error!(err.msg = %error, err.details=?error, "JWT Error");
+
+                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                }
+                AuthError::Unauthenticated => StatusCode::UNAUTHORIZED.into_response(),
+                AuthError::PasswordError(error) => {
+                    tracing::error!(err.msg = %error, err.details=?error, "Password Hash Error");
+
+                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                }
+                AuthError::UserNotFound => StatusCode::UNAUTHORIZED.into_response(),
+                AuthError::IncorrectCredential => StatusCode::UNAUTHORIZED.into_response(),
+            },
+            Error::Other(error) => {
+                tracing::error!(err.msg = %error, err.details=?error, "Other Error");
+
+                StatusCode::INTERNAL_SERVER_ERROR.into_response()
+            }
+            Error::Validation(validation_error) => {
+                tracing::error!(err.msg = %validation_error, err.details=?validation_error, "Validation Error");
+
+                (StatusCode::BAD_REQUEST, validation_error.to_string()).into_response()
+            }
+        }
+    }
 }
+
+// impl std::fmt::Debug for Error {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         error_chain_fmt(self, f)
+//     }
+// }
+//
+// pub fn error_chain_fmt(
+//     e: &impl std::error::Error,
+//     f: &mut std::fmt::Formatter<'_>,
+// ) -> std::fmt::Result {
+//     writeln!(f, "{}\n", e)?;
+//     let mut current = e.source();
+//     while let Some(cause) = current {
+//         writeln!(f, "Caused by:\n\t{}", cause)?;
+//         current = cause.source();
+//     }
+//
+//     Ok(())
+// }
