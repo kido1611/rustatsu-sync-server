@@ -9,7 +9,7 @@ CREATE TABLE history(
     percent     real        NOT NULL,
     chapters    int         NOT NULL,
     deleted_at  bigint      NOT NULL,
-    user_id     integer     NOT NULL,
+    user_id     bigint      NOT NULL,
 
     PRIMARY KEY (user_id, manga_id),
 

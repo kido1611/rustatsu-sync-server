@@ -2,7 +2,7 @@
 CREATE TABLE favourites (
     manga_id        bigint      NOT NULL,
     category_id     bigint      NOT NULL,
-    user_id         integer     NOT NULL,
+    user_id         bigint      NOT NULL,
     sort_key        int         NOT NULL,
     created_at      bigint      NOT NULL,
     deleted_at      bigint      NOT NULL,
