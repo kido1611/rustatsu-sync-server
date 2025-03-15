@@ -2,10 +2,16 @@ use std::sync::Arc;
 
 use axum::{
     Router,
-    extract::DefaultBodyLimit,
+    body::Body,
+    extract::{DefaultBodyLimit, Request},
     middleware,
     routing::{get, post},
 };
+use tower_http::{
+    compression::CompressionLayer,
+    trace::{self, DefaultOnFailure, TraceLayer},
+};
+use tracing::Level;
 
 use crate::{middlewares::jwt_auth_middleware, state::AppState};
 
@@ -50,4 +56,27 @@ pub fn init_router(app_state: AppState) -> Router {
         .nest("/resources/favourites", resources_favourites_route)
         .nest("/resources/history", resources_history_route)
         .with_state(state)
+        .layer(CompressionLayer::new())
+    // .layer(
+    //     TraceLayer::new_for_http()
+    //         .make_span_with(
+    //             |request: &Request<Body>| {
+    //                 let request_id = uuid::Uuid::new_v4();
+    //                 tracing::span!(
+    //                     Level::INFO,
+    //                     "request",
+    //                     method = tracing::field::display(request.method()),
+    //                     uri = tracing::field::display(request.uri()),
+    //                     version = tracing::field::debug(request.version()),
+    //                     request_id = tracing::field::display(request_id),
+    //                     headers = tracing::field::debug(request.headers())
+    //                 )
+    //             }, // trace::DefaultMakeSpan::new()
+    //                //     .level(Level::INFO)
+    //                //     .include_headers(true),
+    //         )
+    //         .on_request(trace::DefaultOnRequest::new().level(Level::INFO))
+    //         .on_response(trace::DefaultOnResponse::new().level(Level::INFO))
+    //         .on_failure(DefaultOnFailure::new().level(Level::ERROR)),
+    // )
 }
