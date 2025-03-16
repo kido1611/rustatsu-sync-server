@@ -18,6 +18,11 @@ impl AppState {
             .max_connections(30)
             .connect_lazy_with(config.database.with_db());
 
+        if config.application.run_migration {
+            println!("Running migrations");
+            sqlx::migrate!("./migrations").run(&pool).await?;
+        }
+
         Ok(AppState { pool, config })
     }
 }
