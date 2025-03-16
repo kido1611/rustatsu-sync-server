@@ -88,7 +88,12 @@ pub async fn get_manga_with_pagination(
             url: manga.url,
             public_url: manga.public_url,
             rating: manga.rating,
-            nsfw: if manga.is_nsfw { 1 } else { 0 },
+            nsfw: if manga.is_nsfw { Some(1) } else { Some(0) },
+            content_rating: if manga.is_nsfw {
+                Some("ADULT".to_string())
+            } else {
+                None
+            },
             cover_url: manga.cover_url,
             large_cover_url: manga.large_cover_url,
             state: manga.state,
@@ -159,7 +164,12 @@ pub async fn get_manga_by_id(pool: &PgPool, manga_id: i64) -> Result<Manga, Erro
         url: manga_raw.url,
         public_url: manga_raw.public_url,
         rating: manga_raw.rating,
-        nsfw: if manga_raw.is_nsfw { 1 } else { 0 },
+        nsfw: if manga_raw.is_nsfw { Some(1) } else { Some(0) },
+        content_rating: if manga_raw.is_nsfw {
+            Some("ADULT".to_string())
+        } else {
+            None
+        },
         cover_url: manga_raw.cover_url,
         large_cover_url: manga_raw.large_cover_url,
         state: manga_raw.state,

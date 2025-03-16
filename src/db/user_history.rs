@@ -112,7 +112,12 @@ pub async fn get_user_history(pool: &PgPool, user_id: i64) -> Result<UserHistory
             url: row.get("url"),
             public_url: row.get("public_url"),
             rating: row.get("rating"),
-            nsfw: if row.get("is_nsfw") { 1 } else { 0 },
+            nsfw: if row.get("is_nsfw") { Some(1) } else { Some(0) },
+            content_rating: if row.get("is_nsfw") {
+                Some("ADULT".to_string())
+            } else {
+                None
+            },
             cover_url: row.get("cover_url"),
             large_cover_url: row.get("large_cover_url"),
             state: row.get("state"),
@@ -241,6 +246,13 @@ pub async fn update_user_history(
     }
 
     for manga in mangas_map.values() {
+        let is_nsfw = match manga.nsfw {
+            Some(_) => true,
+            None => match &manga.content_rating {
+                Some(val) => val.to_lowercase() == "adult",
+                None => false,
+            },
+        };
         sqlx::query!(
             r#"
             INSERT INTO mangas
@@ -267,7 +279,7 @@ pub async fn update_user_history(
             manga.url,
             manga.public_url,
             manga.rating,
-            manga.nsfw != 0,
+            is_nsfw,
             manga.cover_url,
             manga.large_cover_url,
             manga.state,
