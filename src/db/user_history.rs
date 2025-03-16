@@ -349,7 +349,7 @@ pub async fn update_user_history(
         WHERE 
             id = $2;
     "#,
-        user_history.timestamp,
+        chrono::Utc::now().timestamp(),
         user_id
     )
     .execute(&mut *tx)
