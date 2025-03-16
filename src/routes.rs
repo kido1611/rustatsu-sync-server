@@ -48,8 +48,8 @@ pub fn init_router(app_state: AppState) -> Router {
 
     app.nest("/manga", manga_route)
         .nest("/me", me_route)
-        .nest("/resources/favourites", resources_favourites_route)
-        .nest("/resources/history", resources_history_route)
+        .nest("/resource/favourites", resources_favourites_route)
+        .nest("/resource/history", resources_history_route)
         .with_state(state)
         .layer(CompressionLayer::new())
     // .layer(
