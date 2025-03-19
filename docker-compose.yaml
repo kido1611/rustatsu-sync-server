@@ -1,21 +1,28 @@
 services:
   rustatsu:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      network: host
-    image: rustatsu-sync
+    image: abduzzy/rustatsu-sync:1.0.0
     ports:
-      - "18000:8000"
+      - "8000:8000"
     environment:
-      - DATABASE__HOST=mariadb
-      - DATABASE__PORT=3306
-      - RUST_LOG=error
-    networks:
-      - server
+      - DATABASE__HOST=postgresql
+      - DATABASE__PORT=5432
+      - DATABASE__USERNAME=postgres
+      - DATABASE__PASSWORD=password
+      - DATABASE__DATABASE_NAME=rustatsu
+      - RUST_LOG=warn
     restart: always
-
-networks:
-  server:
-    name: server
-    external: true
+    depends_on:
+      - postgresql
+  postgresql:
+    image: postgres:17.3-alpine3.20
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: rustatsu
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    volumes:
+      - "pgdata:/var/lib/postgresql/data"
+volumes:
+  pgdata:
