@@ -384,5 +384,7 @@ pub async fn update_user_history(
     drop(mangas_map);
     drop(manga_tags_set);
 
+    drop(user_history);
+
     Ok(())
 }
