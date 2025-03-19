@@ -429,7 +429,8 @@ pub async fn update_user_favourites(
         WHERE 
             id = $2;
     "#,
-        chrono::Utc::now().timestamp(),
+        user_favourite.timestamp,
+        // chrono::Utc::now().timestamp_millis(),
         user_id
     )
     .execute(&mut *tx)
