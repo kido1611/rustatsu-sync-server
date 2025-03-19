@@ -276,7 +276,16 @@ pub async fn update_user_favourites(
 
     for manga in mangas_map.values() {
         let is_nsfw = match manga.nsfw {
-            Some(_) => true,
+            Some(val) => {
+                if val > 0 {
+                    true
+                } else {
+                    match &manga.content_rating {
+                        Some(val) => val.to_lowercase() == "adult",
+                        None => false,
+                    }
+                }
+            }
             None => match &manga.content_rating {
                 Some(val) => val.to_lowercase() == "adult",
                 None => false,
