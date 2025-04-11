@@ -43,35 +43,6 @@ RUN apk add --no-cache musl-dev=1.2.5-r9 && \
 RUN cargo build --release --target="$(cat /tmp/target)" && \
   cp "/app/target/$(cat /tmp/target)/release/rustatsu-sync" "/app/rustatsu-sync"
 
-# FROM --platform=$BUILDPLATFORM rust:1.86.0-alpine AS builder
-#
-# ARG TARGETPLATFORM
-# ARG BUILDPLATFORM
-#
-# WORKDIR /app
-#
-# COPY src ./src
-# COPY .sqlx ./.sqlx
-# COPY Cargo.toml ./Cargo.toml
-# COPY Cargo.lock ./Cargo.lock
-# COPY configuration ./configuration
-# COPY migrations ./migrations
-#
-# RUN case "$TARGETPLATFORM" in \
-#   "linux/amd64") echo "x86_64-unknown-linux-musl" > /tmp/target ;; \
-#   "linux/arm64") echo "aarch64-unknown-linux-musl" > /tmp/target && \
-#   apk add --no-cache gcc-aarch64-none-elf=14.2.0-r0 && \
-#   # Create symlinks for cross-compiler
-#   ln -s /usr/bin/aarch64-none-elf-gcc /usr/local/bin/aarch64-linux-musl-gcc && \
-#   ln -s /usr/bin/aarch64-none-elf-ar /usr/local/bin/aarch64-linux-musl-ar ;; \
-#   *) echo "Unsupported platform: $TARGETPLATFORM" && exit 1 ;; \
-#   esac
-#
-# RUN apk add --no-cache musl-dev=1.2.5-r9 && \
-#   rustup target add "$(cat /tmp/target)" && \
-#   cargo build --release --target="$(cat /tmp/target)" && \
-#   cp "/app/target/$(cat /tmp/target)/release/rustatsu-sync" "/app/rustatsu-sync"
-
 # -------------------------------------------------------------------------------------------------------------------------
 FROM gcr.io/distroless/static-debian12:nonroot AS runtime
 
