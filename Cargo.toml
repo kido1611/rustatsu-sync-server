@@ -12,19 +12,19 @@ path = "src/main.rs"
 name = "rustatsu-sync"
 
 [dependencies]
-anyhow = "1.0.86"
+anyhow = "1.0.97"
 argon2 = { version = "0.5.3", features = ["std"] }
-axum = { version = "0.8.1", features = ["http2", "macros"] }
-chrono = "0.4.38"
+axum = { version = "0.8.3", features = ["http2", "macros"] }
+chrono = "0.4.40"
 figment = { version = "0.10.19", features = ["yaml", "env"] }
 futures = "0.3.31"
-jsonwebtoken = "9.3.0"
+jsonwebtoken = "9.3.1"
 rand = "0.9.0"
 secrecy = { version = "0.10.3", features = ["serde"] }
-serde = { version = "1.0.204", features = ["derive"] }
-serde-aux = "4.5.0"
-serde_json = "1.0.120"
-sqlx = { version = "0.8.2", features = [
+serde = { version = "1.0.219", features = ["derive"] }
+serde-aux = "4.6.0"
+serde_json = "1.0.140"
+sqlx = { version = "0.8.3", features = [
   "runtime-tokio",
   "tls-rustls",
   "macros",
@@ -32,20 +32,20 @@ sqlx = { version = "0.8.2", features = [
   "chrono",
   "migrate",
 ] }
-thiserror = "2.0.5"
-tokio = { version = "1.38.1", features = ["full", "macros", "rt-multi-thread"] }
-tower = "0.5.1"
+thiserror = "2.0.12"
+tokio = { version = "1.44.2", features = ["full", "macros", "rt-multi-thread"] }
+tower = "0.5.2"
 tower-http = { version = "0.6.2", features = ["compression-full", "trace"] }
-tracing = { version = "0.1.40", features = ["log"] }
-tracing-bunyan-formatter = "0.3.9"
+tracing = { version = "0.1.41", features = ["log"] }
+tracing-bunyan-formatter = "0.3.10"
 tracing-log = "0.2.0"
 tracing-panic = "0.1.2"
-tracing-subscriber = { version = "0.3.18", features = [
+tracing-subscriber = { version = "0.3.19", features = [
   "registry",
   "env-filter",
   "json",
 ] }
-uuid = { version = "1.10.0", features = ["v4"] }
+uuid = { version = "1.16.0", features = ["v4"] }
 validator = { version = "0.20.0", features = ["derive"] }
 
 [dev-dependencies]
