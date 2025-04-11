@@ -17,6 +17,19 @@ async fn should_throw_error_when_request_does_not_contain_header_authorization()
 }
 
 #[tokio::test]
+async fn should_throw_error_when_auth_header_value_is_empty() {
+    let request = Request::builder()
+        .uri("/me")
+        .header(axum::http::header::AUTHORIZATION, "")
+        .body(Body::empty())
+        .unwrap();
+
+    let response = generate_response(request).await;
+
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
 async fn should_throw_error_when_auth_header_is_invalid() {
     let request = Request::builder()
         .uri("/me")
@@ -50,6 +63,19 @@ async fn should_throw_error_when_jwt_token_is_invalid() {
     let request = Request::builder()
         .uri("/me")
         .header(axum::http::header::AUTHORIZATION, "bearer random-string")
+        .body(Body::empty())
+        .unwrap();
+
+    let response = generate_response(request).await;
+
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
+async fn should_throw_error_when_bearer_value_is_empty() {
+    let request = Request::builder()
+        .uri("/me")
+        .header(axum::http::header::AUTHORIZATION, "not-bearer")
         .body(Body::empty())
         .unwrap();
 
