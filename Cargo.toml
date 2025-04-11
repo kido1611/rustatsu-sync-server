@@ -1,6 +1,6 @@
 [package]
 name = "rustatsu-sync"
-version = "1.0.1"
+version = "1.0.3"
 edition = "2024"
 authors = ["Muhammad Abdusy Syukur <hi@abdusy.dev>"]
 
