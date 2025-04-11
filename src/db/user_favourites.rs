@@ -291,6 +291,14 @@ pub async fn update_user_favourites(
                 None => false,
             },
         };
+        let author = match &manga.author {
+            Some(val) => {
+                let mut author = val.clone();
+                author.truncate(120);
+                Some(author)
+            }
+            None => None,
+        };
 
         sqlx::query!(
             r#"
@@ -322,7 +330,7 @@ pub async fn update_user_favourites(
             manga.cover_url,
             manga.large_cover_url,
             manga.state,
-            manga.author,
+            author,
             manga.source
         )
         .execute(&mut *tx)
