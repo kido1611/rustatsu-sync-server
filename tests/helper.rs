@@ -50,6 +50,7 @@ pub async fn spawn_app() -> TestApp {
 pub async fn generate_app_state(enable_db: bool) -> AppState {
     let uuid = Uuid::new_v4().to_string().replace("-", "");
     let mut config = Config::new().unwrap();
+    config.application.run_migration = false;
     config.database.database_name = format!("rustatsu_test_{}", uuid);
 
     if enable_db {
