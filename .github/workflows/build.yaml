@@ -33,12 +33,10 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        with:
-          push: true
       - name: Build and push
         uses: docker/bake-action@v6
         with:
           push: true
           set: |
-            TAG=${{ steps.package_version.outputs.result }}
-            REGISTRY=${{ secrets.DOCKERHUB_USERNAME }}
+            rustatsu-sync.TAG=${{ steps.package_version.outputs.result }}
+            rustatsu-sync.REGISTRY=${{ secrets.DOCKERHUB_USERNAME }}
