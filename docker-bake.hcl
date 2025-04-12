@@ -3,7 +3,7 @@ group "default" {
 }
 
 variable "TAG" {
-  default = "1.0.3"
+  default = "1.0.5"
 }
 
 variable "REGISTRY" {
