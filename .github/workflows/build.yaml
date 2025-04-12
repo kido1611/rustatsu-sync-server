@@ -1,0 +1,30 @@
+name: Build and Push Container Image
+
+on: [release]
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Get package version
+        id: package_version
+        run: |
+          git fetch --tags
+          VER=$(git tag --sort="-v:refname" | head -n 1 | cut -d"v" -f2)
+          echo "result=$VER" >> "$GITHUB_OUTPUT"
+      - name: check version
+        run: env
+      # - name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v3
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buil
+      #   with:
+      #     push: truedx-action@v3
