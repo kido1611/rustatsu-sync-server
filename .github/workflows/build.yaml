@@ -12,16 +12,21 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Get package version
         id: package_version
         run: |
           git fetch --tags
           VER=$(git tag --sort="-v:refname" | head -n 1 | cut -d"v" -f2)
           echo "result=$VER" >> "$GITHUB_OUTPUT"
+
       - name: check version
-        run: env
+        run: |
+          echo "tag: ${{ steps.package_version.outputs.result }}"
+
       # - name: Set up QEMU
       #   uses: docker/setup-qemu-action@v3
       # - name: Set up Docker Buildx
