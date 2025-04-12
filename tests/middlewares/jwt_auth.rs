@@ -75,7 +75,7 @@ async fn should_throw_error_when_jwt_token_is_invalid() {
 async fn should_throw_error_when_bearer_value_is_empty() {
     let request = Request::builder()
         .uri("/me")
-        .header(axum::http::header::AUTHORIZATION, "not-bearer")
+        .header(axum::http::header::AUTHORIZATION, "bearer")
         .body(Body::empty())
         .unwrap();
 
