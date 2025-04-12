@@ -29,7 +29,7 @@ COPY migrations ./migrations
 
 RUN case "$TARGETPLATFORM" in \
   "linux/amd64") echo "x86_64-unknown-linux-musl" > /tmp/target ;; \
-  # "linux/arm64") echo "aarch64-unknown-linux-musl" > /tmp/target && \
+  "linux/arm64") echo "aarch64-unknown-linux-musl" > /tmp/target ;; \
   # apk add --no-cache gcc-aarch64-none-elf=14.2.0-r0 && \
   # # Create symlinks for cross-compiler
   # ln -s /usr/bin/aarch64-none-elf-gcc /usr/local/bin/aarch64-linux-musl-gcc && \
