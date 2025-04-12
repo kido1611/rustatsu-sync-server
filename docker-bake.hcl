@@ -26,10 +26,10 @@ target "rustatsu-sync" {
     "${REGISTRY}/rustatsu-sync:${TAG}-static",
     "${REGISTRY}/rustatsu-sync:latest"
   ]
-  labels = [
-    "org.opencontainers.image.created" = "${timestamp()}",
+  labels = {
+    "org.opencontainers.image.created" = "${timestamp()}"
     "org.opencontainers.image.version" = TAG
-  ]
+  }
   attest = [
     "type=provenance,mode=max",
     "type=sbom",
