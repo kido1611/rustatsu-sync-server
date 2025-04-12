@@ -1,6 +1,8 @@
 name: Build and Push Container Image
 
-on: [release]
+on:
+  release:
+    types: [published]
 
 jobs:
   build:
@@ -25,7 +27,7 @@ jobs:
 
       - name: check version
         run: |
-          echo "tag: ${{ steps.package_version.outputs.result }}"
+          echo ${{ steps.package_version.outputs.result }}
 
       # - name: Set up QEMU
       #   uses: docker/setup-qemu-action@v3
