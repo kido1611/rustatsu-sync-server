@@ -27,7 +27,7 @@ target "rustatsu-sync" {
     "${REGISTRY}/rustatsu-sync:latest"
   ]
   labels = [
-    "org.opencontainers.image.created" = "${timestamp()}"
+    "org.opencontainers.image.created" = "${timestamp()}",
     "org.opencontainers.image.version" = TAG
   ]
   attest = [
