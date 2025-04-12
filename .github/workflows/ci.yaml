@@ -1,4 +1,4 @@
-name: Test
+name: ci
 
 on: [push, pull_request]
 
@@ -17,21 +17,6 @@ jobs:
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
-    env:
-      DATABASE__HOST: "127.0.0.1"
-      DATABASE__PORT: 5432
-      DATABASE__USERNAME: postgres
-      DATABASE__PASSWORD: password
-      DATABASE__DATABASE_NAME: postgres
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -68,7 +53,7 @@ jobs:
         run: cargo test
 
   coverage:
-    name: Check code coverage
+    name: Tarpaulin
     runs-on: ubuntu-latest
     needs: [test]
     env:
