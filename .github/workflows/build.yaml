@@ -5,9 +5,42 @@ on:
     types: [published]
 
 jobs:
-  build:
-    name: build
+  build-amd64:
+    name: build linux/amd64
     runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get package version
+        id: package_version
+        run: |
+          git fetch --tags
+          VER=$(git tag --sort="-v:refname" | head -n 1 | cut -d"v" -f2)
+          echo "result=$VER" >> "$GITHUB_OUTPUT"
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push
+        uses: docker/bake-action@v6
+        env:
+          TAG: ${{ steps.package_version.outputs.result }}
+          REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }}
+        with:
+          files: docker-bake.hcl
+          push: true
+
+  build-arm64:
+    name: build linux/arm64
+    runs-on: ubuntu-24.04-arm
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
