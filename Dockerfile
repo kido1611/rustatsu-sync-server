@@ -22,23 +22,23 @@ RUN case "$TARGETPLATFORM" in \
   *) echo "Unsupported platform: $TARGETPLATFORM" && exit 1 ;; \
   esac
 
-# Install the correct cross-compilation tools based on target
-RUN apk add --no-cache musl-dev=1.2.5-r9  && \
-  if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
-  wget -qO- https://musl.cc/aarch64-linux-musl-cross.tgz | tar -xz -C /opt && \
-  ln -s /opt/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc /usr/local/bin/ && \
-  ln -s /opt/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++ /usr/local/bin/ && \
-  ln -s /opt/aarch64-linux-musl-cross/bin/aarch64-linux-musl-ar /usr/local/bin/ && \
-  # Create necessary symlinks and configuration
-  mkdir -p ~/.cargo && \
-  echo '[target.aarch64-unknown-linux-musl]' >> ~/.cargo/config && \
-  echo 'linker = "aarch64-linux-musl-gcc"' >> ~/.cargo/config && \
-  echo 'rustflags = ["-C", "target-feature=+crt-static"]' >> ~/.cargo/config.toml && \
-  export CC_aarch64_unknown_linux_musl="aarch64-linux-musl-gcc" && \
-  export CXX_aarch64_unknown_linux_musl="aarch64-linux-musl-g++" && \
-  export AR_aarch64_unknown_linux_musl="aarch64-linux-musl-ar" && \
-  export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER="aarch64-linux-musl-gcc"; \
-  fi
+# # Install the correct cross-compilation tools based on target
+# RUN apk add --no-cache musl-dev=1.2.5-r9  && \
+#   if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+#   wget -qO- https://musl.cc/aarch64-linux-musl-cross.tgz | tar -xz -C /opt && \
+#   ln -s /opt/aarch64-linux-musl-cross/bin/aarch64-linux-musl-gcc /usr/local/bin/ && \
+#   ln -s /opt/aarch64-linux-musl-cross/bin/aarch64-linux-musl-g++ /usr/local/bin/ && \
+#   ln -s /opt/aarch64-linux-musl-cross/bin/aarch64-linux-musl-ar /usr/local/bin/ && \
+#   # Create necessary symlinks and configuration
+#   mkdir -p ~/.cargo && \
+#   echo '[target.aarch64-unknown-linux-musl]' >> ~/.cargo/config && \
+#   echo 'linker = "aarch64-linux-musl-gcc"' >> ~/.cargo/config && \
+#   echo 'rustflags = ["-C", "target-feature=+crt-static"]' >> ~/.cargo/config.toml && \
+#   export CC_aarch64_unknown_linux_musl="aarch64-linux-musl-gcc" && \
+#   export CXX_aarch64_unknown_linux_musl="aarch64-linux-musl-g++" && \
+#   export AR_aarch64_unknown_linux_musl="aarch64-linux-musl-ar" && \
+#   export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_LINKER="aarch64-linux-musl-gcc"; \
+#   fi
 
 ENV SQLX_OFFLINE=true
 
