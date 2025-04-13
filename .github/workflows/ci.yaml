@@ -85,3 +85,36 @@ jobs:
         run: cargo install cargo-tarpaulin
       - name: Run tarpaulin
         run: cargo tarpaulin
+
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+    needs: [test]
+    strategy:
+      fail-fast: true
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+
+    env:
+      DATABASE__HOST: "127.0.0.1"
+      DATABASE__PORT: 5432
+      DATABASE__USERNAME: postgres
+      DATABASE__PASSWORD: password
+      DATABASE__DATABASE_NAME: postgres
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Run build
+        run: cargo build --release
