@@ -103,6 +103,7 @@ jobs:
       DATABASE__USERNAME: postgres
       DATABASE__PASSWORD: password
       DATABASE__DATABASE_NAME: postgres
+      SQLX_OFFLINE: true
     services:
       postgres:
         image: postgres:17
