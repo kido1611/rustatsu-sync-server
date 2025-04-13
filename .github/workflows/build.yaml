@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: build linux/amd64
+    name: build container image
     runs-on: ${{ startsWith(matrix.platform, 'arm') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     strategy:
       fail-fast: true
@@ -46,6 +46,21 @@ jobs:
           set: |
             *.platform=linux/${{ matrix.platform }}
             *.tags=${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static-${{ matrix.platform }}
+
+  manifest:
+    name: Create and push manifest
+    runs-on: ubuntu-24.04
+    needs: [build]
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Crteea and push manifest
         run: |
           docker manifest create ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:latest --amend ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static-amd64 --amend ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static-arm64
