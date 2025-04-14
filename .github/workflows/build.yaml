@@ -7,13 +7,7 @@ on:
 jobs:
   build:
     name: build container image
-    runs-on: ${{ startsWith(matrix.platform, 'arm') && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
-    strategy:
-      fail-fast: true
-      matrix:
-        platform:
-          - amd64
-          - arm64
+    runs-on: ubuntu-latest
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -43,37 +37,3 @@ jobs:
         with:
           files: docker-bake.hcl
           push: true
-          set: |
-            *.platform=linux/${{ matrix.platform }}
-            *.tags=${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static-${{ matrix.platform }}
-
-  manifest:
-    name: Create and push manifest
-    runs-on: ubuntu-24.04
-    needs: [build]
-    steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Get package version
-        id: package_version
-        run: |
-          git fetch --tags
-          VER=$(git tag --sort="-v:refname" | head -n 1 | cut -d"v" -f2)
-          echo "result=$VER" >> "$GITHUB_OUTPUT"
-
-      - name: Create and push manifest
-        run: |
-          docker manifest create ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:latest --amend ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static-amd64 --amend ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static-arm64
-          docker manifest create ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }} --amend ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static-amd64 --amend ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static-arm64
-          docker manifest create ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static --amend ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static-amd64 --amend ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static-arm64
-
-          docker manifest push ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:latest
-          docker manifest push ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}
-          docker manifest push ${{ secrets.DOCKERHUB_USERNAME }}/rustatsu-sync:${{ steps.package_version.outputs.result }}-static

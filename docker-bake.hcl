@@ -16,10 +16,10 @@ target "docker-metadata-action" {}
 target "rustatsu-sync" {
   inherits = ["docker-metadata-action"]
   context = "."
-  dockerfile = "Dockerfile"
+  dockerfile = "Dockerfile2"
   platforms = [
     "linux/amd64",
-    # "linux/arm64"
+    "linux/arm64"
   ]
   tags = [
     "${REGISTRY}/rustatsu-sync:${TAG}",
