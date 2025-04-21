@@ -35,7 +35,11 @@ sqlx = { version = "0.8.3", features = [
 thiserror = "2.0.12"
 tokio = { version = "1.44.2", features = ["full", "macros", "rt-multi-thread"] }
 tower = "0.5.2"
-tower-http = { version = "0.6.2", features = ["compression-full", "trace"] }
+tower-http = { version = "0.6.2", features = [
+  "compression-full",
+  "trace",
+  "request-id",
+] }
 tracing = { version = "0.1.41", features = ["log"] }
 tracing-bunyan-formatter = "0.3.10"
 tracing-log = "0.2.0"
