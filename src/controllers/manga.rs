@@ -11,7 +11,7 @@ use crate::{
 };
 use serde_aux::field_attributes::deserialize_option_number_from_string;
 
-#[tracing::instrument(name = "[GET] manga", skip_all)]
+#[tracing::instrument(name = "[GET] manga", skip_all, fields(parameters))]
 pub async fn index(
     State(app_state): State<SharedAppState>,
     Query(parameters): Query<Parameters>,
