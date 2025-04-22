@@ -20,7 +20,7 @@ impl AppState {
             .connect_lazy_with(config.database.with_db());
 
         if config.application.run_migration {
-            println!("Running migrations");
+            tracing::warn!("Running database migrations...");
             sqlx::migrate!("./migrations").run(&pool).await?;
         }
 

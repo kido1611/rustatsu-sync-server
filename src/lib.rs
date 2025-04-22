@@ -22,7 +22,7 @@ pub async fn run() -> Result<(), anyhow::Error> {
     let state = AppState::init(config).await?;
     let router = init_router(state);
 
-    println!("Starting Server: {}", address);
+    tracing::info!("Starting server: {}", address);
 
     let listener = TcpListener::bind(address).await?;
     serve(listener, router.into_make_service()).await?;
