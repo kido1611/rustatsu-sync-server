@@ -19,7 +19,6 @@ chrono = "0.4.40"
 figment = { version = "0.10.19", features = ["yaml", "env"] }
 futures = "0.3.31"
 jsonwebtoken = "9.3.1"
-rand = "0.9.0"
 secrecy = { version = "0.10.3", features = ["serde"] }
 serde = { version = "1.0.219", features = ["derive"] }
 serde-aux = "4.6.0"
@@ -53,8 +52,10 @@ uuid = { version = "1.16.0", features = ["v4"] }
 validator = { version = "0.20.0", features = ["derive"] }
 
 [dev-dependencies]
+rand = "0.9.1"
 http-body-util = "0.1.3"
 reqwest = { version = "0.12.5", features = ["json", "rustls-tls", "cookies"] }
+fake = { version = "4.3.0", features = ["chrono", "email_address", "time", "url"] }
 
 [profile.release]
 lto = true
