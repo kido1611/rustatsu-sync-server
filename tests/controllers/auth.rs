@@ -78,7 +78,7 @@ async fn should_be_error_when_body_is_invalid() {
         .header(http::header::CONTENT_TYPE, "application/json")
         .body(Body::from(
             serde_json::to_vec(&json!(AuthRequest {
-                email: "this-email-length-should-be-over-32-characters-to-trigger-error@localhost"
+                email: "this-email-length-should-be-over-100-characters-to-trigger-validation-error@localhost"
                     .to_string(),
                 password: "this-password-length-should-be-over-32-characters-to-trigger-error"
                     .to_string(),
