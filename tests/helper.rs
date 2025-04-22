@@ -24,8 +24,13 @@ pub struct AppStateTest {
 
 impl AppStateTest {
     pub async fn new(enable_db: bool) -> Self {
+        let config = Config::new().unwrap();
+
+        Self::new_with_config(enable_db, config).await
+    }
+
+    pub async fn new_with_config(enable_db: bool, mut config: Config) -> Self {
         let uuid = Uuid::new_v4().to_string().replace("-", "");
-        let mut config = Config::new().unwrap();
         config.application.run_migration = false;
         config.database.database_name = format!("rustatsu_test_{}", uuid);
 
