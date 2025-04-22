@@ -6,7 +6,17 @@ use rustatsu_sync::model::User;
 use crate::AppStateTest;
 
 #[tokio::test]
-async fn should_be_ok() {
+async fn should_be_error_when_accessed_without_auth() {
+    let test_state = AppStateTest::new(false).await;
+
+    let request = Request::builder().uri("/me").body(Body::empty()).unwrap();
+    let response = test_state.generate_response(request).await;
+
+    assert_eq!(response.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[tokio::test]
+async fn should_be_ok_when_accessed_with_auth() {
     let mut test_state = AppStateTest::new(true).await;
 
     let (user, token) = test_state.generate_jwt_with_user().await;
