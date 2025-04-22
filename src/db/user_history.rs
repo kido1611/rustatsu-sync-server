@@ -222,6 +222,7 @@ pub async fn update_user_history(
 
     let mut tx = pool.begin().await.map_err(DatabaseError::DatabaseError)?;
 
+    // TODO: should be replaced
     for tag in tags_map.values() {
         sqlx::query!(
             r#"
@@ -245,6 +246,7 @@ pub async fn update_user_history(
         .map_err(DatabaseError::DatabaseError)?;
     }
 
+    // TODO: should be replaced
     for manga in mangas_map.values() {
         let is_nsfw = match manga.nsfw {
             Some(val) => {
@@ -309,6 +311,7 @@ pub async fn update_user_history(
         .map_err(DatabaseError::DatabaseError)?;
     }
 
+    // TODO: should be replaced
     for batch in Vec::from_iter(manga_tags_set.iter()).chunks(300) {
         let mut manga_tag_builder: QueryBuilder<Postgres> = QueryBuilder::new(
             r#"
