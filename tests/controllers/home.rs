@@ -5,7 +5,7 @@ use reqwest::StatusCode;
 use crate::AppStateTest;
 
 #[tokio::test]
-async fn home_index_rendered_correctly() {
+async fn should_be_ok() {
     let test_state = AppStateTest::new(false).await;
 
     let request = Request::builder().uri("/").body(Body::empty()).unwrap();
