@@ -56,7 +56,7 @@ impl Validate for AuthRequest {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct AuthResponse {
     pub token: String,
 }
