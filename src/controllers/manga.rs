@@ -24,7 +24,7 @@ pub async fn index(
     Ok(Json(result))
 }
 
-#[tracing::instrument(name = "[GET] manga/id", skip_all)]
+#[tracing::instrument(name = "[GET] manga/{id}", skip_all, fields(path.id))]
 pub async fn show(
     State(app_state): State<SharedAppState>,
     Path(path): Path<UrlPath>,
