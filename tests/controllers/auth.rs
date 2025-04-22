@@ -40,6 +40,7 @@ async fn should_be_error_when_body_is_missing() {
 async fn should_be_error_when_body_is_invalid() {
     let test_state = AppStateTest::new(false).await;
 
+    // -----------------------------------------------------------------------
     let request = Request::builder()
         .method("POST")
         .uri("/auth")
@@ -54,6 +55,7 @@ async fn should_be_error_when_body_is_invalid() {
     let response = test_state.generate_response(request).await;
     assert_eq!(response.status(), StatusCode::UNPROCESSABLE_ENTITY);
 
+    // -----------------------------------------------------------------------
     let request = Request::builder()
         .method("POST")
         .uri("/auth")
@@ -62,6 +64,24 @@ async fn should_be_error_when_body_is_invalid() {
             serde_json::to_vec(&json!(AuthRequest {
                 email: "a".to_string(),
                 password: "pass".to_string(),
+            }))
+            .unwrap(),
+        ))
+        .unwrap();
+    let response = test_state.generate_response(request).await;
+    assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+
+    // -----------------------------------------------------------------------
+    let request = Request::builder()
+        .method("POST")
+        .uri("/auth")
+        .header(http::header::CONTENT_TYPE, "application/json")
+        .body(Body::from(
+            serde_json::to_vec(&json!(AuthRequest {
+                email: "this-email-length-should-be-over-32-characters-to-trigger-error@localhost"
+                    .to_string(),
+                password: "this-password-length-should-be-over-32-characters-to-trigger-error"
+                    .to_string(),
             }))
             .unwrap(),
         ))
