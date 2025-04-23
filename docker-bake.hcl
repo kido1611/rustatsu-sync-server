@@ -19,7 +19,7 @@ target "rustatsu-sync" {
   dockerfile = "Dockerfile"
   platforms = [
     "linux/amd64",
-    "linux/arm64"
+    # "linux/arm64"
   ]
   tags = [
     "${REGISTRY}/rustatsu-sync:${TAG}",
