@@ -1,6 +1,6 @@
 services:
   rustatsu:
-    image: abduzzy/rustatsu-sync:1.0.5
+    image: abduzzy/rustatsu-sync:latest
     ports:
       - "8000:8000"
     environment:
