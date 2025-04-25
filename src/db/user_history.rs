@@ -12,6 +12,11 @@ use crate::{
     model::{History, Manga, MangaTag, MangaTagEntity, Tag, UserHistory},
 };
 
+use super::{
+    manga::insert_mangas, manga_tags::insert_manga_tags, tags::insert_tags,
+    user::update_user_history_sync_time,
+};
+
 #[tracing::instrument(name = "get user_history", skip_all)]
 pub async fn get_user_history(pool: &PgPool, user_id: i64) -> Result<UserHistory, Error> {
     let raw_history = sqlx::query!(
@@ -222,115 +227,14 @@ pub async fn update_user_history(
 
     let mut tx = pool.begin().await.map_err(DatabaseError::DatabaseError)?;
 
-    // TODO: should be replaced
-    for tag in tags_map.values() {
-        sqlx::query!(
-            r#"
-            INSERT INTO tags 
-                (id, title, "key", source)
-            VALUES
-                ($1, $2, $3, $4)
-            ON CONFLICT (id)
-            DO UPDATE SET
-                title = $2,
-                "key" = $3,
-                source = $4;
-        "#,
-            tag.tag_id,
-            tag.title,
-            tag.key,
-            tag.source,
-        )
-        .execute(&mut *tx)
-        .await
-        .map_err(DatabaseError::DatabaseError)?;
-    }
+    let tags_vec: Vec<Arc<Tag>> = tags_map.values().cloned().collect();
+    insert_tags(&mut tx, &tags_vec).await?;
 
-    // TODO: should be replaced
-    for manga in mangas_map.values() {
-        let is_nsfw = match manga.nsfw {
-            Some(val) => {
-                if val > 0 {
-                    true
-                } else {
-                    match &manga.content_rating {
-                        Some(val) => val.to_lowercase() == "adult",
-                        None => false,
-                    }
-                }
-            }
-            None => match &manga.content_rating {
-                Some(val) => val.to_lowercase() == "adult",
-                None => false,
-            },
-        };
-        let author = match &manga.author {
-            Some(val) => {
-                let mut author = val.clone();
-                author.truncate(120);
-                Some(author)
-            }
-            None => None,
-        };
+    let mangas_vec: Vec<Arc<Manga>> = mangas_map.values().cloned().collect();
+    insert_mangas(&mut tx, &mangas_vec).await?;
 
-        sqlx::query!(
-            r#"
-            INSERT INTO mangas
-                (id, title, alt_title, url, public_url, rating, is_nsfw, cover_url, large_cover_url, state, author, source)
-            VALUES 
-                ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-            ON CONFLICT (id)
-            DO UPDATE SET
-                title = $2, 
-                alt_title = $3, 
-                url = $4, 
-                public_url = $5, 
-                rating = $6, 
-                is_nsfw = $7, 
-                cover_url = $8, 
-                large_cover_url = $9, 
-                state = $10, 
-                author = $11, 
-                source = $12;
-        "#,
-            manga.manga_id,
-            manga.title,
-            manga.alt_title,
-            manga.url,
-            manga.public_url,
-            manga.rating,
-            is_nsfw,
-            manga.cover_url,
-            manga.large_cover_url,
-            manga.state,
-            author,
-            manga.source
-        )
-        .execute(&mut *tx)
-        .await
-        .map_err(DatabaseError::DatabaseError)?;
-    }
-
-    // TODO: should be replaced
-    for batch in Vec::from_iter(manga_tags_set.iter()).chunks(300) {
-        let mut manga_tag_builder: QueryBuilder<Postgres> = QueryBuilder::new(
-            r#"
-            INSERT INTO manga_tags
-                (manga_id, tag_id)
-        "#,
-        );
-
-        manga_tag_builder.push_values(batch, |mut b, manga_tag| {
-            b.push_bind(manga_tag.manga_id).push_bind(manga_tag.tag_id);
-        });
-        manga_tag_builder.push(" ON CONFLICT (manga_id, tag_id) DO NOTHING;");
-
-        manga_tag_builder
-            .build()
-            .execute(&mut *tx)
-            .await
-            .map_err(DatabaseError::DatabaseError)?;
-    }
+    let manga_tags_vec: Vec<MangaTagEntity> = manga_tags_set.into_iter().collect();
+    insert_manga_tags(&mut tx, &manga_tags_vec).await?;
 
     for batch in user_history.history.chunks(200) {
         let mut history_query_builder: QueryBuilder<Postgres> = QueryBuilder::new(
@@ -374,27 +278,13 @@ pub async fn update_user_history(
             .map_err(DatabaseError::DatabaseError)?;
     }
 
-    sqlx::query!(
-        r#"
-        UPDATE users
-        SET
-            history_sync_timestamp = $1
-        WHERE 
-            id = $2;
-    "#,
-        user_history.timestamp,
-        // chrono::Utc::now().timestamp_millis(),
-        user_id
-    )
-    .execute(&mut *tx)
-    .await
-    .map_err(DatabaseError::DatabaseError)?;
+    update_user_history_sync_time(&mut tx, user_id).await?;
 
     tx.commit().await.map_err(DatabaseError::DatabaseError)?;
 
     drop(tags_map);
     drop(mangas_map);
-    drop(manga_tags_set);
+    drop(manga_tags_vec);
 
     drop(user_history);
 

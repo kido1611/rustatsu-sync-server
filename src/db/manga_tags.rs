@@ -1,11 +1,11 @@
-use sqlx::{Postgres, QueryBuilder, Transaction};
+use sqlx::{Postgres, QueryBuilder};
 
 use crate::{error::Error, model::MangaTagEntity};
 
-use super::error::DatabaseError;
+use super::{PostgresTransaction, error::DatabaseError};
 
 pub async fn insert_manga_tags(
-    tx: &mut Transaction<'_, Postgres>,
+    tx: &mut PostgresTransaction,
     data: &[MangaTagEntity],
 ) -> Result<(), Error> {
     for batch in data.chunks(300) {

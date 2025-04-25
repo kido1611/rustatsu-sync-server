@@ -1,14 +1,14 @@
 use std::sync::Arc;
 
 use futures::TryStreamExt;
-use sqlx::{PgPool, Postgres, QueryBuilder, Row, Transaction};
+use sqlx::{PgPool, Postgres, QueryBuilder, Row};
 
 use crate::{
     error::Error,
     model::{Manga, MangaTag, Tag},
 };
 
-use super::error::DatabaseError;
+use super::{PostgresTransaction, error::DatabaseError};
 
 #[tracing::instrument(name = "get manga with pagination", skip_all)]
 pub async fn get_manga_with_pagination(
@@ -183,72 +183,78 @@ pub async fn get_manga_by_id(pool: &PgPool, manga_id: i64) -> Result<Manga, Erro
     })
 }
 
-pub async fn insert_mangas(
-    tx: &mut Transaction<'_, Postgres>,
-    data: &[Arc<Manga>],
-) -> Result<(), Error> {
-    for manga in data {
-        let is_nsfw = match manga.nsfw {
-            Some(val) => {
-                if val > 0 {
-                    true
-                } else {
-                    match &manga.content_rating {
-                        Some(val) => val.to_lowercase() == "adult",
-                        None => false,
-                    }
-                }
-            }
-            None => match &manga.content_rating {
-                Some(val) => val.to_lowercase() == "adult",
-                None => false,
-            },
-        };
-        let author = match &manga.author {
-            Some(val) => {
-                let mut author = val.clone();
-                author.truncate(120);
-                Some(author)
-            }
-            None => None,
-        };
-
-        sqlx::query!(
+pub async fn insert_mangas(tx: &mut PostgresTransaction, data: &[Arc<Manga>]) -> Result<(), Error> {
+    for batch in data.chunks(100) {
+        let mut manga_builder: QueryBuilder<Postgres> = QueryBuilder::new(
             r#"
             INSERT INTO mangas
                 (id, title, alt_title, url, public_url, rating, is_nsfw, cover_url, large_cover_url, state, author, source)
-            VALUES 
-                ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-            ON CONFLICT (id)
-            DO UPDATE SET
-                title = $2, 
-                alt_title = $3, 
-                url = $4, 
-                public_url = $5, 
-                rating = $6, 
-                is_nsfw = $7, 
-                cover_url = $8, 
-                large_cover_url = $9, 
-                state = $10, 
-                author = $11, 
-                source = $12;
         "#,
-            manga.manga_id,
-            manga.title,
-            manga.alt_title,
-            manga.url,
-            manga.public_url,
-            manga.rating,
-            is_nsfw,
-            manga.cover_url,
-            manga.large_cover_url,
-            manga.state,
-            author,
-            manga.source
-        )
-        .execute(&mut **tx)
-        .await
-        .map_err(DatabaseError::DatabaseError)?;
+        );
+
+        manga_builder.push_values(batch, |mut b, manga| {
+            let is_nsfw = match manga.nsfw {
+                Some(val) => {
+                    if val > 0 {
+                        true
+                    } else {
+                        match &manga.content_rating {
+                            Some(val) => val.to_lowercase() == "adult",
+                            None => false,
+                        }
+                    }
+                }
+                None => match &manga.content_rating {
+                    Some(val) => val.to_lowercase() == "adult",
+                    None => false,
+                },
+            };
+            let author = match &manga.author {
+                Some(val) => {
+                    let mut author = val.clone();
+                    author.truncate(120);
+                    Some(author)
+                }
+                None => None,
+            };
+
+            b.push_bind(manga.manga_id)
+                .push_bind(&manga.title)
+                .push_bind(&manga.alt_title)
+                .push_bind(&manga.url)
+                .push_bind(&manga.public_url)
+                .push_bind(manga.rating)
+                .push_bind(is_nsfw)
+                .push_bind(&manga.cover_url)
+                .push_bind(&manga.large_cover_url)
+                .push_bind(&manga.state)
+                .push_bind(author)
+                .push_bind(&manga.source);
+        });
+
+        manga_builder.push(
+            "
+            ON CONFLICT (id)
+            DO UPDATE SET 
+                title = EXCLUDED.title,
+                alt_title = EXCLUDED.alt_title,
+                url = EXCLUDED.url,
+                public_url = EXCLUDED.public_url,
+                rating = EXCLUDED.rating,
+                is_nsfw = EXCLUDED.is_nsfw,
+                cover_url = EXCLUDED.cover_url,
+                large_cover_url = EXCLUDED.large_cover_url,
+                state = EXCLUDED.state,
+                author = EXCLUDED.author,
+                source = EXCLUDED.source;
+",
+        );
+
+        manga_builder
+            .build()
+            .execute(&mut **tx)
+            .await
+            .map_err(DatabaseError::DatabaseError)?;
     }
 
     Ok(())

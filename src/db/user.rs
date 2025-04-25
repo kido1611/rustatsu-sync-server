@@ -9,7 +9,7 @@ use crate::{
     telemetry::spawn_blocking_with_tracing,
 };
 
-use super::error::DatabaseError;
+use super::{PostgresTransaction, error::DatabaseError};
 
 #[tracing::instrument(
     name = "get or create user",
@@ -110,4 +110,50 @@ pub async fn get_user_by_id_optional(pool: &PgPool, user_id: i64) -> Result<Opti
     .fetch_optional(pool)
     .await
     .map_err(|e| Error::Database(crate::db::error::DatabaseError::DatabaseError(e)))
+}
+
+pub async fn update_user_history_sync_time(
+    tx: &mut PostgresTransaction,
+    user_id: i64,
+) -> Result<(), Error> {
+    sqlx::query!(
+        r#"
+        UPDATE users
+        SET
+            history_sync_timestamp = $1
+        WHERE 
+            id = $2;
+    "#,
+        // sync_time,
+        chrono::Utc::now().timestamp_millis(),
+        user_id
+    )
+    .execute(&mut **tx)
+    .await
+    .map_err(DatabaseError::DatabaseError)?;
+
+    Ok(())
+}
+
+pub async fn update_user_favourite_sync_time(
+    tx: &mut PostgresTransaction,
+    user_id: i64,
+) -> Result<(), Error> {
+    sqlx::query!(
+        r#"
+        UPDATE users
+        SET
+            favourites_sync_timestamp = $1
+        WHERE 
+            id = $2;
+    "#,
+        // sync_time,
+        chrono::Utc::now().timestamp_millis(),
+        user_id
+    )
+    .execute(&mut **tx)
+    .await
+    .map_err(DatabaseError::DatabaseError)?;
+
+    Ok(())
 }
