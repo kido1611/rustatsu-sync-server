@@ -1,6 +1,5 @@
-use axum::{body::Body, extract::Request};
+use axum::{body::Body, extract::Request, http::StatusCode};
 use http_body_util::BodyExt;
-use reqwest::StatusCode;
 
 use crate::AppStateTest;
 

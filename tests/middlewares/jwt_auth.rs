@@ -1,5 +1,4 @@
-use axum::{body::Body, http::Request};
-use reqwest::StatusCode;
+use axum::{body::Body, http::Request, http::StatusCode};
 use rustatsu_sync::auth::encode_jwt;
 
 use crate::AppStateTest;

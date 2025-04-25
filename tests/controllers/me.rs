@@ -1,6 +1,5 @@
-use axum::{body::Body, http::Request};
+use axum::{body::Body, http::Request, http::StatusCode};
 use http_body_util::BodyExt;
-use reqwest::StatusCode;
 use rustatsu_sync::model::User;
 
 use crate::AppStateTest;
