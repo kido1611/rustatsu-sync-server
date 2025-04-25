@@ -21,16 +21,11 @@ where
     let env_filter =
         EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(env_filter));
 
-    // match with_jaeger {
-    //     true => Registry::default().with(env_filter),
-    //     false => {
     let formatting_layer = BunyanFormattingLayer::new(name, sink);
     Registry::default()
         .with(env_filter)
         .with(JsonStorageLayer)
         .with(formatting_layer)
-    //     }
-    // }
 }
 
 pub fn spawn_blocking_with_tracing<F, R>(f: F) -> JoinHandle<R>
