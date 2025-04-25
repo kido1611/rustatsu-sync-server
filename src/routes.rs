@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
 use axum::{
     Router,
@@ -6,6 +6,7 @@ use axum::{
     extract::{DefaultBodyLimit, MatchedPath},
     http::{HeaderName, Request, header},
     middleware,
+    response::Response,
     routing::{get, post},
 };
 use tower::ServiceBuilder;
@@ -13,6 +14,10 @@ use tower_http::{
     compression::CompressionLayer,
     request_id::{MakeRequestUuid, PropagateRequestIdLayer, SetRequestIdLayer},
     trace::TraceLayer,
+};
+use tracing::{
+    Span,
+    field::{self, display},
 };
 
 use crate::{middlewares::jwt_auth_middleware, state::AppState};
@@ -62,31 +67,40 @@ pub fn init_router(app_state: AppState) -> Router {
             MakeRequestUuid,
         ))
         .layer(
-            TraceLayer::new_for_http().make_span_with(|request: &Request<Body>| {
-                let request_id = match request.headers().get(REQUEST_ID_HEADER) {
-                    Some(val) => val.to_str().unwrap(),
-                    None => "",
-                };
-                let user_agent = match request.headers().get(header::USER_AGENT) {
-                    Some(val) => val.to_str().unwrap(),
-                    None => "",
-                };
+            TraceLayer::new_for_http()
+                .make_span_with(|request: &Request<Body>| {
+                    let request_id = match request.headers().get(REQUEST_ID_HEADER) {
+                        Some(val) => val.to_str().unwrap(),
+                        None => "",
+                    };
+                    let user_agent = match request.headers().get(header::USER_AGENT) {
+                        Some(val) => val.to_str().unwrap(),
+                        None => "",
+                    };
 
-                let matched_path = request
-                    .extensions()
-                    .get::<MatchedPath>()
-                    .map(MatchedPath::as_str);
+                    let matched_path = request
+                        .extensions()
+                        .get::<MatchedPath>()
+                        .map(MatchedPath::as_str);
 
-                tracing::info_span!(
-                    "http_request",
-                    request_id,
-                    method = ?request.method(),
-                    uri = ?request.uri(),
-                    path = matched_path,
-                    version = ?request.version(),
-                    user_agent,
-                )
-            }),
+                    tracing::info_span!(
+                        "http_request",
+                        request_id,
+                        method = ?request.method(),
+                        uri = ?request.uri(),
+                        path = matched_path,
+                        version = ?request.version(),
+                        user_agent,
+                        status = field::Empty,
+                        latency = field::Empty,
+                    )
+                })
+                .on_response(|response: &Response, latency: Duration, span: &Span| {
+                    span.record("status", display(response.status().as_u16()));
+
+                    let latency_str = format!("{:?}", latency);
+                    span.record("latency", display(latency_str));
+                }),
         )
         .layer(PropagateRequestIdLayer::new(x_request_id_header));
 
