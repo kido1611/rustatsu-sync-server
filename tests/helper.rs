@@ -94,7 +94,7 @@ impl AppStateTest {
         let _ = without_db_pool
             .execute(
                 format!(
-                    "DROP DATABASE IF EXISTS {}",
+                    "DROP DATABASE IF EXISTS {} WITH (FORCE)",
                     self.app_state.config.database.database_name,
                 )
                 .as_str(),
