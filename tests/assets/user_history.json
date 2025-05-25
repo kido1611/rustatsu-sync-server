@@ -1,0 +1,845 @@
+{
+  "history": [
+    {
+      "manga_id": -9024971541766135145,
+      "manga": {
+        "manga_id": -9024971541766135145,
+        "title": "Bring My Level Up Alone",
+        "alt_title": "",
+        "url": "/manga/bring-my-level-up-alone/",
+        "public_url": "https://kiryuu01.com/manga/bring-my-level-up-alone/",
+        "rating": 0.65,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/04/bring-my-level-up-alone-881692-Vm1kSG0O-217x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "신필(고렘팩토리)",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1747868403104,
+      "updated_at": 1747868408155,
+      "chapter_id": -4282440556030139528,
+      "page": 3,
+      "scroll": 0.0,
+      "percent": 0.00048780485,
+      "chapters": 164,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -8687048924542847987,
+      "manga": {
+        "manga_id": -8687048924542847987,
+        "title": "Archmage Restaurant",
+        "alt_title": "",
+        "url": "/manga/archmage-restaurant/",
+        "public_url": "https://kiryuu01.com/manga/archmage-restaurant/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2023/11/6bvbly-197767-U7gRT4Q3-231x300.webp",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Bad Boys, Mr. Cha",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898811978031735884,
+            "title": "Shounen",
+            "key": "5",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222563274559391,
+            "title": "Slice of Life",
+            "key": "20",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1744878924286,
+      "updated_at": 1745614148761,
+      "chapter_id": 3832199741856453365,
+      "page": 43,
+      "scroll": 0.0,
+      "percent": 0.9101124,
+      "chapters": 80,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -8663746665874317901,
+      "manga": {
+        "manga_id": -8663746665874317901,
+        "title": "I Became The Genius Bastard Of A Noble Dark Clan",
+        "alt_title": "",
+        "url": "/manga/i-became-the-genius-bastard-of-a-noble-dark-clan/",
+        "public_url": "https://kiryuu01.com/manga/i-became-the-genius-bastard-of-a-noble-dark-clan/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2025/04/i-became-the-genius-bastard-of-a-noble-dark-clan-027728-wjqKrdmX-223x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Yuin",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289221490282609062,
+            "title": "Magic",
+            "key": "38",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1745873747492,
+      "updated_at": 1749596400140,
+      "chapter_id": 3737287524950628737,
+      "page": 15,
+      "scroll": 0.0,
+      "percent": 1.0,
+      "chapters": 36,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -8487411821995596739,
+      "manga": {
+        "manga_id": -8487411821995596739,
+        "title": "Moto Yuusha Wa Shizuka Ni Kurashitai",
+        "alt_title": "",
+        "url": "/manga/moto-yuusha-wa-shizuka-ni-kurashitai/",
+        "public_url": "https://kiryuu01.com/manga/moto-yuusha-wa-shizuka-ni-kurashitai/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2022/02/moto-yuusha-wa-shizuka-ni-kurashitai-182942-y1PJ8va5-210x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Koji (Author), Nabeshima Tetsuhiro (Artist)",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222563274559391,
+            "title": "Slice of Life",
+            "key": "20",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222480736717058,
+            "title": "Harem",
+            "key": "23",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1744056836361,
+      "updated_at": 1744056847506,
+      "chapter_id": -7123202856617562860,
+      "page": 4,
+      "scroll": 0.0,
+      "percent": 0.005341881,
+      "chapters": 52,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -7777085353784186980,
+      "manga": {
+        "manga_id": -7777085353784186980,
+        "title": "Isekai Tensei de Kenja ni Natte Boukensha Seikatsu",
+        "alt_title": "",
+        "url": "/manga/isekai-tensei-de-kenja-ni-natte-boukensha-seikatsu/",
+        "public_url": "https://kiryuu01.com/manga/isekai-tensei-de-kenja-ni-natte-boukensha-seikatsu/",
+        "rating": 1.0,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/06/sssss-503406-kbh2CEtC-218x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "SHINKOU Shotou",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1745873773346,
+      "updated_at": 1745873777360,
+      "chapter_id": -7055607914959157527,
+      "page": 3,
+      "scroll": 0.0,
+      "percent": 0.0023310024,
+      "chapters": 33,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -7683754036249699694,
+      "manga": {
+        "manga_id": -7683754036249699694,
+        "title": "Tensei Shitara dai Nana Ouji dattanode, Kimamani Majutsu o Kiwamemasu",
+        "alt_title": "",
+        "url": "/manga/tensei-shitara-dai-nana-ouji-dattanode-kimamani-majutsu-o-kiwamemasu/",
+        "public_url": "https://kiryuu01.com/manga/tensei-shitara-dai-nana-ouji-dattanode-kimamani-majutsu-o-kiwamemasu/",
+        "rating": 0.8,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/03/tensei-shitara-dai-nana-ouji-dattanode-kimamani-majutsu-o-kiwamemasu-167602-UlAgbn6s-211x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Kenkyo na Circle",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811978031735884,
+            "title": "Shounen",
+            "key": "5",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222563274559391,
+            "title": "Slice of Life",
+            "key": "20",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1747391083753,
+      "updated_at": 1747391256333,
+      "chapter_id": 4103944989259070276,
+      "page": 8,
+      "scroll": 0.0,
+      "percent": 0.00585512,
+      "chapters": 200,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -7494387894119545254,
+      "manga": {
+        "manga_id": -7494387894119545254,
+        "title": "I Have Twin Girlfriends",
+        "alt_title": "",
+        "url": "/manga/i-have-twin-girlfriends/",
+        "public_url": "https://kiryuu01.com/manga/i-have-twin-girlfriends/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/03/i-have-twin-girlfriends-197206-dIsaJuQF-225x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Tiānkōng shù màn gōngchǎng",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289222563274559391,
+            "title": "Slice of Life",
+            "key": "20",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222480736717058,
+            "title": "Harem",
+            "key": "23",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289218986634724961,
+            "title": "Ecchi",
+            "key": "66",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811895493893551,
+            "title": "Romance",
+            "key": "8",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1743597650180,
+      "updated_at": 1743648322858,
+      "chapter_id": 2204982835613367689,
+      "page": 2,
+      "scroll": 0.0,
+      "percent": 0.037156932,
+      "chapters": 245,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -7429876740243716967,
+      "manga": {
+        "manga_id": -7429876740243716967,
+        "title": "She Is Coming, Please Get Down!",
+        "alt_title": "",
+        "url": "/manga/she-is-coming-please-get-down/",
+        "public_url": "https://kiryuu01.com/manga/she-is-coming-please-get-down/",
+        "rating": 0.65,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/04/she-is-coming-please-get-down-210573-uf4cCpYZ-264x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Gu Xuan, Yang Xiao Bai De He Hezi",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222480736717058,
+            "title": "Harem",
+            "key": "23",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811895493893551,
+            "title": "Romance",
+            "key": "8",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811867981279440,
+            "title": "Shoujo",
+            "key": "9",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222535761945280,
+            "title": "Supernatural",
+            "key": "21",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289218986634724961,
+            "title": "Ecchi",
+            "key": "66",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289216538012069082,
+            "title": "Psychological",
+            "key": "92",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1743591780748,
+      "updated_at": 1743591810713,
+      "chapter_id": -2773107087466090318,
+      "page": 8,
+      "scroll": 0.0,
+      "percent": 0.0014018691,
+      "chapters": 321,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -7429318923301602225,
+      "manga": {
+        "manga_id": -7429318923301602225,
+        "title": "Divine Leveling System",
+        "alt_title": "",
+        "url": "/manga/divine-leveling-system/",
+        "public_url": "https://kiryuu01.com/manga/divine-leveling-system/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2023/01/divine-leveling-system-324645-negn4QL4-253x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "GRA工作组 & 扫雷大师 (Author), 阅文集团起点中文网 (Artist)",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811978031735884,
+            "title": "Shounen",
+            "key": "5",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289218986634724961,
+            "title": "Ecchi",
+            "key": "66",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289220609878957510,
+            "title": "Sci-fi",
+            "key": "49",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1743939467880,
+      "updated_at": 1743948447282,
+      "chapter_id": -8657685809768349210,
+      "page": 2,
+      "scroll": 3391.0,
+      "percent": 0.0014044944,
+      "chapters": 148,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -7323387723346573464,
+      "manga": {
+        "manga_id": -7323387723346573464,
+        "title": "Worthless Regression",
+        "alt_title": "",
+        "url": "/manga/worthless-regression/",
+        "public_url": "https://kiryuu01.com/manga/worthless-regression/",
+        "rating": 0.8,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2022/03/worthless-regression-747714-hdXkGK8a-222x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289223196064683944,
+            "title": "Martial Arts",
+            "key": "18",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1748387317185,
+      "updated_at": 1748387345395,
+      "chapter_id": 6414103372663380219,
+      "page": 4,
+      "scroll": 620.0,
+      "percent": 0.0025278057,
+      "chapters": 84,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -7270672210344701585,
+      "manga": {
+        "manga_id": -7270672210344701585,
+        "title": "The Demon King Who Lost His Job",
+        "alt_title": "",
+        "url": "/manga/the-demon-king-who-lost-his-job/",
+        "public_url": "https://kiryuu01.com/manga/the-demon-king-who-lost-his-job/",
+        "rating": 0.64,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/03/the-demon-king-who-lost-his-job-545075-SJeS6vp1-225x300.png",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Ye Wu",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898811895493893551,
+            "title": "Romance",
+            "key": "8",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1747529098377,
+      "updated_at": 1747529168655,
+      "chapter_id": 8398289701627055952,
+      "page": 14,
+      "scroll": 0.0,
+      "percent": 0.0026325597,
+      "chapters": 437,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -6958648314473271040,
+      "manga": {
+        "manga_id": -6958648314473271040,
+        "title": "Senpai, Jitaku Keibiin no Koyou wa Ikaga desu ka?",
+        "alt_title": "",
+        "url": "/manga/senpai-jitaku-keibiin-no-koyou-wa-ikaga-desu-ka/",
+        "public_url": "https://kiryuu01.com/manga/senpai-jitaku-keibiin-no-koyou-wa-ikaga-desu-ka/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2025/04/senpai-jitaku-keibiin-no-koyou-wa-ikaga-desu-ka-828607-iBTkkQNX-211x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Futagami Kei",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811895493893551,
+            "title": "Romance",
+            "key": "8",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223168552069833,
+            "title": "Seinen",
+            "key": "19",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222563274559391,
+            "title": "Slice of Life",
+            "key": "20",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1743736864328,
+      "updated_at": 1746654101728,
+      "chapter_id": -1996060795944182017,
+      "page": 7,
+      "scroll": 0.0,
+      "percent": 1.0,
+      "chapters": 8,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -6909991474885257245,
+      "manga": {
+        "manga_id": -6909991474885257245,
+        "title": "Omniscient Reader’s Viewpoint",
+        "alt_title": "",
+        "url": "/manga/omniscient-readers-viewpoint/",
+        "public_url": "https://kiryuu01.com/manga/omniscient-readers-viewpoint/",
+        "rating": 0.82,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/03/omniscient-readers-viewpoint-453615-diINCUuy-214x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Sing-Shong",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1749454018682,
+      "updated_at": 1749454022407,
+      "chapter_id": -7027358399412269637,
+      "page": 1,
+      "scroll": 4531.0,
+      "percent": 0.001062135,
+      "chapters": 268,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -6798126541136498211,
+      "manga": {
+        "manga_id": -6798126541136498211,
+        "title": "Demon Lord’s Martial Arts Ascension",
+        "alt_title": "",
+        "url": "/manga/demon-lords-martial-arts-ascension/",
+        "public_url": "https://kiryuu01.com/manga/demon-lords-martial-arts-ascension/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2022/11/demon-lords-martial-arts-ascension-017659-ilP2iQ1M-215x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "?",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289221517795223173,
+            "title": "Demons",
+            "key": "37",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223196064683944,
+            "title": "Martial Arts",
+            "key": "18",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1746479264654,
+      "updated_at": 1749297314020,
+      "chapter_id": -2573730299697723337,
+      "page": 38,
+      "scroll": 0.0,
+      "percent": 0.015482055,
+      "chapters": 116,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -6545894370962602785,
+      "manga": {
+        "manga_id": -6545894370962602785,
+        "title": "Ansatsu Skill de Isekai Saikyou: Renkinjutsu to Ansatsujutsu o Kiwameta Ore wa, Sekai o Kage kara Shihai suru",
+        "alt_title": "",
+        "url": "/manga/ansatsu-skill-de-isekai-saikyou-renkinjutsu-to-ansatsujutsu-o-kiwameta-ore-wa-sekai-o-kage-kara-shihai-suru/",
+        "public_url": "https://kiryuu01.com/manga/ansatsu-skill-de-isekai-saikyou-renkinjutsu-to-ansatsujutsu-o-kiwameta-ore-wa-sekai-o-kage-kara-shihai-suru/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/03/ansatsu-skill-de-isekai-saikyou-renkinjutsu-to-ansatsujutsu-o-kiwameta-ore-wa-sekai-o-kage-kara-shihai-suru-003136-gRv7LlwJ-211x300.jpeg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "SHINKOU Shotou",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223168552069833,
+            "title": "Seinen",
+            "key": "19",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811895493893551,
+            "title": "Romance",
+            "key": "8",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "created_at": 1747868274940,
+      "updated_at": 1747868389342,
+      "chapter_id": 7044908097292023937,
+      "page": 19,
+      "scroll": 0.0,
+      "percent": 0.020898642,
+      "chapters": 33,
+      "deleted_at": 0
+    }
+  ],
+  "timestamp": 1750551940270
+}
