@@ -1,6 +1,6 @@
 database:
   username: ahmad
   password: ahmad
-  database_name: rustatsu2
+  database_name: rustatsu
   host: 127.0.0.1
   port: 5432
