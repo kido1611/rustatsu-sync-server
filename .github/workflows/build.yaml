@@ -97,11 +97,6 @@ jobs:
           cp -r migrations dist/
           cd dist
           zip -r rustatsu-sync-linux.zip rustatsu-sync configuration migrations
-      - name: Upload build to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: rustatsu-linux
-          path: dist/rustatsu-sync-linux.zip
       - name: Upload release asset
         uses: softprops/action-gh-release@v1
         with:
