@@ -88,7 +88,7 @@ impl TryFrom<String> for Environment {
 }
 
 impl Config {
-    pub fn new() -> Result<Self, figment::Error> {
+    pub fn new() -> Result<Self, Box<figment::Error>> {
         let base_path =
             std::env::current_dir().expect("Failed to determine the current directory.");
         let config_directory = base_path.join("configuration");
@@ -105,5 +105,6 @@ impl Config {
             .merge(Yaml::file(config_directory.join(environment_filename)))
             .merge(Env::raw().split("__"))
             .extract()
+            .map_err(Box::new)
     }
 }

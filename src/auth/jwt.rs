@@ -29,14 +29,12 @@ pub fn encode_jwt(user_id: i64, jwt: &Jwt) -> Result<String, Error> {
         exp,
     };
 
-    let result = encode(
+    encode(
         &Header::default(),
         &claim,
         &EncodingKey::from_secret(jwt.secret.expose_secret().as_bytes()),
     )
-    .map_err(|e| Error::Auth(AuthError::JwtError(e)));
-
-    result
+    .map_err(|e| Error::Auth(AuthError::JwtError(e)))
 }
 
 pub fn decode_jwt(jwt_token: String, jwt: &Jwt) -> Result<TokenData<Claim>, Error> {
@@ -44,14 +42,12 @@ pub fn decode_jwt(jwt_token: String, jwt: &Jwt) -> Result<TokenData<Claim>, Erro
     validation.set_issuer(&[jwt.iss.expose_secret()]);
     validation.set_audience(&[jwt.aud.expose_secret()]);
 
-    let result = decode::<Claim>(
+    decode::<Claim>(
         &jwt_token,
         &DecodingKey::from_secret(jwt.secret.expose_secret().as_ref()),
         &validation,
     )
-    .map_err(|e| Error::Auth(AuthError::JwtError(e)));
-
-    result
+    .map_err(|e| Error::Auth(AuthError::JwtError(e)))
 }
 
 #[cfg(test)]
