@@ -112,19 +112,14 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Run build
         run: cargo build --release
-      - name: Package binary into ZIP
+      - name: Copy binary file
         run: |
-          mkdir -p dist
-          cp target/release/rustatsu-sync dist/
-          cp -r configuration dist/
-          cp -r migrations dist/
-          cd dist
-          zip -r rustatsu-sync-linux.zip rustatsu-sync configuration migrations
+          cp target/release/rustatsu-sync .
       - name: Upload build to artifacts
         uses: actions/upload-artifact@v4
         with:
           name: rustatsu-linux
           path: |
-            target/release/rustatsu-sync
+            rustatsu-sync
             configuration/
             migrations/
