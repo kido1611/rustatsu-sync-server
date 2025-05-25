@@ -5,9 +5,35 @@ on:
     types: [published]
 
 jobs:
-  build:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    env:
+      DATABASE__HOST: "127.0.0.1"
+      DATABASE__PORT: 5432
+      DATABASE__USERNAME: postgres
+      DATABASE__PASSWORD: password
+      DATABASE__DATABASE_NAME: postgres
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Run tests
+        run: cargo test
+
+  docker:
     name: build container image
     runs-on: ubuntu-latest
+    needs: [test]
     steps:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -37,3 +63,46 @@ jobs:
         with:
           files: docker-bake.hcl
           push: true
+  build:
+    name: Build app
+    runs-on: ubuntu-latest
+    needs: [test]
+    env:
+      DATABASE__HOST: "127.0.0.1"
+      DATABASE__PORT: 5432
+      DATABASE__USERNAME: postgres
+      DATABASE__PASSWORD: password
+      DATABASE__DATABASE_NAME: postgres
+      SQLX_OFFLINE: true
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Run build
+        run: cargo build --release
+      - name: Package binary into ZIP
+        run: |
+          mkdir -p dist
+          cp target/release/rustatsu-sync dist/
+          cp -r configuration dist/
+          cp -r migrations dist/
+          cd dist
+          zip -r rustatsu-sync-linux.zip rustatsu-sync configuration migrations
+      - name: Upload build to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rustatsu-linux
+          path: dist/rustatsu-sync-linux.zip
+      - name: Upload release asset
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/rustatsu-sync-linux.zip
