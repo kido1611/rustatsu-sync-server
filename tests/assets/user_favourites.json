@@ -1,0 +1,1169 @@
+{
+  "favourite_categories": [
+    {
+      "category_id": 1,
+      "created_at": 1719620081367,
+      "sort_key": 1,
+      "track": 1,
+      "show_in_lib": 1,
+      "deleted_at": 0,
+      "title": "Read later",
+      "order": "NEWEST"
+    },
+    {
+      "category_id": 3,
+      "created_at": 1719622208833,
+      "sort_key": 0,
+      "track": 1,
+      "show_in_lib": 1,
+      "deleted_at": 0,
+      "title": "aman",
+      "order": "NEWEST"
+    }
+  ],
+  "favourites": [
+    {
+      "manga_id": -8204966387726745539,
+      "manga": {
+        "manga_id": -8204966387726745539,
+        "title": "The Fox-Eyed Villain Of The Demon Academy",
+        "alt_title": "",
+        "url": "/manga/the-fox-eyed-villain-of-the-demon-academy/",
+        "public_url": "https://kiryuu01.com/manga/the-fox-eyed-villain-of-the-demon-academy/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2025/06/the-fox-eyed-villain-of-the-demon-academy-727649-BomAJHWm-209x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Ahhwe, Baobab",
+        "source": "KIRYUU",
+        "tags": []
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1750071218566,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -8204966387726745539,
+      "manga": {
+        "manga_id": -8204966387726745539,
+        "title": "The Fox-Eyed Villain Of The Demon Academy",
+        "alt_title": "",
+        "url": "/manga/the-fox-eyed-villain-of-the-demon-academy/",
+        "public_url": "https://kiryuu01.com/manga/the-fox-eyed-villain-of-the-demon-academy/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2025/06/the-fox-eyed-villain-of-the-demon-academy-727649-BomAJHWm-209x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Ahhwe, Baobab",
+        "source": "KIRYUU",
+        "tags": []
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1750071218733,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 2084148565816944583,
+      "manga": {
+        "manga_id": 2084148565816944583,
+        "title": "The World’s Best Engineer",
+        "alt_title": "",
+        "url": "/manga/the-worlds-best-engineer/",
+        "public_url": "https://kiryuu01.com/manga/the-worlds-best-engineer/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://i0.wp.com/kiryuu01.com/wp-content/uploads/2021/08/01-016597-zfaTc2jc.jpg?resize=165,225",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289220857492484509,
+            "title": "Reincarnation",
+            "key": "40",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1750200749925,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 2084148565816944583,
+      "manga": {
+        "manga_id": 2084148565816944583,
+        "title": "The World’s Best Engineer",
+        "alt_title": "",
+        "url": "/manga/the-worlds-best-engineer/",
+        "public_url": "https://kiryuu01.com/manga/the-worlds-best-engineer/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://i0.wp.com/kiryuu01.com/wp-content/uploads/2021/08/01-016597-zfaTc2jc.jpg?resize=165,225",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289220857492484509,
+            "title": "Reincarnation",
+            "key": "40",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1750200750013,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 157220992498027076,
+      "manga": {
+        "manga_id": 157220992498027076,
+        "title": "The Reincarnated Magician With Inferior Eyes ~The Oppressed Ex-hero Survives the Future World With Ease~",
+        "alt_title": "",
+        "url": "/manga/the-reincarnated-magician-with-inferior-eyes-the-oppressed-ex-hero-survives-the-future-world-with-ease/",
+        "public_url": "https://kiryuu01.com/manga/the-reincarnated-magician-with-inferior-eyes-the-oppressed-ex-hero-survives-the-future-world-with-ease/",
+        "rating": 0.7,
+        "nsfw": 1,
+        "content_rating": "ADULT",
+        "cover_url": "https://i3.wp.com/kiryuu01.com/wp-content/uploads/2024/04/the-reincarnated-magician-with-inferior-eyes-the-oppressed-ex-hero-survives-the-future-world-with-ease-587292-LgWESXlO.jpg?resize=165,225",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "KANKITSU Yusura",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811895493893551,
+            "title": "Romance",
+            "key": "8",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289221710383521950,
+            "title": "Mature",
+            "key": "30",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222480736717058,
+            "title": "Harem",
+            "key": "23",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289218986634724961,
+            "title": "Ecchi",
+            "key": "66",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1750216885060,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 157220992498027076,
+      "manga": {
+        "manga_id": 157220992498027076,
+        "title": "The Reincarnated Magician With Inferior Eyes ~The Oppressed Ex-hero Survives the Future World With Ease~",
+        "alt_title": "",
+        "url": "/manga/the-reincarnated-magician-with-inferior-eyes-the-oppressed-ex-hero-survives-the-future-world-with-ease/",
+        "public_url": "https://kiryuu01.com/manga/the-reincarnated-magician-with-inferior-eyes-the-oppressed-ex-hero-survives-the-future-world-with-ease/",
+        "rating": 0.7,
+        "nsfw": 1,
+        "content_rating": "ADULT",
+        "cover_url": "https://i3.wp.com/kiryuu01.com/wp-content/uploads/2024/04/the-reincarnated-magician-with-inferior-eyes-the-oppressed-ex-hero-survives-the-future-world-with-ease-587292-LgWESXlO.jpg?resize=165,225",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "KANKITSU Yusura",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811895493893551,
+            "title": "Romance",
+            "key": "8",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289221710383521950,
+            "title": "Mature",
+            "key": "30",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222480736717058,
+            "title": "Harem",
+            "key": "23",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289218986634724961,
+            "title": "Ecchi",
+            "key": "66",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1750216885344,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 587616342796085392,
+      "manga": {
+        "manga_id": 587616342796085392,
+        "title": "Kanojo ga Senpai ni NTR-reta no de, Senpai no Kanojo wo NTR-masu",
+        "alt_title": "",
+        "url": "/manga/kanojo-ga-senpai-ni-ntr-reta-no-de-senpai-no-kanojo-wo-ntr-masu/",
+        "public_url": "https://kiryuu01.com/manga/kanojo-ga-senpai-ni-ntr-reta-no-de-senpai-no-kanojo-wo-ntr-masu/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2022/01/kanojo-ga-senpai-ni-ntr-reta-no-de-senpai-no-kanojo-wo-ntr-masu-387824-VQF0zwBk-214x300.png",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Shinden Mihiro",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811895493893551,
+            "title": "Romance",
+            "key": "8",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223361140368610,
+            "title": "School Life",
+            "key": "12",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1750422360720,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 587616342796085392,
+      "manga": {
+        "manga_id": 587616342796085392,
+        "title": "Kanojo ga Senpai ni NTR-reta no de, Senpai no Kanojo wo NTR-masu",
+        "alt_title": "",
+        "url": "/manga/kanojo-ga-senpai-ni-ntr-reta-no-de-senpai-no-kanojo-wo-ntr-masu/",
+        "public_url": "https://kiryuu01.com/manga/kanojo-ga-senpai-ni-ntr-reta-no-de-senpai-no-kanojo-wo-ntr-masu/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2022/01/kanojo-ga-senpai-ni-ntr-reta-no-de-senpai-no-kanojo-wo-ntr-masu-387824-VQF0zwBk-214x300.png",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Shinden Mihiro",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811895493893551,
+            "title": "Romance",
+            "key": "8",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223361140368610,
+            "title": "School Life",
+            "key": "12",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1750422361001,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -180026304328830337,
+      "manga": {
+        "manga_id": -180026304328830337,
+        "title": "I’m Going To Destroy This Country",
+        "alt_title": "",
+        "url": "/manga/im-going-to-destroy-this-country/",
+        "public_url": "https://kiryuu01.com/manga/im-going-to-destroy-this-country/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2025/02/im-going-to-destroy-this-country-455557-fvj8JkMB-221x300.webp",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "-",
+        "source": "KIRYUU",
+        "tags": []
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1748720080560,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -180026304328830337,
+      "manga": {
+        "manga_id": -180026304328830337,
+        "title": "I’m Going To Destroy This Country",
+        "alt_title": "",
+        "url": "/manga/im-going-to-destroy-this-country/",
+        "public_url": "https://kiryuu01.com/manga/im-going-to-destroy-this-country/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2025/02/im-going-to-destroy-this-country-455557-fvj8JkMB-221x300.webp",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "-",
+        "source": "KIRYUU",
+        "tags": []
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1748720080944,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -4430872351309587482,
+      "manga": {
+        "manga_id": -4430872351309587482,
+        "title": "Regressing As The Reincarnated Bastard Of The Sword",
+        "alt_title": "",
+        "url": "/manga/regressing-as-the-reincarnated-bastard-of-the-sword/",
+        "public_url": "https://kiryuu01.com/manga/regressing-as-the-reincarnated-bastard-of-the-sword/",
+        "rating": 0.6,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2024/10/resource-034248-GfXSkfyt-210x300.png",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Bear-eating Squirrel",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222535761945280,
+            "title": "Supernatural",
+            "key": "21",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1748981789491,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 1029238425855835149,
+      "manga": {
+        "manga_id": 1029238425855835149,
+        "title": "Unrivaled Necromancer",
+        "alt_title": "",
+        "url": "/manga/unrivaled-necromancer/",
+        "public_url": "https://kiryuu01.com/manga/unrivaled-necromancer/",
+        "rating": 0.9,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2023/06/unrivaled-necromancer-117534-mYfRNuaA-210x300.webp",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "-",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811978031735884,
+            "title": "Shounen",
+            "key": "5",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1748293532292,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -7323387723346573464,
+      "manga": {
+        "manga_id": -7323387723346573464,
+        "title": "Worthless Regression",
+        "alt_title": "",
+        "url": "/manga/worthless-regression/",
+        "public_url": "https://kiryuu01.com/manga/worthless-regression/",
+        "rating": 0.8,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2022/03/worthless-regression-747714-hdXkGK8a-222x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289223196064683944,
+            "title": "Martial Arts",
+            "key": "18",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1748387315266,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -5293626742334116057,
+      "manga": {
+        "manga_id": -5293626742334116057,
+        "title": "I Become a Legendary Arch Mage by Reading a Book",
+        "alt_title": "",
+        "url": "/manga/i-become-a-legendary-arch-mage-by-reading-a-book/",
+        "public_url": "https://kiryuu01.com/manga/i-become-a-legendary-arch-mage-by-reading-a-book/",
+        "rating": 0.87,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2024/08/i-become-a-legendary-arch-mage-by-reading-a-book-856658-unYmHaHw-222x300.png",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Geumhon Yang Galbi",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811978031735884,
+            "title": "Shounen",
+            "key": "5",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1748387361452,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -5293626742334116057,
+      "manga": {
+        "manga_id": -5293626742334116057,
+        "title": "I Become a Legendary Arch Mage by Reading a Book",
+        "alt_title": "",
+        "url": "/manga/i-become-a-legendary-arch-mage-by-reading-a-book/",
+        "public_url": "https://kiryuu01.com/manga/i-become-a-legendary-arch-mage-by-reading-a-book/",
+        "rating": 0.87,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2024/08/i-become-a-legendary-arch-mage-by-reading-a-book-856658-unYmHaHw-222x300.png",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Geumhon Yang Galbi",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811978031735884,
+            "title": "Shounen",
+            "key": "5",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1748387361828,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -6123488097231597200,
+      "manga": {
+        "manga_id": -6123488097231597200,
+        "title": "Star-Embracing Swordmaster",
+        "alt_title": "",
+        "url": "/manga/star-embracing-swordmaster/",
+        "public_url": "https://kiryuu01.com/manga/star-embracing-swordmaster/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2023/09/star-embracing-swordmaster-361565-oqRZh1Zh-221x300.webp",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Hong Dae-Wui,Q10",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1748387379511,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -6123488097231597200,
+      "manga": {
+        "manga_id": -6123488097231597200,
+        "title": "Star-Embracing Swordmaster",
+        "alt_title": "",
+        "url": "/manga/star-embracing-swordmaster/",
+        "public_url": "https://kiryuu01.com/manga/star-embracing-swordmaster/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2023/09/star-embracing-swordmaster-361565-oqRZh1Zh-221x300.webp",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Hong Dae-Wui,Q10",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1748387379751,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 4684470517186734390,
+      "manga": {
+        "manga_id": 4684470517186734390,
+        "title": "Overlord of Insects",
+        "alt_title": "",
+        "url": "/manga/overlord-of-insects/",
+        "public_url": "https://kiryuu01.com/manga/overlord-of-insects/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2024/04/overlord-of-insects-140982-icFUsAx6-208x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "三木森工作室 咚咚小红帽 [Add, ]飞卢小说网 [Add, ]",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898811978031735884,
+            "title": "Shounen",
+            "key": "5",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1748387424654,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 4684470517186734390,
+      "manga": {
+        "manga_id": 4684470517186734390,
+        "title": "Overlord of Insects",
+        "alt_title": "",
+        "url": "/manga/overlord-of-insects/",
+        "public_url": "https://kiryuu01.com/manga/overlord-of-insects/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2024/04/overlord-of-insects-140982-icFUsAx6-208x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "三木森工作室 咚咚小红帽 [Add, ]飞卢小说网 [Add, ]",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898811978031735884,
+            "title": "Shounen",
+            "key": "5",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1748387425005,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 5345743560599381236,
+      "manga": {
+        "manga_id": 5345743560599381236,
+        "title": "I Really Don’t Want to Learn Forbidden Spells",
+        "alt_title": "",
+        "url": "/manga/i-really-dont-want-to-learn-forbidden-spells/",
+        "public_url": "https://kiryuu01.com/manga/i-really-dont-want-to-learn-forbidden-spells/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2024/03/i-really-dont-want-to-learn-forbidden-spells-200782-F6ky92Mi.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "昕博承飞",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289216400448998527,
+            "title": "Shounen Ai",
+            "key": "97",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1748465089876,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": 5345743560599381236,
+      "manga": {
+        "manga_id": 5345743560599381236,
+        "title": "I Really Don’t Want to Learn Forbidden Spells",
+        "alt_title": "",
+        "url": "/manga/i-really-dont-want-to-learn-forbidden-spells/",
+        "public_url": "https://kiryuu01.com/manga/i-really-dont-want-to-learn-forbidden-spells/",
+        "rating": 0.7,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2024/03/i-really-dont-want-to-learn-forbidden-spells-200782-F6ky92Mi.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "昕博承飞",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289216400448998527,
+            "title": "Shounen Ai",
+            "key": "97",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1748465090178,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -2828113361681569592,
+      "manga": {
+        "manga_id": -2828113361681569592,
+        "title": "Number One Star Instructor Master Baek (One Hit Teacher, Master Baek)",
+        "alt_title": "",
+        "url": "/manga/number-one-star-instructor-master-baek-one-hit-teacher-master-baek/",
+        "public_url": "https://kiryuu01.com/manga/number-one-star-instructor-master-baek-one-hit-teacher-master-baek/",
+        "rating": 0.79,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/10/kiryuu01-246074-x74yEiKp-209x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Ganjjajang S.J LEE [Add, ]",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289222453224102947,
+            "title": "Historical",
+            "key": "24",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811978031735884,
+            "title": "Shounen",
+            "key": "5",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289220857492484509,
+            "title": "Reincarnation",
+            "key": "40",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223196064683944,
+            "title": "Martial Arts",
+            "key": "18",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1748475124764,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -2828113361681569592,
+      "manga": {
+        "manga_id": -2828113361681569592,
+        "title": "Number One Star Instructor Master Baek (One Hit Teacher, Master Baek)",
+        "alt_title": "",
+        "url": "/manga/number-one-star-instructor-master-baek-one-hit-teacher-master-baek/",
+        "public_url": "https://kiryuu01.com/manga/number-one-star-instructor-master-baek-one-hit-teacher-master-baek/",
+        "rating": 0.79,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/10/kiryuu01-246074-x74yEiKp-209x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Ganjjajang S.J LEE [Add, ]",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289222453224102947,
+            "title": "Historical",
+            "key": "24",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223388652982721,
+            "title": "Drama",
+            "key": "11",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812005544349995,
+            "title": "Fantasy",
+            "key": "4",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223306115140388,
+            "title": "Comedy",
+            "key": "14",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811978031735884,
+            "title": "Shounen",
+            "key": "5",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289220857492484509,
+            "title": "Reincarnation",
+            "key": "40",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223196064683944,
+            "title": "Martial Arts",
+            "key": "18",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 1,
+      "sort_key": 0,
+      "created_at": 1748475125038,
+      "deleted_at": 0
+    },
+    {
+      "manga_id": -1277659467457704638,
+      "manga": {
+        "manga_id": -1277659467457704638,
+        "title": "Iron Ladies",
+        "alt_title": "",
+        "url": "/manga/iron-ladies/",
+        "public_url": "https://kiryuu01.com/manga/iron-ladies/",
+        "rating": 0.69,
+        "nsfw": 0,
+        "content_rating": null,
+        "cover_url": "https://kiryuu01.com/wp-content/uploads/2021/03/iron-ladies-104065-QiFAvvxS-225x300.jpg",
+        "large_cover_url": null,
+        "state": "ONGOING",
+        "author": "Iron Scales Studio",
+        "source": "KIRYUU",
+        "tags": [
+          {
+            "tag_id": -4289220609878957510,
+            "title": "Sci-fi",
+            "key": "49",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289223168552069833,
+            "title": "Seinen",
+            "key": "19",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812060569578217,
+            "title": "Action",
+            "key": "2",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289222480736717058,
+            "title": "Harem",
+            "key": "23",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898812033056964106,
+            "title": "Adventure",
+            "key": "3",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4898811895493893551,
+            "title": "Romance",
+            "key": "8",
+            "source": "KIRYUU"
+          },
+          {
+            "tag_id": -4289218986634724961,
+            "title": "Ecchi",
+            "key": "66",
+            "source": "KIRYUU"
+          }
+        ]
+      },
+      "category_id": 3,
+      "sort_key": 0,
+      "created_at": 1748475483216,
+      "deleted_at": 0
+    }
+  ],
+  "timestamp": 1750464146221
+}
