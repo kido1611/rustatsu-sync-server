@@ -1,23 +1,22 @@
 use std::{sync::Arc, time::Duration};
 
 use axum::{
-    Router,
     body::Body,
     extract::{DefaultBodyLimit, MatchedPath},
-    http::{HeaderName, Request, header},
+    http::{header, HeaderName, Request},
     middleware,
     response::Response,
     routing::{get, post},
+    Router,
 };
 use tower::ServiceBuilder;
 use tower_http::{
-    compression::CompressionLayer,
     request_id::{MakeRequestUuid, PropagateRequestIdLayer, SetRequestIdLayer},
     trace::TraceLayer,
 };
 use tracing::{
-    Span,
     field::{self, display},
+    Span,
 };
 
 use crate::{middlewares::jwt_auth_middleware, state::AppState};
@@ -108,7 +107,6 @@ pub fn init_router(app_state: AppState) -> Router {
         .nest("/me", me_route)
         .nest("/resource/favourites", resources_favourites_route)
         .nest("/resource/history", resources_history_route)
-        .layer(CompressionLayer::new())
         .layer(request_id_middleware)
         .with_state(state)
 }
