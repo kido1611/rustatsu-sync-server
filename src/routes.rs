@@ -1,13 +1,13 @@
 use std::{sync::Arc, time::Duration};
 
 use axum::{
+    Router,
     body::Body,
     extract::{DefaultBodyLimit, MatchedPath},
-    http::{header, HeaderName, Request},
+    http::{HeaderName, Request, header},
     middleware,
     response::Response,
     routing::{get, post},
-    Router,
 };
 use tower::ServiceBuilder;
 use tower_http::{
@@ -15,8 +15,8 @@ use tower_http::{
     trace::TraceLayer,
 };
 use tracing::{
-    field::{self, display},
     Span,
+    field::{self, display},
 };
 
 use crate::{middlewares::jwt_auth_middleware, state::AppState};
@@ -26,9 +26,7 @@ const REQUEST_ID_HEADER: &str = "x-request-id";
 pub fn init_router(app_state: AppState) -> Router {
     let state = Arc::new(app_state);
 
-    let app = Router::new()
-        .route("/", get(crate::controllers::home::index))
-        .route("/auth", post(crate::controllers::auth::store));
+    let auth_middleware = middleware::from_fn_with_state(state.clone(), jwt_auth_middleware);
 
     let manga_route = Router::new()
         .route("/", get(crate::controllers::manga::index))
@@ -37,27 +35,14 @@ pub fn init_router(app_state: AppState) -> Router {
     let resources_favourites_route = Router::new()
         .route("/", post(crate::controllers::resources::favourites::store))
         .layer(DefaultBodyLimit::max(52_428_800)) // 50MB in binary bytes. https://www.gbmb.org/mb-to-bytes
-        .route("/", get(crate::controllers::resources::favourites::index))
-        .layer(middleware::from_fn_with_state(
-            state.clone(),
-            jwt_auth_middleware,
-        ));
+        .route("/", get(crate::controllers::resources::favourites::index));
 
     let resources_history_route = Router::new()
         .route("/", post(crate::controllers::resources::history::store))
         .layer(DefaultBodyLimit::max(52_428_800)) // 50MB in binary bytes. https://www.gbmb.org/mb-to-bytes
-        .route("/", get(crate::controllers::resources::history::index))
-        .layer(middleware::from_fn_with_state(
-            state.clone(),
-            jwt_auth_middleware,
-        ));
+        .route("/", get(crate::controllers::resources::history::index));
 
-    let me_route = Router::new()
-        .route("/", get(crate::controllers::me::index))
-        .layer(middleware::from_fn_with_state(
-            state.clone(),
-            jwt_auth_middleware,
-        ));
+    let me_route = Router::new().route("/", get(crate::controllers::me::index));
 
     let x_request_id_header = HeaderName::from_static(REQUEST_ID_HEADER);
     let request_id_middleware = ServiceBuilder::new()
@@ -103,10 +88,16 @@ pub fn init_router(app_state: AppState) -> Router {
         )
         .layer(PropagateRequestIdLayer::new(x_request_id_header));
 
-    app.nest("/manga", manga_route)
+    Router::new()
+        // auth routes
         .nest("/me", me_route)
         .nest("/resource/favourites", resources_favourites_route)
         .nest("/resource/history", resources_history_route)
+        .layer(auth_middleware)
+        // guest routes
+        .nest("/manga", manga_route)
+        .route("/", get(crate::controllers::home::index))
+        .route("/auth", post(crate::controllers::auth::store))
         .layer(request_id_middleware)
         .with_state(state)
 }
