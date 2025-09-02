@@ -11,6 +11,7 @@ pub struct Config {
     pub application: Application,
     pub database: Database,
     pub jwt: Jwt,
+    pub cors: Cors,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -43,6 +44,11 @@ pub struct Database {
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub port: u16,
     pub database_name: String,
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct Cors {
+    pub allowed_origins: Vec<String>,
 }
 
 impl Database {

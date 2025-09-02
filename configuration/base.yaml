@@ -13,3 +13,6 @@ jwt:
   secret: "jwt-is-super-awesome"
   iss: "rustatsu"
   aud: "rustatsu"
+cors:
+  allowed_origins:
+    - https://rustatsu.abdusy.dev

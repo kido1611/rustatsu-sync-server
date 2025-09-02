@@ -4,3 +4,6 @@ database:
   database_name: rustatsu
   host: 127.0.0.1
   port: 5432
+cors:
+  allowed_origins:
+    - http://localhost:3000

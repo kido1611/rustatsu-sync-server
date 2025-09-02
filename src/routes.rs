@@ -4,13 +4,17 @@ use axum::{
     Router,
     body::Body,
     extract::{DefaultBodyLimit, MatchedPath},
-    http::{HeaderName, Request, header},
+    http::{
+        HeaderName, HeaderValue, Method, Request,
+        header::{self, AUTHORIZATION, CONTENT_TYPE},
+    },
     middleware,
     response::Response,
     routing::{get, post},
 };
 use tower::ServiceBuilder;
 use tower_http::{
+    cors::CorsLayer,
     request_id::{MakeRequestUuid, PropagateRequestIdLayer, SetRequestIdLayer},
     trace::TraceLayer,
 };
@@ -24,7 +28,21 @@ use crate::{middlewares::jwt_auth_middleware, state::AppState};
 const REQUEST_ID_HEADER: &str = "x-request-id";
 
 pub fn init_router(app_state: AppState) -> Router {
+    let allowed_origins: Vec<HeaderValue> = app_state
+        .config
+        .cors
+        .allowed_origins
+        .iter()
+        .map(|v| HeaderValue::from_str(v))
+        .collect::<Result<Vec<HeaderValue>, _>>()
+        .expect("Invalid CORS origin in config");
+
     let state = Arc::new(app_state);
+
+    let cors_layer = CorsLayer::new()
+        .allow_methods([Method::GET, Method::POST])
+        .allow_headers([CONTENT_TYPE, AUTHORIZATION])
+        .allow_origin(allowed_origins);
 
     let auth_middleware = middleware::from_fn_with_state(state.clone(), jwt_auth_middleware);
 
@@ -99,5 +117,6 @@ pub fn init_router(app_state: AppState) -> Router {
         .route("/", get(crate::controllers::home::index))
         .route("/auth", post(crate::controllers::auth::store))
         .layer(request_id_middleware)
+        .layer(cors_layer)
         .with_state(state)
 }
