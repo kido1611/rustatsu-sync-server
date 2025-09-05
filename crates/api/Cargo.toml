@@ -61,10 +61,3 @@ fake = { version = "4.3.0", features = [
   "time",
   "url",
 ] }
-
-[profile.release]
-lto = true
-codegen-units = 1
-panic = "abort"
-opt-level = 3
-strip = true
