@@ -1,11 +1,18 @@
 [workspace]
-members = ["crates/api", "crates/core/application", "crates/core/domain", "crates/core/infrastructure"]
+members = [
+  "crates/api",
+  "crates/core/application",
+  "crates/core/domain",
+  "crates/core/infrastructure",
+  "crates/shared",
+]
 resolver = "3"
 
 [workspace.dependencies]
 anyhow = "1.0.99"
 async-trait = "0.1.89"
 futures = "0.3.31"
+serde = { version = "1.0.219", features = ["derive"] }
 sqlx = { version = "0.8.6", features = [
   "runtime-tokio",
   "tls-rustls",
