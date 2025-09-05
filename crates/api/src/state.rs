@@ -21,7 +21,7 @@ impl AppState {
 
         if config.application.run_migration {
             tracing::warn!("Running database migrations...");
-            sqlx::migrate!("./migrations").run(&pool).await?;
+            sqlx::migrate!("../../migrations").run(&pool).await?;
         }
 
         Ok(AppState { pool, config })

@@ -3,6 +3,10 @@ use axum::{
     body::Body,
     http::{Request, Response},
 };
+use figment::{
+    Figment,
+    providers::{Format, Yaml},
+};
 use rustatsu_sync::{
     auth::encode_jwt, config::Config, db::user::create_user, model::User, routes::init_router,
     state::AppState,
@@ -18,8 +22,28 @@ pub struct AppStateTest {
 }
 
 impl AppStateTest {
+    pub fn create_config() -> Config {
+        let base_path =
+            std::env::current_dir().expect("Failed to determine the current directory.");
+        let config_directory = base_path
+            .parent()
+            .unwrap()
+            .parent()
+            .unwrap()
+            .join("configuration");
+
+        let config: Config = Figment::new()
+            .merge(Yaml::file(config_directory.join("base.yaml")))
+            .merge(Yaml::file(config_directory.join("local.yaml")))
+            .extract()
+            .map_err(Box::new)
+            .unwrap();
+
+        config
+    }
+
     pub async fn new(enable_db: bool) -> Self {
-        let config = Config::new().unwrap();
+        let config = Self::create_config();
 
         Self::new_with_config(enable_db, config).await
     }
@@ -47,7 +71,7 @@ impl AppStateTest {
 
         let app_state = AppState::init(config.clone()).await.unwrap();
         if enable_db {
-            sqlx::migrate!("./migrations")
+            sqlx::migrate!("../../migrations")
                 .run(&app_state.pool)
                 .await
                 .expect("undo migrations");

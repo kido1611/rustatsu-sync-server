@@ -3,7 +3,7 @@ use axum::{
     http::{self, Request, StatusCode},
 };
 use http_body_util::BodyExt;
-use rustatsu_sync::{config::Config, controllers::auth::AuthResponse};
+use rustatsu_sync::controllers::auth::AuthResponse;
 use serde::Serialize;
 use serde_json::json;
 
@@ -216,7 +216,7 @@ async fn should_be_create_user_when_user_is_missing() {
 
 #[tokio::test]
 async fn should_be_error_when_user_is_missing_and_registration_is_disabled() {
-    let mut config = Config::new().unwrap();
+    let mut config = AppStateTest::create_config();
     config.application.allow_registration = false;
 
     let mut test_state = AppStateTest::new_with_config(true, config).await;
