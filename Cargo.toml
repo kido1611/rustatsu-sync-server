@@ -38,6 +38,7 @@ tower-http = { version = "0.6.2", features = [
   "compression-full",
   "trace",
   "request-id",
+  "cors",
 ] }
 tracing = { version = "0.1.41", features = ["log"] }
 tracing-bunyan-formatter = "0.3.10"
