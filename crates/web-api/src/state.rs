@@ -53,8 +53,9 @@ impl AppState {
             .connect_lazy_with(config.database.with_db());
 
         if config.application.run_migration {
-            tracing::warn!("Running database migrations...");
+            tracing::warn!("running database migrations...");
             sqlx::migrate!("../../migrations").run(&pool).await?;
+            tracing::info!("successfully running database migrations")
         }
 
         let password_manager = Arc::new(ArgonPasswordManager {});
