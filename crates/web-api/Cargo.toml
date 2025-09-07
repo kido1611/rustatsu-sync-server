@@ -13,46 +13,32 @@ name = "rustatsu-sync"
 
 [dependencies]
 anyhow.workspace = true
-axum = { version = "0.8.4", features = ["http2", "macros"] }
-chrono = "0.4.41"
-core-application = { path = "../core/application" }
-core-domain = { path = "../core/domain" }
-core-infrastructure = { path = "../core/infrastructure" }
-figment = { version = "0.10.19", features = ["yaml", "env"] }
-jsonwebtoken = "9.3.1"
-shared = { path = "../shared" }
-secrecy = { version = "0.10.3", features = ["serde"] }
-serde = { version = "1.0.219", features = ["derive"] }
-serde-aux = "4.7.0"
-serde_json = "1.0.143"
+axum = { workspace = true, features = ["http2", "macros"] }
+chrono = { workspace = true }
+core-application = { workspace = true }
+core-domain = { workspace = true }
+core-infrastructure = { workspace = true }
+figment = { workspace = true, features = ["yaml", "env"] }
+jsonwebtoken = { workspace = true }
+shared = { workspace = true }
+secrecy = { workspace = true, features = ["serde"] }
+serde = { workspace = true, features = ["derive"] }
+serde-aux = { workspace = true }
+serde_json = { workspace = true }
 sqlx.workspace = true
 thiserror.workspace = true
-tokio = { version = "1.47.1", features = ["full", "macros", "rt-multi-thread"] }
-tower = "0.5.2"
-tower-http = { version = "0.6.6", features = [
-  "compression-full",
-  "trace",
-  "request-id",
-  "cors",
-] }
+tokio = { workspace = true, features = ["full", "macros", "rt-multi-thread"] }
+tower = { workspace = true }
+tower-http = { workspace = true, features = ["compression-full", "trace", "request-id", "cors"] }
 tracing.workspace = true
-tracing-bunyan-formatter = "0.3.10"
-tracing-log = "0.2.0"
-tracing-panic = "0.1.2"
-tracing-subscriber = { version = "0.3.20", features = [
-  "registry",
-  "env-filter",
-  "json",
-] }
-validator = { version = "0.20.0", features = ["derive"] }
+tracing-bunyan-formatter = { workspace = true }
+tracing-log = { workspace = true }
+tracing-panic = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["registry", "env-filter", "json"] }
+validator = { workspace = true, features = ["derive"] }
 
 [dev-dependencies]
-rand = "0.9.2"
-http-body-util = "0.1.3"
-fake = { version = "4.4.0", features = [
-  "chrono",
-  "email_address",
-  "time",
-  "url",
-] }
-uuid = { version = "1.18.1", features = ["v4"] }
+rand = { workspace = true }
+http-body-util = { workspace = true }
+fake = { workspace = true, features = ["chrono", "email_address", "time", "url"] }
+uuid = { workspace = true, features = ["v4"] }

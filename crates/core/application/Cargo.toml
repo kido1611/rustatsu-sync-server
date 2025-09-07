@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-chrono = "0.4.41"
-core-domain = { path = "../domain" }
-secrecy = "0.10.3"
+chrono = { workspace = true }
+core-domain = { workspace = true }
+secrecy = { workspace = true }
 thiserror.workspace = true
 tracing.workspace = true
