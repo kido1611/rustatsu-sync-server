@@ -2,39 +2,45 @@ use axum::{
     Json,
     extract::{Path, Query, State},
 };
+use core_application::manga::model::ListMangaQuery;
+use shared::model::response::{MangaResponse, list_manga_resource_to_list_manga_response};
 use validator::Validate;
 
-use crate::{
-    db::manga::{get_manga_by_id, get_manga_with_pagination},
-    error::Error,
-    model::Manga,
-    state::SharedAppState,
-};
+use crate::{error::Error, state::SharedAppState};
 use serde_aux::field_attributes::deserialize_option_number_from_string;
 
-#[tracing::instrument(name = "[GET] manga", skip_all, fields(parameters))]
+#[tracing::instrument(name = "request::list_manga", skip_all, fields(limit = ?pagination.limit, offset = ?pagination.offset))]
 pub async fn index(
     State(app_state): State<SharedAppState>,
     Query(pagination): Query<Pagination>,
-) -> Result<Json<Vec<Manga>>, Error> {
+) -> Result<Json<Vec<MangaResponse>>, Error> {
     pagination.validate().map_err(Error::Validation)?;
 
-    let limit = pagination.limit.unwrap_or(20);
-    let skip = pagination.offset.unwrap_or(0) * limit;
+    let list_manga_resource = app_state
+        .list_manga_usecase
+        .execute(ListMangaQuery {
+            limit: pagination.limit.unwrap_or(20),
+            offset: pagination.offset.unwrap_or(0),
+        })
+        .await?;
+    let list_manga_response = list_manga_resource_to_list_manga_response(list_manga_resource);
 
-    let result = get_manga_with_pagination(&app_state.pool, limit, skip).await?;
-
-    Ok(Json(result))
+    Ok(Json(list_manga_response))
 }
 
-#[tracing::instrument(name = "[GET] manga/{id}", skip_all, fields(path.id))]
+#[tracing::instrument(name = "request::get_manga_by_id", skip_all, fields(manga_id = %path.id))]
 pub async fn show(
     State(app_state): State<SharedAppState>,
     Path(path): Path<UrlPath>,
-) -> Result<Json<Manga>, Error> {
-    let result = get_manga_by_id(&app_state.pool, path.id).await?;
+) -> Result<Json<MangaResponse>, Error> {
+    let manga: MangaResponse = app_state
+        .get_manga_by_id_usecase
+        .execute(path.id)
+        .await?
+        .ok_or(Error::ResourceNotFound(format!("manga {}", path.id)))?
+        .into();
 
-    Ok(Json(result))
+    Ok(Json(manga))
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Validate)]

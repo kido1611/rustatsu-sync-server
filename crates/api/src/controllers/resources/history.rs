@@ -1,33 +1,38 @@
 use std::sync::Arc;
 
 use axum::{Extension, Json, extract::State};
+use shared::model::{request::UserHistoryRequest, response::UserHistoryResponse};
 
-use crate::{
-    db::user_history::{get_user_history, update_user_history},
-    error::Error,
-    model::{User, UserHistory},
-    state::SharedAppState,
-};
+use crate::{error::Error, model::User, state::SharedAppState};
 
-#[tracing::instrument(name = "[GET] resource history", skip_all)]
+#[tracing::instrument(name = "request::list_user_history", skip_all)]
 pub async fn index(
     Extension(user): Extension<Arc<User>>,
     State(app_state): State<SharedAppState>,
-) -> Result<Json<UserHistory>, Error> {
-    let result = get_user_history(&app_state.pool, user.id).await?;
+) -> Result<Json<UserHistoryResponse>, Error> {
+    let history_resource = app_state
+        .get_user_history_resource_usecase
+        .execute(user.id)
+        .await?;
 
-    Ok(Json(result))
+    Ok(Json(history_resource.into()))
 }
 
-#[tracing::instrument(name = "[POST] resource history", skip_all)]
+#[tracing::instrument(name = "request::update_user_history", skip_all)]
 pub async fn store(
     Extension(user): Extension<Arc<User>>,
     State(app_state): State<SharedAppState>,
-    axum::extract::Json(user_history): axum::extract::Json<UserHistory>,
-) -> Result<Json<UserHistory>, Error> {
-    update_user_history(&app_state.pool, user.id, user_history).await?;
+    axum::extract::Json(user_history): axum::extract::Json<UserHistoryRequest>,
+) -> Result<Json<UserHistoryResponse>, Error> {
+    app_state
+        .insert_user_history_resource_usecase
+        .execute(user.id, user_history.into())
+        .await?;
 
-    let result = get_user_history(&app_state.pool, user.id).await?;
+    let history_resource = app_state
+        .get_user_history_resource_usecase
+        .execute(user.id)
+        .await?;
 
-    Ok(Json(result))
+    Ok(Json(history_resource.into()))
 }

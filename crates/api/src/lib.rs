@@ -8,7 +8,6 @@ use tokio::net::TcpListener;
 pub mod auth;
 pub mod config;
 pub mod controllers;
-pub mod db;
 pub mod error;
 pub mod middlewares;
 pub mod model;

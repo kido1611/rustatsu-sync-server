@@ -4,31 +4,38 @@ use axum::{
     Extension,
     extract::{Json, State},
 };
+use shared::model::{request::UserFavouriteRequest, response::UserFavouriteResponse};
 
-use crate::{
-    db::user_favourites::{get_user_favourites, update_user_favourites},
-    error::Error,
-    model::{User, UserFavourite},
-    state::SharedAppState,
-};
+use crate::{error::Error, model::User, state::SharedAppState};
 
-#[tracing::instrument(name = "[GET] resource favourites", skip_all)]
+#[tracing::instrument(name = "request::list_user_favourite", skip_all)]
 pub async fn index(
     Extension(user): Extension<Arc<User>>,
     State(app_state): State<SharedAppState>,
-) -> Result<axum::Json<UserFavourite>, Error> {
-    let result = get_user_favourites(&app_state.pool, user.id).await?;
-    Ok(Json(result))
+) -> Result<axum::Json<UserFavouriteResponse>, Error> {
+    let user_favourite_resource = app_state
+        .get_user_favourite_resource_usecase
+        .execute(user.id)
+        .await?;
+
+    Ok(Json(user_favourite_resource.into()))
 }
 
-#[tracing::instrument(name = "[POST] resource favourites", skip_all)]
+#[tracing::instrument(name = "request::update_user_favourite", skip_all)]
 pub async fn store(
     Extension(user): Extension<Arc<User>>,
     State(app_state): State<SharedAppState>,
-    Json(user_favourite): Json<UserFavourite>,
-) -> Result<axum::Json<UserFavourite>, Error> {
-    update_user_favourites(&app_state.pool, user.id, user_favourite).await?;
+    Json(user_favourite): Json<UserFavouriteRequest>,
+) -> Result<axum::Json<UserFavouriteResponse>, Error> {
+    app_state
+        .insert_user_favourite_resource_usecase
+        .execute(user.id, user_favourite.into())
+        .await?;
 
-    let result = get_user_favourites(&app_state.pool, user.id).await?;
-    Ok(Json(result))
+    let user_favourite_resource = app_state
+        .get_user_favourite_resource_usecase
+        .execute(user.id)
+        .await?;
+
+    Ok(Json(user_favourite_resource.into()))
 }

@@ -7,11 +7,7 @@ use serde::{Deserialize, Serialize};
 use validator::{Validate, ValidateEmail, ValidateLength, ValidationError, ValidationErrors};
 
 use crate::{
-    auth::{encode_jwt, error::AuthError, verify_password_hash},
-    db::user::get_or_create_user,
-    error::Error,
-    state::SharedAppState,
-    telemetry::spawn_blocking_with_tracing,
+    auth::encode_jwt, error::Error, state::SharedAppState, telemetry::spawn_blocking_with_tracing,
 };
 
 #[derive(Deserialize)]
@@ -61,31 +57,26 @@ pub struct AuthResponse {
     pub token: String,
 }
 
-#[tracing::instrument(name = "[POST] auth", skip_all)]
+#[tracing::instrument(name = "request::auth", skip_all)]
 pub async fn store(
     State(app_state): State<SharedAppState>,
     axum::extract::Json(request): axum::extract::Json<AuthRequest>,
 ) -> Result<Json<AuthResponse>, Error> {
     request.validate().map_err(Error::Validation)?;
 
-    let (user, hashed_password) = get_or_create_user(
-        &app_state.pool,
-        request.email,
-        request.password.clone(),
-        app_state.config.application.allow_registration,
-    )
-    .await?;
+    let user_dto = app_state
+        .check_or_create_user_usecase
+        .execute(core_application::user::model::UserInput {
+            email: request.email,
+            password: request.password,
+            nickname: None,
+        })
+        .await?;
 
-    spawn_blocking_with_tracing(move || verify_password_hash(hashed_password, request.password))
-        .await
-        .context("verify password hash")
-        .map_err(Error::Other)?
-        .map_err(|_| Error::Auth(AuthError::IncorrectCredential))?;
-
-    let token = spawn_blocking_with_tracing(move || encode_jwt(user.id, &app_state.config.jwt))
+    let token = spawn_blocking_with_tracing(move || encode_jwt(user_dto.id, &app_state.config.jwt))
         .await
         .context("encode jwt")
-        .map_err(Error::Other)??;
+        .map_err(Error::UnexpectedError)??;
 
     let token = AuthResponse {
         token: token.to_string(),

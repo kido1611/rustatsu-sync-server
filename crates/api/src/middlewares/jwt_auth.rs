@@ -7,23 +7,20 @@ use axum::{
     response::Response,
 };
 
-use crate::{
-    auth::{decode_jwt, error::AuthError},
-    db::user::get_user_by_id_optional,
-    error::Error,
-    state::SharedAppState,
-};
+use crate::{auth::decode_jwt, error::Error, model::User, state::SharedAppState};
 
-#[tracing::instrument(name = "[MIDDLEWARE] jwt auth", skip_all)]
+#[tracing::instrument(name = "middleware::jwt_auth", skip_all)]
 pub async fn jwt_auth_middleware(
     State(app_state): State<SharedAppState>,
     mut req: Request,
     next: Next,
 ) -> Result<Response<Body>, Error> {
     let auth_header = match req.headers_mut().get(axum::http::header::AUTHORIZATION) {
-        Some(header) => header.to_str().map_err(|e| Error::Other(e.into()))?,
+        Some(header) => header
+            .to_str()
+            .map_err(|e| Error::UnexpectedError(e.into()))?,
         None => {
-            return Err(Error::Auth(AuthError::Unauthenticated));
+            return Err(Error::Unauthorized);
         }
     };
 
@@ -33,32 +30,35 @@ pub async fn jwt_auth_middleware(
     let bearer = match bearer_option {
         Some(value) => value.to_lowercase(),
         None => {
-            return Err(Error::Auth(AuthError::Unauthenticated));
+            return Err(Error::Unauthorized);
         }
     };
 
     if bearer != *"bearer" {
-        return Err(Error::Auth(AuthError::Unauthenticated));
+        return Err(Error::Unauthorized);
     }
 
     let token = match token_option {
         Some(value) => value,
         None => {
-            return Err(Error::Auth(AuthError::Unauthenticated));
+            return Err(Error::Unauthorized);
         }
     };
 
     let app_state_jwt = app_state.clone();
     let token_data = decode_jwt(token.to_string(), &app_state_jwt.config.jwt)
-        .map_err(|_| Error::Auth(AuthError::Unauthenticated))?;
+        .map_err(|_| Error::Unauthorized)?;
 
-    let user_optional = get_user_by_id_optional(&app_state.pool, token_data.claims.user_id).await?;
-    let user = match user_optional {
-        Some(user) => Arc::new(user),
-        None => {
-            return Err(Error::Auth(AuthError::Unauthenticated));
-        }
-    };
+    let user_dto = app_state
+        .check_user_by_id_usecase
+        .execute(token_data.claims.user_id)
+        .await?
+        .ok_or(Error::Unauthorized)?;
+    let user = Arc::new(User {
+        id: user_dto.id,
+        email: user_dto.email,
+        nickname: user_dto.nickname,
+    });
 
     req.extensions_mut().insert(user);
 

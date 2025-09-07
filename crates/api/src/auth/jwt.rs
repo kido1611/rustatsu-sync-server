@@ -4,8 +4,6 @@ use secrecy::ExposeSecret;
 
 use crate::{config::Jwt, error::Error};
 
-use super::error::AuthError;
-
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct Claim {
     pub user_id: i64,
@@ -34,7 +32,7 @@ pub fn encode_jwt(user_id: i64, jwt: &Jwt) -> Result<String, Error> {
         &claim,
         &EncodingKey::from_secret(jwt.secret.expose_secret().as_bytes()),
     )
-    .map_err(|e| Error::Auth(AuthError::JwtError(e)))
+    .map_err(Error::JwtError)
 }
 
 pub fn decode_jwt(jwt_token: String, jwt: &Jwt) -> Result<TokenData<Claim>, Error> {
@@ -47,7 +45,7 @@ pub fn decode_jwt(jwt_token: String, jwt: &Jwt) -> Result<TokenData<Claim>, Erro
         &DecodingKey::from_secret(jwt.secret.expose_secret().as_ref()),
         &validation,
     )
-    .map_err(|e| Error::Auth(AuthError::JwtError(e)))
+    .map_err(Error::JwtError)
 }
 
 #[cfg(test)]

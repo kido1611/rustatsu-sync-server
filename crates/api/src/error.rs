@@ -1,90 +1,91 @@
 use axum::{http::StatusCode, response::IntoResponse};
+use core_application::shared::error::ApplicationError;
 use validator::ValidationErrors;
 
-use crate::{auth::error::AuthError, db::error::DatabaseError};
-
-#[derive(thiserror::Error, Debug)]
+#[derive(thiserror::Error)]
 pub enum Error {
-    #[error("Database error")]
-    Database(DatabaseError),
+    #[error("error from jwt: {0}")]
+    JwtError(
+        #[source]
+        #[from]
+        jsonwebtoken::errors::Error,
+    ),
 
-    #[error("Auth error")]
-    Auth(AuthError),
+    #[error("Validation error: {0}")]
+    Validation(
+        #[source]
+        #[from]
+        ValidationErrors,
+    ),
 
-    #[error("Validation error")]
-    Validation(ValidationErrors),
+    #[error("unexpected error: {0}")]
+    UnexpectedError(#[source] anyhow::Error),
 
-    #[error("Other error: {0}")]
-    Other(anyhow::Error),
-}
+    #[error("application error: {0}")]
+    ApplicationError(
+        #[source]
+        #[from]
+        ApplicationError,
+    ),
 
-impl From<DatabaseError> for Error {
-    fn from(value: DatabaseError) -> Self {
-        Self::Database(value)
-    }
+    #[error("{0} not found")]
+    ResourceNotFound(String),
+
+    #[error("unauthorized")]
+    Unauthorized,
 }
 
 impl IntoResponse for Error {
     fn into_response(self) -> axum::response::Response {
+        tracing::error!("error: {:?}", self);
+
         match self {
-            Error::Database(database_error) => match database_error {
-                DatabaseError::DatabaseError(error) => {
-                    eprintln!("{}", error);
-
-                    tracing::error!(err.msg = %error, err.details=?error, "Database Error");
-
-                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
-                }
-                DatabaseError::NotFound => StatusCode::NOT_FOUND.into_response(),
-            },
-            Error::Auth(auth_error) => match auth_error {
-                AuthError::TokenMissing(error) => {
-                    (StatusCode::UNAUTHORIZED, error.to_string()).into_response()
-                }
-                AuthError::JwtError(error) => {
-                    tracing::error!(err.msg = %error, err.details=?error, "JWT Error");
-
-                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
-                }
-                AuthError::Unauthenticated => StatusCode::UNAUTHORIZED.into_response(),
-                AuthError::PasswordError(error) => {
-                    tracing::error!(err.msg = %error, err.details=?error, "Password Hash Error");
-
-                    StatusCode::INTERNAL_SERVER_ERROR.into_response()
-                }
-                AuthError::UserNotFound => StatusCode::UNAUTHORIZED.into_response(),
-                AuthError::IncorrectCredential => StatusCode::UNAUTHORIZED.into_response(),
-            },
-            Error::Other(error) => {
-                tracing::error!(err.msg = %error, err.details=?error, "Other Error");
-
-                StatusCode::INTERNAL_SERVER_ERROR.into_response()
-            }
             Error::Validation(validation_error) => {
-                tracing::error!(err.msg = %validation_error, err.details=?validation_error, "Validation Error");
-
                 (StatusCode::BAD_REQUEST, validation_error.to_string()).into_response()
             }
+            Error::ApplicationError(application_error) => match application_error {
+                ApplicationError::DomainError(domain_error) => match domain_error {
+                    core_domain::shared::error::DomainError::DatabaseError(_) => {
+                        StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                    }
+                    core_domain::shared::error::DomainError::PasswordManagerError(_) => {
+                        StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                    }
+                    core_domain::shared::error::DomainError::PasswordNotMatch => {
+                        StatusCode::UNAUTHORIZED.into_response()
+                    }
+                },
+                ApplicationError::RegisterIsForbidden => StatusCode::UNAUTHORIZED.into_response(),
+                ApplicationError::ResourceNotFound(message) => {
+                    (StatusCode::NOT_FOUND, message).into_response()
+                }
+            },
+            Error::ResourceNotFound(message) => {
+                (StatusCode::NOT_FOUND, format!("{} not found", message)).into_response()
+            }
+            Error::Unauthorized => StatusCode::UNAUTHORIZED.into_response(),
+            Error::JwtError(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+            Error::UnexpectedError(_) => StatusCode::INTERNAL_SERVER_ERROR.into_response(),
         }
     }
 }
 
-// impl std::fmt::Debug for Error {
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//         error_chain_fmt(self, f)
-//     }
-// }
-//
-// pub fn error_chain_fmt(
-//     e: &impl std::error::Error,
-//     f: &mut std::fmt::Formatter<'_>,
-// ) -> std::fmt::Result {
-//     writeln!(f, "{}\n", e)?;
-//     let mut current = e.source();
-//     while let Some(cause) = current {
-//         writeln!(f, "Caused by:\n\t{}", cause)?;
-//         current = cause.source();
-//     }
-//
-//     Ok(())
-// }
+impl std::fmt::Debug for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        error_chain_fmt(self, f)
+    }
+}
+
+pub fn error_chain_fmt(
+    e: &impl std::error::Error,
+    f: &mut std::fmt::Formatter<'_>,
+) -> std::fmt::Result {
+    writeln!(f, "{}\n", e)?;
+    let mut current = e.source();
+    while let Some(cause) = current {
+        writeln!(f, "Caused by:\n\t{}", cause)?;
+        current = cause.source();
+    }
+
+    Ok(())
+}

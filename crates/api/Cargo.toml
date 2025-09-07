@@ -12,26 +12,21 @@ path = "src/main.rs"
 name = "rustatsu-sync"
 
 [dependencies]
-anyhow = "1.0.98"
-argon2 = { version = "0.5.3", features = ["std"] }
+anyhow.workspace = true
 axum = { version = "0.8.3", features = ["http2", "macros"] }
 chrono = "0.4.40"
+core-application = { path = "../core/application" }
+core-domain = { path = "../core/domain" }
+core-infrastructure = { path = "../core/infrastructure" }
 figment = { version = "0.10.19", features = ["yaml", "env"] }
-futures = "0.3.31"
 jsonwebtoken = "9.3.1"
+shared = { path = "../shared" }
 secrecy = { version = "0.10.3", features = ["serde"] }
 serde = { version = "1.0.219", features = ["derive"] }
 serde-aux = "4.7.0"
 serde_json = "1.0.140"
-sqlx = { version = "0.8.5", features = [
-  "runtime-tokio",
-  "tls-rustls",
-  "macros",
-  "postgres",
-  "chrono",
-  "migrate",
-] }
-thiserror = "2.0.12"
+sqlx.workspace = true
+thiserror.workspace = true
 tokio = { version = "1.44.2", features = ["full", "macros", "rt-multi-thread"] }
 tower = "0.5.2"
 tower-http = { version = "0.6.2", features = [
@@ -40,7 +35,7 @@ tower-http = { version = "0.6.2", features = [
   "request-id",
   "cors",
 ] }
-tracing = { version = "0.1.41", features = ["log"] }
+tracing.workspace = true
 tracing-bunyan-formatter = "0.3.10"
 tracing-log = "0.2.0"
 tracing-panic = "0.1.2"
