@@ -5,4 +5,5 @@ pub struct Favourite {
     pub sort_key: i32,
     pub created_at: i64,
     pub deleted_at: i64,
+    pub pinned: bool,
 }

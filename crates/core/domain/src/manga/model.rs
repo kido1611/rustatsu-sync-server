@@ -5,7 +5,7 @@ pub struct Manga {
     pub url: String,
     pub public_url: String,
     pub rating: f32,
-    pub is_nsfw: bool,
+    pub content_rating: Option<String>,
     pub cover_url: String,
     pub large_cover_url: Option<String>,
     pub state: Option<String>,

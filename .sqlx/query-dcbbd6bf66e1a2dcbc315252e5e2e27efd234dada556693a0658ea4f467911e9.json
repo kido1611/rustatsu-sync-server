@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT \n            manga_id, created_at, updated_at,\n            chapter_id, page, scroll,\n            percent, chapters, deleted_at,\n            user_id\n        FROM\n            history\n        WHERE \n            user_id = $1\n    ",
+  "query": "\n                SELECT \n                    manga_id, created_at, updated_at,\n                    chapter_id, page, scroll,\n                    percent, chapters, deleted_at,\n                    user_id\n                FROM\n                    history\n                WHERE user_id = $1;\n            ",
   "describe": {
     "columns": [
       {
@@ -72,5 +72,5 @@
       false
     ]
   },
-  "hash": "39c8ba62d04103f2d1b20dca9f7197290552c20323a524577474bfe7ec2a1695"
+  "hash": "dcbbd6bf66e1a2dcbc315252e5e2e27efd234dada556693a0658ea4f467911e9"
 }

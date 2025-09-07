@@ -45,6 +45,7 @@ pub struct FavouriteRequest {
     pub sort_key: i32,
     pub created_at: i64,
     pub deleted_at: i64,
+    pub pinned: Option<u8>,
 }
 
 #[derive(serde::Deserialize, Serialize)]
@@ -81,7 +82,15 @@ impl From<UserFavouriteRequest> for FavouriteResourceInput {
                 url: item.manga.url.clone(),
                 public_url: item.manga.public_url.clone(),
                 rating: item.manga.rating,
-                is_nsfw: item.manga.nsfw.unwrap_or(0) > 0,
+                content_rating: if item.manga.content_rating.is_some() {
+                    item.manga.content_rating.clone()
+                } else if let Some(is_nfsw) = item.manga.nsfw
+                    && is_nfsw > 0
+                {
+                    Some("ADULT".to_string())
+                } else {
+                    None
+                },
                 cover_url: item.manga.cover_url.clone(),
                 large_cover_url: item.manga.large_cover_url.clone(),
                 state: item.manga.state.clone(),
@@ -152,6 +161,7 @@ impl From<UserFavouriteRequest> for FavouriteResourceInput {
                 sort_key: item.sort_key,
                 created_at: item.created_at,
                 deleted_at: item.deleted_at,
+                pinned: item.pinned.unwrap_or(0) > 0,
             })
             .collect();
 
@@ -201,7 +211,15 @@ impl From<UserHistoryRequest> for HistoryResourceInput {
                 url: item.manga.url.clone(),
                 public_url: item.manga.public_url.clone(),
                 rating: item.manga.rating,
-                is_nsfw: item.manga.nsfw.unwrap_or(0) > 0,
+                content_rating: if item.manga.content_rating.is_some() {
+                    item.manga.content_rating.clone()
+                } else if let Some(is_nfsw) = item.manga.nsfw
+                    && is_nfsw > 0
+                {
+                    Some("ADULT".to_string())
+                } else {
+                    None
+                },
                 cover_url: item.manga.cover_url.clone(),
                 large_cover_url: item.manga.large_cover_url.clone(),
                 state: item.manga.state.clone(),

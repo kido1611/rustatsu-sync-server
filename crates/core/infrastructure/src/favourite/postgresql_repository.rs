@@ -24,7 +24,7 @@ impl FavouriteRepository for PostgreSQLFavouriteRepository {
 
         for chunk in favourites.chunks(300) {
             let mut builder: QueryBuilder<Postgres> = QueryBuilder::new(
-                r#"INSERT INTO favourites (manga_id, category_id, user_id, sort_key, created_at, deleted_at)"#,
+                r#"INSERT INTO favourites (manga_id, category_id, user_id, sort_key, created_at, deleted_at, pinned)"#,
             );
 
             builder.push_values(chunk, |mut b, favourite| {
@@ -33,7 +33,8 @@ impl FavouriteRepository for PostgreSQLFavouriteRepository {
                     .push_bind(favourite.user_id)
                     .push_bind(favourite.sort_key)
                     .push_bind(favourite.created_at)
-                    .push_bind(favourite.deleted_at);
+                    .push_bind(favourite.deleted_at)
+                    .push_bind(favourite.pinned);
             });
 
             builder.push(
@@ -42,7 +43,8 @@ impl FavouriteRepository for PostgreSQLFavouriteRepository {
                 DO UPDATE SET 
                     created_at = EXCLUDED.created_at,
                     sort_key = EXCLUDED.sort_key,
-                    deleted_at = EXCLUDED.deleted_at;
+                    deleted_at = EXCLUDED.deleted_at,
+                    pinned = EXCLUDED.pinned;
         "#,
             );
 
@@ -65,7 +67,7 @@ impl FavouriteRepository for PostgreSQLFavouriteRepository {
         let favourites = sqlx::query_as!(
             Favourite,
             r#"
-                SELECT manga_id, category_id, user_id, sort_key, created_at, deleted_at
+                SELECT manga_id, category_id, user_id, sort_key, created_at, deleted_at, pinned
                 FROM favourites
                 WHERE user_id = $1;
             "#,

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT\n            id, title, alt_title,\n            url, public_url, rating,\n            is_nsfw, cover_url, large_cover_url,\n            state, author, source\n        FROM\n            mangas\n        ORDER BY id\n        LIMIT $1\n        OFFSET $2\n    ",
+  "query": "\n                SELECT\n                    id, title, alt_title,\n                    url, public_url, rating,\n                    content_rating, cover_url, large_cover_url,\n                    state, author, source\n                FROM\n                    mangas\n                WHERE\n                    id = $1;\n            ",
   "describe": {
     "columns": [
       {
@@ -35,8 +35,8 @@
       },
       {
         "ordinal": 6,
-        "name": "is_nsfw",
-        "type_info": "Bool"
+        "name": "content_rating",
+        "type_info": "Varchar"
       },
       {
         "ordinal": 7,
@@ -66,7 +66,6 @@
     ],
     "parameters": {
       "Left": [
-        "Int8",
         "Int8"
       ]
     },
@@ -77,7 +76,7 @@
       false,
       false,
       false,
-      false,
+      true,
       false,
       true,
       true,
@@ -85,5 +84,5 @@
       false
     ]
   },
-  "hash": "5021b4c4ed241652cd0b65603f45cf158ce02fce18ad4080bc5f6f6a12f10882"
+  "hash": "10bb3fad1c9009a05ac45159b4a238b8295300d9978b7cc806ed0d897833dbe5"
 }

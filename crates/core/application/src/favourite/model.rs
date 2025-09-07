@@ -11,6 +11,7 @@ pub struct FavouriteDto {
     pub sort_key: i32,
     pub created_at: i64,
     pub deleted_at: i64,
+    pub pinned: bool,
 }
 
 impl FavouriteDto {
@@ -21,6 +22,7 @@ impl FavouriteDto {
             sort_key: self.sort_key,
             created_at: self.created_at,
             deleted_at: self.deleted_at,
+            pinned: self.pinned,
             user_id,
         }
     }
@@ -34,6 +36,7 @@ impl From<Favourite> for FavouriteDto {
             sort_key: value.sort_key,
             created_at: value.created_at,
             deleted_at: value.deleted_at,
+            pinned: value.pinned,
         }
     }
 }

@@ -36,7 +36,6 @@ pub struct MangaResponse {
     pub url: String,
     pub public_url: String,
     pub rating: f32,
-    pub nsfw: Option<u8>,
     pub content_rating: Option<String>,
     pub cover_url: String,
     pub large_cover_url: Option<String>,
@@ -62,16 +61,7 @@ impl From<MangaResourceOutput> for MangaResponse {
             url: value.manga.url,
             public_url: value.manga.public_url,
             rating: value.manga.rating,
-            nsfw: if value.manga.is_nsfw {
-                Some(1)
-            } else {
-                Some(0)
-            },
-            content_rating: if value.manga.is_nsfw {
-                Some("ADULT".to_string())
-            } else {
-                None
-            },
+            content_rating: value.manga.content_rating,
             cover_url: value.manga.cover_url,
             large_cover_url: value.manga.large_cover_url,
             state: value.manga.state,
@@ -90,6 +80,7 @@ pub struct FavouriteResponse {
     pub sort_key: i32,
     pub created_at: i64,
     pub deleted_at: i64,
+    pub pinned: u8,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -137,12 +128,7 @@ impl From<FavouriteResourceOutput> for UserFavouriteResponse {
                     url: m.url,
                     public_url: m.public_url,
                     rating: m.rating,
-                    nsfw: if m.is_nsfw { Some(1) } else { Some(0) },
-                    content_rating: if m.is_nsfw {
-                        Some("ADULT".to_string())
-                    } else {
-                        None
-                    },
+                    content_rating: m.content_rating,
                     cover_url: m.cover_url,
                     large_cover_url: m.large_cover_url,
                     state: m.state,
@@ -184,6 +170,7 @@ impl From<FavouriteResourceOutput> for UserFavouriteResponse {
                     sort_key: f.sort_key,
                     created_at: f.created_at,
                     deleted_at: f.deleted_at,
+                    pinned: if f.pinned { 1 } else { 0 },
                 }
             })
             .collect();
@@ -241,12 +228,7 @@ impl From<HistoryResourceOutput> for UserHistoryResponse {
                     url: m.url,
                     public_url: m.public_url,
                     rating: m.rating,
-                    nsfw: if m.is_nsfw { Some(1) } else { Some(0) },
-                    content_rating: if m.is_nsfw {
-                        Some("ADULT".to_string())
-                    } else {
-                        None
-                    },
+                    content_rating: m.content_rating,
                     cover_url: m.cover_url,
                     large_cover_url: m.large_cover_url,
                     state: m.state,
@@ -315,12 +297,7 @@ pub fn list_manga_resource_to_list_manga_response(
                 url: m.url,
                 public_url: m.public_url,
                 rating: m.rating,
-                nsfw: if m.is_nsfw { Some(1) } else { Some(0) },
-                content_rating: if m.is_nsfw {
-                    Some("ADULT".to_string())
-                } else {
-                    None
-                },
+                content_rating: m.content_rating,
                 cover_url: m.cover_url,
                 large_cover_url: m.large_cover_url,
                 state: m.state,
