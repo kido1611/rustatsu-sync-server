@@ -1,8 +1,8 @@
 [package]
 name = "rustatsu-sync"
-version = "1.0.7"
-edition = "2024"
-authors = ["Muhammad Abdusy Syukur <hi@abdusy.dev>"]
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
 
 [lib]
 path = "src/lib.rs"
@@ -29,16 +29,30 @@ sqlx.workspace = true
 thiserror.workspace = true
 tokio = { workspace = true, features = ["full", "macros", "rt-multi-thread"] }
 tower = { workspace = true }
-tower-http = { workspace = true, features = ["compression-full", "trace", "request-id", "cors"] }
+tower-http = { workspace = true, features = [
+  "compression-full",
+  "trace",
+  "request-id",
+  "cors",
+] }
 tracing.workspace = true
 tracing-bunyan-formatter = { workspace = true }
 tracing-log = { workspace = true }
 tracing-panic = { workspace = true }
-tracing-subscriber = { workspace = true, features = ["registry", "env-filter", "json"] }
+tracing-subscriber = { workspace = true, features = [
+  "registry",
+  "env-filter",
+  "json",
+] }
 validator = { workspace = true, features = ["derive"] }
 
 [dev-dependencies]
 rand = { workspace = true }
 http-body-util = { workspace = true }
-fake = { workspace = true, features = ["chrono", "email_address", "time", "url"] }
+fake = { workspace = true, features = [
+  "chrono",
+  "email_address",
+  "time",
+  "url",
+] }
 uuid = { workspace = true, features = ["v4"] }
