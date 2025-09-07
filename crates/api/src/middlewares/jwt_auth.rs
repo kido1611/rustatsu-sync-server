@@ -49,16 +49,14 @@ pub async fn jwt_auth_middleware(
     let token_data = decode_jwt(token.to_string(), &app_state_jwt.config.jwt)
         .map_err(|_| Error::Unauthorized)?;
 
-    let user_dto = app_state
+    let user: User = app_state
         .check_user_by_id_usecase
         .execute(token_data.claims.user_id)
         .await?
-        .ok_or(Error::Unauthorized)?;
-    let user = Arc::new(User {
-        id: user_dto.id,
-        email: user_dto.email,
-        nickname: user_dto.nickname,
-    });
+        .ok_or(Error::Unauthorized)?
+        .into();
+
+    let user = Arc::new(user);
 
     req.extensions_mut().insert(user);
 

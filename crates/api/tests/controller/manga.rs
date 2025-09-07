@@ -1,12 +1,12 @@
 use axum::{body::Body, http::Request, http::StatusCode};
 use http_body_util::BodyExt;
-use rustatsu_sync::model::Manga;
+use shared::model::response::MangaResponse;
 
-use crate::{AppStateTest, insert_fake_manga};
+use crate::common::{TestState, fake::insert_fake_manga};
 
 #[tokio::test]
 async fn index_should_be_ok_with_manga_is_empty() {
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
     let request = Request::builder()
         .uri("/manga")
@@ -18,7 +18,7 @@ async fn index_should_be_ok_with_manga_is_empty() {
     let response_body = response.into_body().collect().await.unwrap().to_bytes();
     assert!(!response_body.is_empty());
 
-    let mangas: Vec<Manga> = serde_json::from_slice(&response_body).unwrap();
+    let mangas: Vec<MangaResponse> = serde_json::from_slice(&response_body).unwrap();
     assert_eq!(mangas.len(), 0);
 
     test_state.cleanup().await;
@@ -26,10 +26,10 @@ async fn index_should_be_ok_with_manga_is_empty() {
 
 #[tokio::test]
 async fn index_should_be_ok_with_manga_not_empty() {
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
-    insert_fake_manga(&test_state.app_state.pool, None).await;
-    insert_fake_manga(&test_state.app_state.pool, None).await;
+    insert_fake_manga(&test_state.app_state, None).await;
+    insert_fake_manga(&test_state.app_state, None).await;
 
     let request = Request::builder()
         .uri("/manga")
@@ -39,7 +39,7 @@ async fn index_should_be_ok_with_manga_not_empty() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let response_body = response.into_body().collect().await.unwrap().to_bytes();
-    let mangas: Vec<Manga> = serde_json::from_slice(&response_body).unwrap();
+    let mangas: Vec<MangaResponse> = serde_json::from_slice(&response_body).unwrap();
     assert_eq!(mangas.len(), 2);
     assert_eq!(mangas[0].tags.len(), 2);
 
@@ -48,11 +48,11 @@ async fn index_should_be_ok_with_manga_not_empty() {
 
 #[tokio::test]
 async fn index_should_be_ok_when_accessed_with_query() {
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
-    insert_fake_manga(&test_state.app_state.pool, Some(0)).await;
-    insert_fake_manga(&test_state.app_state.pool, None).await;
-    insert_fake_manga(&test_state.app_state.pool, None).await;
+    insert_fake_manga(&test_state.app_state, Some(0)).await;
+    insert_fake_manga(&test_state.app_state, None).await;
+    insert_fake_manga(&test_state.app_state, None).await;
 
     // -----------------------------------------------------------------------------
     let request = Request::builder()
@@ -63,7 +63,7 @@ async fn index_should_be_ok_when_accessed_with_query() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let response_body = response.into_body().collect().await.unwrap().to_bytes();
-    let mangas: Vec<Manga> = serde_json::from_slice(&response_body).unwrap();
+    let mangas: Vec<MangaResponse> = serde_json::from_slice(&response_body).unwrap();
     assert_eq!(mangas.len(), 1);
 
     // -----------------------------------------------------------------------------
@@ -75,7 +75,7 @@ async fn index_should_be_ok_when_accessed_with_query() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let response_body = response.into_body().collect().await.unwrap().to_bytes();
-    let mangas: Vec<Manga> = serde_json::from_slice(&response_body).unwrap();
+    let mangas: Vec<MangaResponse> = serde_json::from_slice(&response_body).unwrap();
     assert_eq!(mangas.len(), 0);
 
     // -----------------------------------------------------------------------------
@@ -87,15 +87,15 @@ async fn index_should_be_ok_when_accessed_with_query() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let response_body = response.into_body().collect().await.unwrap().to_bytes();
-    let mangas: Vec<Manga> = serde_json::from_slice(&response_body).unwrap();
-    assert_eq!(mangas.len(), 1);
+    let mangas: Vec<MangaResponse> = serde_json::from_slice(&response_body).unwrap();
+    assert_eq!(mangas.len(), 2);
 
     test_state.cleanup().await;
 }
 
 #[tokio::test]
 async fn index_should_be_error_when_query_invalid() {
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
     // -----------------------------------------------------------------------------
     let request = Request::builder()
@@ -126,9 +126,9 @@ async fn index_should_be_error_when_query_invalid() {
 
 #[tokio::test]
 async fn show_should_be_ok_when_manga_is_exist() {
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
-    let manga_id = insert_fake_manga(&test_state.app_state.pool, Some(3)).await;
+    let manga_id = insert_fake_manga(&test_state.app_state, Some(3)).await;
 
     let request = Request::builder()
         .uri(format!("/manga/{}", manga_id))
@@ -140,7 +140,7 @@ async fn show_should_be_ok_when_manga_is_exist() {
     let response_body = response.into_body().collect().await.unwrap().to_bytes();
     assert!(!response_body.is_empty());
 
-    let manga: Manga = serde_json::from_slice(&response_body).unwrap();
+    let manga: MangaResponse = serde_json::from_slice(&response_body).unwrap();
     assert_eq!(manga.tags.len(), 3);
 
     test_state.cleanup().await;
@@ -148,7 +148,7 @@ async fn show_should_be_ok_when_manga_is_exist() {
 
 #[tokio::test]
 async fn show_should_be_error_when_manga_is_missing() {
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
     let request = Request::builder()
         .uri("/manga/-99999999999")

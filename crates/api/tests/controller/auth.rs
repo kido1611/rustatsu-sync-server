@@ -7,7 +7,7 @@ use rustatsu_sync::controllers::auth::AuthResponse;
 use serde::Serialize;
 use serde_json::json;
 
-use crate::AppStateTest;
+use crate::common::TestState;
 
 #[derive(Serialize)]
 struct PartialAuthRequest {
@@ -22,7 +22,7 @@ struct AuthRequest {
 
 #[tokio::test]
 async fn should_be_error_when_body_is_missing() {
-    let test_state = AppStateTest::new(false).await;
+    let test_state = TestState::new(false).await;
 
     let request = Request::builder()
         .method("POST")
@@ -38,7 +38,7 @@ async fn should_be_error_when_body_is_missing() {
 
 #[tokio::test]
 async fn should_be_error_when_body_is_invalid() {
-    let test_state = AppStateTest::new(false).await;
+    let test_state = TestState::new(false).await;
 
     // -----------------------------------------------------------------------
     let request = Request::builder()
@@ -92,7 +92,7 @@ async fn should_be_error_when_body_is_invalid() {
 
 #[tokio::test]
 async fn should_be_error_when_has_incorrect_type() {
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
     let request = Request::builder()
         .method("POST")
@@ -114,7 +114,7 @@ async fn should_be_error_when_has_incorrect_type() {
 
 #[tokio::test]
 async fn should_be_error_when_credential_is_invalid() {
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
     let (user, _) = test_state.generate_jwt_with_user().await;
 
@@ -139,7 +139,7 @@ async fn should_be_error_when_credential_is_invalid() {
 
 #[tokio::test]
 async fn should_be_ok_when_user_is_exist() {
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
     let (user, _) = test_state.generate_jwt_with_user().await;
 
@@ -181,7 +181,7 @@ async fn should_be_ok_when_user_is_exist() {
 
 #[tokio::test]
 async fn should_be_create_user_when_user_is_missing() {
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
     let result = sqlx::query!(r#"SELECT count(*) FROM users"#)
         .fetch_one(&test_state.app_state.pool)
@@ -216,10 +216,10 @@ async fn should_be_create_user_when_user_is_missing() {
 
 #[tokio::test]
 async fn should_be_error_when_user_is_missing_and_registration_is_disabled() {
-    let mut config = AppStateTest::create_config();
+    let mut config = TestState::create_config();
     config.application.allow_registration = false;
 
-    let mut test_state = AppStateTest::new_with_config(true, config).await;
+    let mut test_state = TestState::new_with_config(true, config).await;
 
     let result = sqlx::query!(r#"SELECT count(*) FROM users"#)
         .fetch_one(&test_state.app_state.pool)

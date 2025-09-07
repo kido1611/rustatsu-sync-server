@@ -1,5 +1,6 @@
+pub mod fake;
+
 use axum::{
-    Router,
     body::Body,
     http::{Request, Response},
 };
@@ -8,20 +9,18 @@ use figment::{
     providers::{Format, Yaml},
 };
 use rustatsu_sync::{
-    auth::encode_jwt, config::Config, db::user::create_user, model::User, routes::init_router,
-    state::AppState,
+    auth::encode_jwt, config::Config, model::User, routes::init_router, state::AppState,
 };
 use sqlx::{Executor, postgres::PgPoolOptions};
 use tower::ServiceExt;
 use uuid::Uuid;
 
-pub struct AppStateTest {
+pub struct TestState {
     pub app_state: AppState,
-    pub enable_db: bool,
-    pub router: Router,
+    pub enable_database: bool,
 }
 
-impl AppStateTest {
+impl TestState {
     pub fn create_config() -> Config {
         let base_path =
             std::env::current_dir().expect("Failed to determine the current directory.");
@@ -77,27 +76,30 @@ impl AppStateTest {
                 .expect("undo migrations");
         }
 
-        let router = init_router(app_state.clone());
+        // let router = init_router(app_state.clone());
 
-        AppStateTest {
+        TestState {
             app_state,
-            enable_db,
-            router,
+            enable_database: enable_db,
         }
     }
 
     pub async fn generate_jwt_with_user(&self) -> (User, String) {
-        let (user, _) = create_user(
-            &self.app_state.pool,
-            "test@email.com".to_string(),
-            "password".into(),
-        )
-        .await
-        .expect("Failed create user");
+        let user_dto = self
+            .app_state
+            .check_or_create_user_usecase
+            .execute(core_application::user::model::UserInput {
+                email: "test@email.com".to_string(),
+                password: "password".into(),
+                nickname: None,
+            })
+            .await
+            .expect("failed to create test user");
 
-        let token = encode_jwt(user.id, &self.app_state.config.jwt).unwrap();
+        let token = encode_jwt(user_dto.id, &self.app_state.config.jwt)
+            .expect("failed to create jwt token");
 
-        (user, token)
+        (user_dto.into(), token)
     }
 
     pub async fn generate_response(&self, request: Request<Body>) -> Response<Body> {
@@ -126,14 +128,14 @@ impl AppStateTest {
             .await
             .expect("Unable drop database");
 
-        self.enable_db = false;
+        self.enable_database = false;
     }
 }
 
-impl Drop for AppStateTest {
+impl Drop for TestState {
     fn drop(&mut self) {
         assert!(
-            !self.enable_db,
+            !self.enable_database,
             "Database not dropped. Call `app_test_state.cleanup()`"
         );
     }

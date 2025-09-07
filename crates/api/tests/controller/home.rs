@@ -1,11 +1,11 @@
 use axum::{body::Body, extract::Request, http::StatusCode};
 use http_body_util::BodyExt;
 
-use crate::AppStateTest;
+use crate::common::TestState;
 
 #[tokio::test]
 async fn should_be_ok() {
-    let test_state = AppStateTest::new(false).await;
+    let test_state = TestState::new(false).await;
 
     let request = Request::builder().uri("/").body(Body::empty()).unwrap();
 

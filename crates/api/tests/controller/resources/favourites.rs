@@ -2,19 +2,19 @@ use std::fs::File;
 
 use axum::{
     body::Body,
-    http::{Request, StatusCode},
+    http::{self, Request, StatusCode},
 };
 use http_body_util::BodyExt;
-use rustatsu_sync::{db::user_history::update_user_history, model::UserHistory};
+use shared::model::{request::UserFavouriteRequest, response::UserFavouriteResponse};
 
-use crate::AppStateTest;
+use crate::common::TestState;
 
 #[tokio::test]
-async fn should_be_error_when_accessed_list_user_history_without_auth() {
-    let test_state = AppStateTest::new(false).await;
+async fn should_be_error_when_accessed_list_user_favourites_without_auth() {
+    let test_state = TestState::new(false).await;
 
     let request = Request::builder()
-        .uri("/resource/history")
+        .uri("/resource/favourites")
         .body(Body::empty())
         .unwrap();
     let response = test_state.generate_response(request).await;
@@ -23,13 +23,13 @@ async fn should_be_error_when_accessed_list_user_history_without_auth() {
 }
 
 #[tokio::test]
-async fn should_be_ok_when_accessed_list_user_history_with_auth() {
-    let mut test_state = AppStateTest::new(true).await;
+async fn should_be_ok_when_accessed_list_user_favourites_with_auth() {
+    let mut test_state = TestState::new(true).await;
 
     let (_, token) = test_state.generate_jwt_with_user().await;
 
     let request = Request::builder()
-        .uri("/resource/history")
+        .uri("/resource/favourites")
         .header(
             axum::http::header::AUTHORIZATION,
             format!("bearer {}", token),
@@ -41,27 +41,34 @@ async fn should_be_ok_when_accessed_list_user_history_with_auth() {
     assert_eq!(response.status(), StatusCode::OK);
 
     let response_body = response.into_body().collect().await.unwrap().to_bytes();
-    let result: UserHistory = serde_json::from_slice(&response_body).unwrap();
+    let result: UserFavouriteResponse = serde_json::from_slice(&response_body).unwrap();
 
-    assert_eq!(result.history.len(), 0);
+    assert_eq!(result.favourites.len(), 0);
+    assert_eq!(result.favourite_categories.len(), 0);
 
     test_state.cleanup().await;
 }
 
 #[tokio::test]
-async fn should_be_ok_when_accessed_list_user_history_with_auth_and_user_have_data() {
-    let example_file = File::open("tests/assets/user_history.json").unwrap();
-    let user_history: UserHistory = serde_json::from_reader(example_file).unwrap();
-    assert_eq!(user_history.history.len(), 15);
+async fn should_be_ok_when_accessed_list_user_favourites_with_auth_and_user_have_data() {
+    let example_file = File::open("tests/assets/user_favourites.json").unwrap();
+    let user_favourite: UserFavouriteRequest = serde_json::from_reader(example_file).unwrap();
+    assert_eq!(user_favourite.favourites.len(), 24);
+    assert_eq!(user_favourite.favourite_categories.len(), 2);
 
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
     let (user, token) = test_state.generate_jwt_with_user().await;
 
-    let _ = update_user_history(&test_state.app_state.pool, user.id, user_history).await;
+    test_state
+        .app_state
+        .insert_user_favourite_resource_usecase
+        .execute(user.id, user_favourite.into())
+        .await
+        .expect("failed to insert dummy user favourite data");
 
     let request = Request::builder()
-        .uri("/resource/history")
+        .uri("/resource/favourites")
         .header(
             axum::http::header::AUTHORIZATION,
             format!("bearer {}", token),
@@ -73,20 +80,21 @@ async fn should_be_ok_when_accessed_list_user_history_with_auth_and_user_have_da
     assert_eq!(response.status(), StatusCode::OK);
 
     let response_body = response.into_body().collect().await.unwrap().to_bytes();
-    let result: UserHistory = serde_json::from_slice(&response_body).unwrap();
+    let result: UserFavouriteResponse = serde_json::from_slice(&response_body).unwrap();
 
-    assert_eq!(result.history.len(), 15);
+    assert_eq!(result.favourites.len(), 24);
+    assert_eq!(result.favourite_categories.len(), 2);
 
     test_state.cleanup().await;
 }
 
 #[tokio::test]
-async fn should_be_error_when_update_user_history_without_auth() {
-    let test_state = AppStateTest::new(false).await;
+async fn should_be_error_when_update_user_favourites_without_auth() {
+    let test_state = TestState::new(false).await;
 
     let request = Request::builder()
         .method("POST")
-        .uri("/resource/history")
+        .uri("/resource/favourites")
         .body(Body::empty())
         .unwrap();
     let response = test_state.generate_response(request).await;
@@ -95,14 +103,14 @@ async fn should_be_error_when_update_user_history_without_auth() {
 }
 
 #[tokio::test]
-async fn should_be_error_when_update_user_history_without_data() {
-    let mut test_state = AppStateTest::new(true).await;
+async fn should_be_error_when_update_user_favourites_without_data() {
+    let mut test_state = TestState::new(true).await;
 
     let (_, token) = test_state.generate_jwt_with_user().await;
 
     let request = Request::builder()
         .method("POST")
-        .uri("/resource/history")
+        .uri("/resource/favourites")
         .header(
             axum::http::header::AUTHORIZATION,
             format!("bearer {}", token),
@@ -115,8 +123,8 @@ async fn should_be_error_when_update_user_history_without_data() {
 
     let request = Request::builder()
         .method("POST")
-        .uri("/resource/history")
-        .header(axum::http::header::CONTENT_TYPE, "application/json")
+        .uri("/resource/favourites")
+        .header(http::header::CONTENT_TYPE, "application/json")
         .header(
             axum::http::header::AUTHORIZATION,
             format!("bearer {}", token),
@@ -131,33 +139,38 @@ async fn should_be_error_when_update_user_history_without_data() {
 }
 
 #[tokio::test]
-async fn should_be_ok_when_update_user_history_with_data() {
-    let example_file = File::open("tests/assets/user_history.json").unwrap();
-    let user_history: UserHistory = serde_json::from_reader(example_file).unwrap();
-    assert_eq!(user_history.history.len(), 15);
+async fn should_be_ok_when_update_user_favourites_with_data() {
+    let example_file = File::open("tests/assets/user_favourites.json").unwrap();
+    let user_favourite: UserFavouriteRequest = serde_json::from_reader(example_file).unwrap();
+    assert_eq!(user_favourite.favourites.len(), 24);
+    assert_eq!(user_favourite.favourite_categories.len(), 2);
 
-    let mut test_state = AppStateTest::new(true).await;
+    let mut test_state = TestState::new(true).await;
 
     let (_, token) = test_state.generate_jwt_with_user().await;
 
     let request = Request::builder()
         .method("POST")
-        .uri("/resource/history")
-        .header(axum::http::header::CONTENT_TYPE, "application/json")
+        .uri("/resource/favourites")
+        .header(http::header::CONTENT_TYPE, "application/json")
         .header(
             axum::http::header::AUTHORIZATION,
             format!("bearer {}", token),
         )
-        .body(Body::from(serde_json::to_string(&user_history).unwrap()))
+        .body(Body::from(serde_json::to_string(&user_favourite).unwrap()))
         .unwrap();
 
     let response = test_state.generate_response(request).await;
     assert_eq!(response.status(), StatusCode::OK);
 
     let response_body = response.into_body().collect().await.unwrap().to_bytes();
-    let result: UserHistory = serde_json::from_slice(&response_body).unwrap();
+    let result: UserFavouriteResponse = serde_json::from_slice(&response_body).unwrap();
 
-    assert_eq!(result.history.len(), 15);
+    assert_eq!(result.favourites.len(), user_favourite.favourites.len());
+    assert_eq!(
+        result.favourite_categories.len(),
+        user_favourite.favourite_categories.len()
+    );
 
     test_state.cleanup().await;
 }
