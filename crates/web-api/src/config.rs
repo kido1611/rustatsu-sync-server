@@ -8,14 +8,14 @@ use sqlx::postgres::PgConnectOptions;
 
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct Config {
-    pub application: Application,
-    pub database: Database,
-    pub jwt: Jwt,
-    pub cors: Cors,
+    pub application: ApplicationConfig,
+    pub database: DatabaseConfig,
+    pub jwt: JwtConfig,
+    pub cors: CorsConfig,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
-pub struct Application {
+pub struct ApplicationConfig {
     #[serde(deserialize_with = "deserialize_number_from_string")]
     pub port: u16,
     pub host: String,
@@ -23,21 +23,21 @@ pub struct Application {
     pub run_migration: bool,
 }
 
-impl Application {
+impl ApplicationConfig {
     pub fn get_address(&self) -> String {
         format!("{}:{}", self.host, self.port)
     }
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
-pub struct Jwt {
+pub struct JwtConfig {
     pub secret: SecretString,
     pub iss: SecretString,
     pub aud: SecretString,
 }
 
 #[derive(serde::Deserialize, Debug, Clone)]
-pub struct Database {
+pub struct DatabaseConfig {
     pub username: String,
     pub password: SecretString,
     pub host: String,
@@ -46,12 +46,7 @@ pub struct Database {
     pub database_name: String,
 }
 
-#[derive(serde::Deserialize, Debug, Clone)]
-pub struct Cors {
-    pub allowed_origins: Vec<String>,
-}
-
-impl Database {
+impl DatabaseConfig {
     pub fn without_db(&self) -> PgConnectOptions {
         PgConnectOptions::new()
             .host(&self.host)
@@ -62,6 +57,11 @@ impl Database {
     pub fn with_db(&self) -> PgConnectOptions {
         self.without_db().database(&self.database_name)
     }
+}
+
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct CorsConfig {
+    pub allowed_origins: Vec<String>,
 }
 
 pub enum Environment {

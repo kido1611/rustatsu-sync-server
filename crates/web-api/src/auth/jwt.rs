@@ -2,7 +2,7 @@ use chrono::{Duration, Utc};
 use jsonwebtoken::{DecodingKey, EncodingKey, Header, TokenData, Validation, decode, encode};
 use secrecy::ExposeSecret;
 
-use crate::{config::Jwt, error::Error};
+use crate::{config::JwtConfig, error::Error};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct Claim {
@@ -13,7 +13,7 @@ pub struct Claim {
     iat: usize,
 }
 
-pub fn encode_jwt(user_id: i64, jwt: &Jwt) -> Result<String, Error> {
+pub fn encode_jwt(user_id: i64, jwt: &JwtConfig) -> Result<String, Error> {
     let now = Utc::now();
     let expire: chrono::TimeDelta = Duration::hours(24);
     let exp: usize = (now + expire).timestamp() as usize;
@@ -35,7 +35,7 @@ pub fn encode_jwt(user_id: i64, jwt: &Jwt) -> Result<String, Error> {
     .map_err(Error::JwtError)
 }
 
-pub fn decode_jwt(jwt_token: String, jwt: &Jwt) -> Result<TokenData<Claim>, Error> {
+pub fn decode_jwt(jwt_token: String, jwt: &JwtConfig) -> Result<TokenData<Claim>, Error> {
     let mut validation = Validation::default();
     validation.set_issuer(&[jwt.iss.expose_secret()]);
     validation.set_audience(&[jwt.aud.expose_secret()]);
@@ -50,13 +50,13 @@ pub fn decode_jwt(jwt_token: String, jwt: &Jwt) -> Result<TokenData<Claim>, Erro
 
 #[cfg(test)]
 mod tests {
-    use crate::config::Jwt;
+    use crate::config::JwtConfig;
 
     use super::{decode_jwt, encode_jwt};
 
     #[tokio::test]
     async fn can_encode_decode_jwt() {
-        let jwt = Jwt {
+        let jwt = JwtConfig {
             secret: "this is secret".into(),
             iss: "rustatsu".into(),
             aud: "rustatsu".into(),
@@ -76,12 +76,12 @@ mod tests {
 
     #[tokio::test]
     async fn error_when_jwt_is_invalid() {
-        let jwt_encode = Jwt {
+        let jwt_encode = JwtConfig {
             secret: "this is secret encode".into(),
             iss: "rustatsu".into(),
             aud: "rustatsu".into(),
         };
-        let jwt_decode = Jwt {
+        let jwt_decode = JwtConfig {
             secret: "this is secret decode".into(),
             iss: "rustatsu".into(),
             aud: "rustatsu".into(),
