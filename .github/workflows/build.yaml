@@ -120,7 +120,7 @@ jobs:
           set: |
             *.platform=${{ matrix.platform }}
             *.output=type=image,push-by-digest=true,name-canonical=true,push=true
-            *.tags=
+            *.tags=${{ env.REGISTRY_IMAGE }}
 
       - name: Export digest
         run: |
