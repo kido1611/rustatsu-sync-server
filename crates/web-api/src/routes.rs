@@ -14,6 +14,7 @@ use axum::{
 };
 use tower::ServiceBuilder;
 use tower_http::{
+    compression::CompressionLayer,
     cors::CorsLayer,
     request_id::{MakeRequestUuid, PropagateRequestIdLayer, SetRequestIdLayer},
     trace::TraceLayer,
@@ -116,6 +117,7 @@ pub fn init_router(app_state: AppState) -> Router {
         .nest("/manga", manga_route)
         .route("/", get(crate::controllers::home::index))
         .route("/auth", post(crate::controllers::auth::store))
+        .layer(CompressionLayer::new())
         .layer(request_id_middleware)
         .layer(cors_layer)
         .with_state(state)
