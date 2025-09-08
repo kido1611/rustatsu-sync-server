@@ -38,6 +38,8 @@ jobs:
     needs: [test]
     outputs:
       matrix: ${{ steps.platforms.outputs.matrix }}
+      tags: ${{ steps.meta.outputs.tags }}
+      labels: ${{ steps.meta.outputs.labels }}
     steps:
       - uses: actions/checkout@v4
 
@@ -113,13 +115,13 @@ jobs:
         with:
           files: |
             ./docker-bake.hcl
-            ${{ runner.temp }}/bake-meta.json
+            cwd://${{ runner.temp }}/bake-meta.json
           targets: rustatsu-sync
           set: |
             *.platform=${{ matrix.platform }}
             *.output=type=image,push-by-digest=true,name-canonical=true,push=true
-            *.labels=${{ steps.meta.outputs.labels }}
-            *.tags=${{ steps.meta.outputs.tags }}
+            *.labels=${{ needs.prepare.outputs.labels }}
+            *.tags=${{ needs.prepare.outputs.tags }}
 
       - name: Export digest
         run: |
