@@ -45,7 +45,7 @@ pub struct FavouriteRequest {
     pub sort_key: i32,
     pub created_at: i64,
     pub deleted_at: i64,
-    pub pinned: Option<u8>,
+    pub pinned: Option<bool>,
 }
 
 #[derive(serde::Deserialize, Serialize)]
@@ -53,8 +53,8 @@ pub struct CategoryRequest {
     pub category_id: i64,
     pub created_at: i64,
     pub sort_key: i32,
-    pub track: u8,
-    pub show_in_lib: u8,
+    pub track: bool,
+    pub show_in_lib: bool,
     pub deleted_at: i64,
     pub title: String,
     pub order: String,
@@ -62,7 +62,7 @@ pub struct CategoryRequest {
 
 #[derive(serde::Deserialize, Serialize)]
 pub struct UserFavouriteRequest {
-    pub favourite_categories: Vec<CategoryRequest>,
+    pub categories: Vec<CategoryRequest>,
     pub favourites: Vec<FavouriteRequest>,
     pub timestamp: i64,
 }
@@ -138,7 +138,7 @@ impl From<UserFavouriteRequest> for FavouriteResourceInput {
             .collect();
 
         let categories: Vec<CategoryDto> = value
-            .favourite_categories
+            .categories
             .iter()
             .map(|item| CategoryDto {
                 id: item.category_id,
@@ -147,8 +147,8 @@ impl From<UserFavouriteRequest> for FavouriteResourceInput {
                 title: item.title.clone(),
                 order: item.order.clone(),
                 deleted_at: item.deleted_at,
-                track: item.track > 0,
-                show_in_lib: item.show_in_lib > 0,
+                track: item.track,
+                show_in_lib: item.show_in_lib,
             })
             .collect();
 
@@ -161,7 +161,7 @@ impl From<UserFavouriteRequest> for FavouriteResourceInput {
                 sort_key: item.sort_key,
                 created_at: item.created_at,
                 deleted_at: item.deleted_at,
-                pinned: item.pinned.unwrap_or(0) > 0,
+                pinned: item.pinned.unwrap_or(false),
             })
             .collect();
 

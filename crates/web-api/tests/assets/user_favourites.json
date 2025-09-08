@@ -1,11 +1,11 @@
 {
-  "favourite_categories": [
+  "categories": [
     {
       "category_id": 1,
       "created_at": 1719620081367,
       "sort_key": 1,
-      "track": 1,
-      "show_in_lib": 1,
+      "track": true,
+      "show_in_lib": true,
       "deleted_at": 0,
       "title": "Read later",
       "order": "NEWEST"
@@ -14,8 +14,8 @@
       "category_id": 3,
       "created_at": 1719622208833,
       "sort_key": 0,
-      "track": 1,
-      "show_in_lib": 1,
+      "track": true,
+      "show_in_lib": true,
       "deleted_at": 0,
       "title": "aman",
       "order": "NEWEST"
