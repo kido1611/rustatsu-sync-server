@@ -80,7 +80,7 @@ pub struct FavouriteResponse {
     pub sort_key: i32,
     pub created_at: i64,
     pub deleted_at: i64,
-    pub pinned: u8,
+    pub pinned: bool,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -88,8 +88,8 @@ pub struct CategoryResponse {
     pub category_id: i64,
     pub created_at: i64,
     pub sort_key: i32,
-    pub track: u8,
-    pub show_in_lib: u8,
+    pub track: bool,
+    pub show_in_lib: bool,
     pub deleted_at: i64,
     pub title: String,
     pub order: String,
@@ -97,7 +97,7 @@ pub struct CategoryResponse {
 
 #[derive(Serialize, Deserialize)]
 pub struct UserFavouriteResponse {
-    pub favourite_categories: Vec<CategoryResponse>,
+    pub categories: Vec<CategoryResponse>,
     pub favourites: Vec<FavouriteResponse>,
     pub timestamp: i64,
 }
@@ -148,8 +148,8 @@ impl From<FavouriteResourceOutput> for UserFavouriteResponse {
                 title: c.title,
                 order: c.order,
                 deleted_at: c.deleted_at,
-                track: if c.track { 1 } else { 0 },
-                show_in_lib: if c.show_in_lib { 1 } else { 0 },
+                track: c.track,
+                show_in_lib: c.show_in_lib,
             })
             .collect();
 
@@ -170,13 +170,13 @@ impl From<FavouriteResourceOutput> for UserFavouriteResponse {
                     sort_key: f.sort_key,
                     created_at: f.created_at,
                     deleted_at: f.deleted_at,
-                    pinned: if f.pinned { 1 } else { 0 },
+                    pinned: f.pinned,
                 }
             })
             .collect();
 
         UserFavouriteResponse {
-            favourite_categories: category_responses,
+            categories: category_responses,
             favourites: favourite_responses,
             timestamp: value.sync_time,
         }
