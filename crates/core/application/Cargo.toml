@@ -1,0 +1,12 @@
+[package]
+name = "core-application"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
+chrono = { workspace = true }
+core-domain = { workspace = true }
+secrecy = { workspace = true }
+thiserror.workspace = true
+tracing.workspace = true

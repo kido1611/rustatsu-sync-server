@@ -1,0 +1,10 @@
+[package]
+name = "core-domain"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+
+[dependencies]
+anyhow.workspace = true
+async-trait.workspace = true
+thiserror.workspace = true
