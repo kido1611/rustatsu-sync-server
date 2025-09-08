@@ -44,7 +44,7 @@ async fn should_be_ok_when_accessed_list_user_favourites_with_auth() {
     let result: UserFavouriteResponse = serde_json::from_slice(&response_body).unwrap();
 
     assert_eq!(result.favourites.len(), 0);
-    assert_eq!(result.favourite_categories.len(), 0);
+    assert_eq!(result.categories.len(), 0);
 
     test_state.cleanup().await;
 }
@@ -54,7 +54,7 @@ async fn should_be_ok_when_accessed_list_user_favourites_with_auth_and_user_have
     let example_file = File::open("tests/assets/user_favourites.json").unwrap();
     let user_favourite: UserFavouriteRequest = serde_json::from_reader(example_file).unwrap();
     assert_eq!(user_favourite.favourites.len(), 24);
-    assert_eq!(user_favourite.favourite_categories.len(), 2);
+    assert_eq!(user_favourite.categories.len(), 2);
 
     let mut test_state = TestState::new(true).await;
 
@@ -83,7 +83,7 @@ async fn should_be_ok_when_accessed_list_user_favourites_with_auth_and_user_have
     let result: UserFavouriteResponse = serde_json::from_slice(&response_body).unwrap();
 
     assert_eq!(result.favourites.len(), 24);
-    assert_eq!(result.favourite_categories.len(), 2);
+    assert_eq!(result.categories.len(), 2);
 
     test_state.cleanup().await;
 }
@@ -143,7 +143,7 @@ async fn should_be_ok_when_update_user_favourites_with_data() {
     let example_file = File::open("tests/assets/user_favourites.json").unwrap();
     let user_favourite: UserFavouriteRequest = serde_json::from_reader(example_file).unwrap();
     assert_eq!(user_favourite.favourites.len(), 24);
-    assert_eq!(user_favourite.favourite_categories.len(), 2);
+    assert_eq!(user_favourite.categories.len(), 2);
 
     let mut test_state = TestState::new(true).await;
 
@@ -167,10 +167,7 @@ async fn should_be_ok_when_update_user_favourites_with_data() {
     let result: UserFavouriteResponse = serde_json::from_slice(&response_body).unwrap();
 
     assert_eq!(result.favourites.len(), user_favourite.favourites.len());
-    assert_eq!(
-        result.favourite_categories.len(),
-        user_favourite.favourite_categories.len()
-    );
+    assert_eq!(result.categories.len(), user_favourite.categories.len());
 
     test_state.cleanup().await;
 }

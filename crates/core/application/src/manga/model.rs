@@ -18,23 +18,34 @@ pub struct MangaDto {
 }
 
 impl From<MangaDto> for Manga {
-    fn from(value: MangaDto) -> Self {
-        let author = match &value.author {
-            Some(val) => {
-                let mut author = val.clone();
-                author.truncate(120);
-                Some(author)
+    fn from(mut value: MangaDto) -> Self {
+        value.title.truncate(250);
+
+        let alt_title = match value.alt_title {
+            Some(mut val) => {
+                val.truncate(120);
+                Some(val)
             }
             None => None,
         };
 
-        let mut source = value.source.clone();
-        source.truncate(120);
+        value.url.truncate(250);
+        value.public_url.truncate(250);
+
+        let author = match value.author {
+            Some(mut val) => {
+                val.truncate(120);
+                Some(val)
+            }
+            None => None,
+        };
+
+        value.source.truncate(120);
 
         Manga {
             id: value.id,
             title: value.title,
-            alt_title: value.alt_title,
+            alt_title,
             url: value.url,
             public_url: value.public_url,
             rating: value.rating,
@@ -43,7 +54,7 @@ impl From<MangaDto> for Manga {
             large_cover_url: value.large_cover_url,
             state: value.state,
             author,
-            source,
+            source: value.source,
         }
     }
 }
