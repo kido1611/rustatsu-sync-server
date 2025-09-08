@@ -79,7 +79,8 @@ jobs:
           retention-days: 1
 
   build:
-    runs-on: ubuntu-latest
+    name: Build ${{ matrix.platform }}
+    runs-on: ${{ matrix.platform == 'linux/arm64' && 'ubuntu-arm64' || matrix.platform == 'linux/amd64' && 'ubuntu-latest' || 'ubuntu-latest' }}
     needs: [prepare]
     strategy:
       fail-fast: false
