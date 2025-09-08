@@ -381,7 +381,7 @@ checksum = "c2459377285ad874054d797f3ccebf984978aa39129f6eafde5cdc8315b612f8"
 
 [[package]]
 name = "core-application"
-version = "1.0.7"
+version = "2.0.0"
 dependencies = [
  "chrono",
  "core-domain",
@@ -392,7 +392,7 @@ dependencies = [
 
 [[package]]
 name = "core-domain"
-version = "1.0.7"
+version = "2.0.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -407,7 +407,7 @@ checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
 
 [[package]]
 name = "core-infrastructure"
-version = "1.0.7"
+version = "2.0.0"
 dependencies = [
  "argon2",
  "async-trait",
@@ -1766,7 +1766,7 @@ dependencies = [
 
 [[package]]
 name = "rustatsu-sync"
-version = "1.0.7"
+version = "2.0.0"
 dependencies = [
  "anyhow",
  "axum",
@@ -1988,7 +1988,7 @@ dependencies = [
 
 [[package]]
 name = "shared"
-version = "1.0.7"
+version = "2.0.0"
 dependencies = [
  "core-application",
  "serde",
