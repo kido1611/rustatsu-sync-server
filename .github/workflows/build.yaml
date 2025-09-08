@@ -65,6 +65,13 @@ jobs:
             org.opencontainers.image.created={{date 'YYYY-MM-DDTHH:mm:ssZ'}}
             org.opencontainers.image.version={{tag}}
             org.opencontainers.image.revision={{sha}}
+            org.opencontainers.image.title="rustatsu-sync"
+            org.opencontainers.image.description="Kotatsu sync server alternative written in Rust. Used for personal project."
+            org.opencontainers.image.url="https://github.com/${{ github.repository }}"
+            org.opencontainers.image.source="https://github.com/${{ github.repository }}"
+            org.opencontainers.image.vendor="kido1611"
+            org.opencontainers.image.authors="Muhammad Abdusy Syukur <hi@abdusy.dev>"
+            org.opencontainers.image.licenses="GPL-3.0"
 
       - name: Rename meta bake definition file
         run: |
