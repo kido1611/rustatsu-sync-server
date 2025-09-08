@@ -204,6 +204,7 @@ pub struct UserHistoryResponse {
 }
 
 impl From<HistoryResourceOutput> for UserHistoryResponse {
+    #[instrument(name = "shared::transform_dto_to_user_history_response", skip_all)]
     fn from(value: HistoryResourceOutput) -> Self {
         let manga_tags_response: Vec<(i64, Arc<TagResponse>)> = value
             .manga_tags
@@ -271,6 +272,7 @@ impl From<HistoryResourceOutput> for UserHistoryResponse {
     }
 }
 
+#[instrument(name = "shared::transform_dto_to_manga_list_response", skip_all)]
 pub fn list_manga_resource_to_list_manga_response(
     list_manga_resource: ListMangaResourceOutput,
 ) -> Vec<MangaResponse> {
