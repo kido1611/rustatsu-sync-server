@@ -6,7 +6,7 @@ use axum::{
 };
 use figment::{
     Figment,
-    providers::{Format, Yaml},
+    providers::{Env, Format, Yaml},
 };
 use rustatsu_sync::{
     auth::encode_jwt, config::Config, model::User, routes::init_router, state::AppState,
@@ -34,6 +34,7 @@ impl TestState {
         let config: Config = Figment::new()
             .merge(Yaml::file(config_directory.join("base.yaml")))
             .merge(Yaml::file(config_directory.join("local.yaml")))
+            .merge(Env::raw().split("__"))
             .extract()
             .map_err(Box::new)
             .unwrap();
