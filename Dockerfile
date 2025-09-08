@@ -1,4 +1,4 @@
-FROM lukemathwalker/cargo-chef:latest-rust-1.86-alpine AS chef
+FROM lukemathwalker/cargo-chef:latest-rust-1.89-alpine AS chef
 
 WORKDIR /app
 
@@ -13,11 +13,10 @@ RUN cargo chef prepare --recipe-path recipe.json
 FROM chef AS builder
 
 ARG TARGETPLATFORM
-ARG BUILDPLATFORM
 
 SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
-RUN apk add --no-cache musl-dev=1.2.5-r9 build-base=0.5-r3
+# RUN apk add --no-cache musl-dev=1.2.5-r20 build-base=0.5-r3
 
 RUN case "$TARGETPLATFORM" in \
   "linux/amd64") echo "x86_64-unknown-linux-musl" > /tmp/target ;; \
@@ -32,7 +31,7 @@ COPY --from=planner /app/recipe.json ./recipe.json
 RUN rustup target add "$(cat /tmp/target)" && \
   cargo chef cook --release --recipe-path recipe.json --target "$(cat /tmp/target)"
 
-COPY src ./src
+COPY crates ./crates
 COPY .sqlx ./.sqlx
 COPY Cargo.toml ./Cargo.toml
 COPY Cargo.lock ./Cargo.lock

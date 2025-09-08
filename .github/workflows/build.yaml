@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+env:
+  REGISTRY_IMAGE: abduzzy/rustatsu-sync
+
 jobs:
   test:
     name: Test
@@ -30,74 +33,126 @@ jobs:
       - name: Run tests
         run: cargo test
 
-  docker:
-    name: build container image
+  prepare:
     runs-on: ubuntu-latest
     needs: [test]
+    outputs:
+      matrix: ${{ steps.platforms.outputs.matrix }}
     steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - uses: actions/checkout@v4
+
+      - name: Create matrix
+        id: platforms
+        run: |
+          echo "matrix=$(docker buildx bake rustatsu-sync --print | jq -cr '.target."rustatsu-sync".platforms')" >> $GITHUB_OUTPUT
+
+      - name: Show matrix
+        run: |
+          echo ${{ steps.platforms.outputs.matrix }}
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY_IMAGE }}
+          tags: |
+            type=ref,event=tag              # v1.0.0
+            type=ref,event=tag,suffix=-static  # v1.0.0-static
+            type=raw,value=latest           # latest
+          labels: |
+            org.opencontainers.image.created={{date 'YYYY-MM-DDTHH:mm:ssZ'}}
+            org.opencontainers.image.version={{tag}}
+            org.opencontainers.image.revision={{sha}}
+
+      - name: Rename meta bake definition file
+        run: |
+          mv "${{ steps.meta.outputs.bake-file }}" "${{ runner.temp }}/bake-meta.json"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bake-meta
+          path: ${{ runner.temp }}/bake-meta.json
+          retention-days: 1
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [prepare]
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJson(needs.prepare.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download meta bake definition
+        uses: actions/download-artifact@v4
+        with:
+          name: bake-meta
+          path: ${{ runner.temp }}
+
+      - uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
 
-      - name: Get package version
-        id: package_version
-        run: |
-          git fetch --tags
-          VER=$(git tag --sort="-v:refname" | head -n 1 | cut -d"v" -f2)
-          echo "result=$VER" >> "$GITHUB_OUTPUT"
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build and push image
+      - name: Build image for ${{ matrix.platform }}
+        id: bake
         uses: docker/bake-action@v6
-        env:
-          TAG: ${{ steps.package_version.outputs.result }}
-          REGISTRY: ${{ secrets.DOCKERHUB_USERNAME }}
         with:
-          files: docker-bake.hcl
-          push: true
-  build:
-    name: Build app
-    runs-on: ubuntu-latest
-    needs: [test]
-    env:
-      DATABASE__HOST: "127.0.0.1"
-      DATABASE__PORT: 5432
-      DATABASE__USERNAME: postgres
-      DATABASE__PASSWORD: password
-      DATABASE__DATABASE_NAME: postgres
-      SQLX_OFFLINE: true
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-      - name: Run build
-        run: cargo build --release
-      - name: Package binary into ZIP
+          files: |
+            ./docker-bake.hcl
+            ${{ runner.temp }}/bake-meta.json
+          targets: rustatsu-sync
+          set: |
+            *.platform=${{ matrix.platform }}
+            *.output=type=image,push-by-digest=true,name-canonical=true,push=true
+            *.labels=${{ steps.meta.outputs.labels }}
+            *.tags=${{ steps.meta.outputs.tags }}
+
+      - name: Export digest
         run: |
-          mkdir -p dist
-          cp target/release/rustatsu-sync dist/
-          cp -r configuration dist/
-          cp -r migrations dist/
-          cd dist
-          zip -r rustatsu-sync-linux.zip rustatsu-sync configuration migrations
-      - name: Upload release asset
-        uses: softprops/action-gh-release@v1
+          mkdir -p ${{ runner.temp }}/digests
+          digest="$(jq -r '.target."rustatsu-sync".digest' <<< '${{ steps.bake.outputs.metadata }}')"
+          touch "${{ runner.temp }}/digests/${digest#sha256:}"
+
+      - uses: actions/upload-artifact@v4
         with:
-          files: dist/rustatsu-sync-linux.zip
+          name: digests-${{ matrix.platform//\//- }}
+          path: ${{ runner.temp }}/digests/*
+          retention-days: 1
+
+  merge:
+    runs-on: ubuntu-latest
+    needs: [build, prepare]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: bake-meta
+          path: ${{ runner.temp }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: ${{ runner.temp }}/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Create manifest list and push
+        working-directory: ${{ runner.temp }}/digests
+        run: |
+          docker buildx imagetools create \
+            $(jq -cr '.target."docker-metadata-action".tags | map("-t " + .) | join(" ")' ${{ runner.temp }}/bake-meta.json) \
+            $(printf '${{ env.REGISTRY_IMAGE }}@sha256:%s ' *)
+
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ${{ env.REGISTRY_IMAGE }}:latest

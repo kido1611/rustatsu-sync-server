@@ -5,10 +5,10 @@ group "default" {
 variable "TAG" {
   default = "1.0.7"
 }
-
-variable "REGISTRY" {
-  default = "abduzzy"
-}
+#
+# variable "REGISTRY" {
+#   default = "abduzzy"
+# }
 
 // Special target: https://github.com/docker/metadata-action#bake-definition
 target "docker-metadata-action" {}
@@ -19,13 +19,13 @@ target "rustatsu-sync" {
   dockerfile = "Dockerfile"
   platforms = [
     "linux/amd64",
-    # "linux/arm64"
+    "linux/arm64"
   ]
-  tags = [
-    "${REGISTRY}/rustatsu-sync:${TAG}",
-    "${REGISTRY}/rustatsu-sync:${TAG}-static",
-    "${REGISTRY}/rustatsu-sync:latest"
-  ]
+  # tags = [
+  #   "${REGISTRY}/rustatsu-sync:${TAG}",
+  #   "${REGISTRY}/rustatsu-sync:${TAG}-static",
+  #   "${REGISTRY}/rustatsu-sync:latest"
+  # ]
   labels = {
     "org.opencontainers.image.created" = "${timestamp()}"
     "org.opencontainers.image.version" = TAG
@@ -34,5 +34,5 @@ target "rustatsu-sync" {
     "type=provenance,mode=max",
     "type=sbom",
   ]
-  output = ["type=registry"]  # registry is alternative of type=image,push=true
+  output = ["type=docker"]  # registry is alternative of type=image,push=true
 }
