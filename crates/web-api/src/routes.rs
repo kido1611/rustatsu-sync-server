@@ -5,11 +5,11 @@ use axum::{
     body::Body,
     extract::{DefaultBodyLimit, MatchedPath},
     http::{
-        HeaderName, HeaderValue, Method, Request,
+        HeaderName, HeaderValue, Method, Request, StatusCode,
         header::{self, AUTHORIZATION, CONTENT_TYPE},
     },
     middleware,
-    response::Response,
+    response::{IntoResponse, Response},
     routing::{get, post},
 };
 use tower::ServiceBuilder;
@@ -107,18 +107,26 @@ pub fn init_router(app_state: AppState) -> Router {
         )
         .layer(PropagateRequestIdLayer::new(x_request_id_header));
 
-    Router::new()
+    let auth_routes = Router::new()
         // auth routes
         .nest("/me", me_route)
         .nest("/resource/favourites", resources_favourites_route)
         .nest("/resource/history", resources_history_route)
-        .layer(auth_middleware)
+        .layer(auth_middleware);
+
+    Router::new()
+        .merge(auth_routes)
         // guest routes
         .nest("/manga", manga_route)
         .route("/", get(crate::controllers::home::index))
         .route("/auth", post(crate::controllers::auth::store))
+        .fallback(handler_404)
         .layer(CompressionLayer::new())
         .layer(request_id_middleware)
         .layer(cors_layer)
         .with_state(state)
+}
+
+async fn handler_404() -> impl IntoResponse {
+    StatusCode::NOT_FOUND.into_response()
 }
