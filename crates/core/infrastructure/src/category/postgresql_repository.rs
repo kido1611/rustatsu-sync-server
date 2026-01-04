@@ -67,7 +67,7 @@ impl CategoryRepository for PostgreSQLCategoryRepository {
         Ok(())
     }
 
-    #[instrument(name = "repository::list_user_categories", skip(self), level = Level::DEBUG)]
+    #[instrument(name = "repository::list_user_categories", skip(self), level = Level::DEBUG, err(level = Level::ERROR))]
     async fn list_by_user_id(&self, user_id: i64) -> Result<Vec<Category>, DomainError> {
         let categories = sqlx::query_as!(
             Category,
