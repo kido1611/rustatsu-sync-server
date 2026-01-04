@@ -3,12 +3,12 @@ use argon2::{
     password_hash::{SaltString, rand_core::OsRng},
 };
 use core_domain::{security::password_manager::PasswordManager, shared::error::DomainError};
-use tracing::instrument;
+use tracing::{Level, instrument};
 
 pub struct ArgonPasswordManager {}
 
 impl PasswordManager for ArgonPasswordManager {
-    #[instrument(name = "security::hash_password", skip_all, fields(use = "argon2id"))]
+    #[instrument(name = "security::hash_password", skip_all, fields(use = "argon2id"), level = Level::DEBUG, err(level = Level::ERROR))]
     fn hash_password(&self, password: &str) -> Result<String, DomainError> {
         let salt = SaltString::generate(&mut OsRng);
         let password_hash = Argon2::new(
@@ -23,7 +23,7 @@ impl PasswordManager for ArgonPasswordManager {
         Ok(password_hash)
     }
 
-    #[instrument(name = "security::verify_password", skip_all, fields(use = "argon2id"))]
+    #[instrument(name = "security::verify_password", skip_all, fields(use = "argon2id"), level = Level::DEBUG, err(level = Level::ERROR))]
     fn verify(&self, password_hashed: &str, password: &str) -> Result<(), DomainError> {
         let expected_password_hash = PasswordHash::new(password_hashed)
             .map_err(|e| DomainError::PasswordManagerError(e.into()))?;

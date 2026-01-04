@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use core_domain::{security::password_manager::PasswordManager, user::repository::UserRepository};
 use secrecy::ExposeSecret;
-use tracing::instrument;
+use tracing::{Level, instrument};
 
 use crate::{
     shared::error::ApplicationError,
@@ -16,7 +16,7 @@ pub struct CheckOrCreateUserUsecase {
 }
 
 impl CheckOrCreateUserUsecase {
-    #[instrument(name = "usecase::check_or_create_user", skip_all, fields(email = %data.email, allow_to_register = %self.allow_to_register))]
+    #[instrument(name = "usecase::check_or_create_user", skip_all, fields(email = %data.email, allow_to_register = %self.allow_to_register), level = Level::DEBUG, err(level = Level::ERROR))]
     pub async fn execute(&self, data: UserInput) -> Result<UserDto, ApplicationError> {
         // check user by email
         let user_option = self.user_repository.get_by_email(&data.email).await?;

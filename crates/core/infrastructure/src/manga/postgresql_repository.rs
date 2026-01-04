@@ -8,7 +8,7 @@ use core_domain::{
 };
 use futures::TryStreamExt;
 use sqlx::{PgPool, Postgres, QueryBuilder, Row};
-use tracing::{info, instrument};
+use tracing::{Level, info, instrument};
 
 pub struct PostgreSQLMangaRepository {
     pub pool: PgPool,
@@ -16,7 +16,7 @@ pub struct PostgreSQLMangaRepository {
 
 #[async_trait]
 impl MangaRepository for PostgreSQLMangaRepository {
-    #[instrument(name = "repository::insert_manga", skip_all)]
+    #[instrument(name = "repository::insert_manga", skip_all, level = Level::DEBUG, err(level = Level::ERROR))]
     async fn insert(&self, manga: Vec<Manga>) -> Result<(), DomainError> {
         info!("inserting {} manga", manga.len());
 
@@ -77,7 +77,7 @@ impl MangaRepository for PostgreSQLMangaRepository {
         Ok(())
     }
 
-    #[instrument(name = "repository::get_manga_by_id", skip_all, filds(manga_id = %id))]
+    #[instrument(name = "repository::get_manga_by_id", skip_all, filds(manga_id = %id), level = Level::DEBUG, err(level = Level::ERROR))]
     async fn get_by_id(&self, id: i64) -> Result<Option<Manga>, DomainError> {
         sqlx::query_as!(
             Manga,
@@ -99,7 +99,7 @@ impl MangaRepository for PostgreSQLMangaRepository {
         .map_err(|e| DomainError::DatabaseError(e.into()))
     }
 
-    #[instrument(name = "repository::list_manga_by_ids", skip_all)]
+    #[instrument(name = "repository::list_manga_by_ids", skip_all, level = Level::DEBUG, err(level = Level::ERROR))]
     async fn list_by_ids(&self, ids: &[i64]) -> Result<Vec<Manga>, DomainError> {
         let mut builder: QueryBuilder<Postgres> = QueryBuilder::new(
             r#"
@@ -142,7 +142,7 @@ impl MangaRepository for PostgreSQLMangaRepository {
         Ok(manga)
     }
 
-    #[instrument(name = "repository::list_manga", skip_all, fields(offset = %pagination.offset, limit = %pagination.limit))]
+    #[instrument(name = "repository::list_manga", skip_all, fields(offset = %pagination.offset, limit = %pagination.limit), level = Level::DEBUG, err(level = Level::ERROR))]
     async fn list_with_pagination(
         &self,
         pagination: MangaPagination,

@@ -5,7 +5,7 @@ use core_domain::{
     manga::repository::MangaRepository, tag::repository::TagRepository,
     user::repository::UserRepository,
 };
-use tracing::instrument;
+use tracing::{Level, instrument};
 
 use crate::{
     category::model::CategoryDto,
@@ -24,7 +24,7 @@ pub struct GetUserFavouriteResourceUsecase {
 }
 
 impl GetUserFavouriteResourceUsecase {
-    #[instrument(name = "usecase::get_user_favourite_resource", skip_all, fields(user_id = %user_id))]
+    #[instrument(name = "usecase::get_user_favourite_resource", skip_all, fields(user_id = %user_id), level = Level::DEBUG, err(level = Level::ERROR))]
     pub async fn execute(&self, user_id: i64) -> Result<FavouriteResourceOutput, ApplicationError> {
         let user = self.user_repository.get_by_id(user_id).await?.ok_or(
             ApplicationError::ResourceNotFound(format!("user {} is missing", user_id)),

@@ -4,7 +4,7 @@ use core_domain::{
     shared::error::DomainError,
 };
 use sqlx::{PgPool, Postgres, QueryBuilder};
-use tracing::{info, instrument};
+use tracing::{Level, info, instrument};
 
 pub struct PostgreSQLFavouriteRepository {
     pub pool: PgPool,
@@ -12,7 +12,7 @@ pub struct PostgreSQLFavouriteRepository {
 
 #[async_trait]
 impl FavouriteRepository for PostgreSQLFavouriteRepository {
-    #[instrument(name = "repository::insert_favourites", skip_all)]
+    #[instrument(name = "repository::insert_favourites", skip_all, level = Level::DEBUG, err(level = Level::ERROR))]
     async fn insert(&self, favourites: Vec<Favourite>) -> Result<(), DomainError> {
         info!("inserting {} favourites", favourites.len());
 
@@ -62,7 +62,7 @@ impl FavouriteRepository for PostgreSQLFavouriteRepository {
         Ok(())
     }
 
-    #[instrument(name = "repository::list_user_favourites", skip(self))]
+    #[instrument(name = "repository::list_user_favourites", skip(self), level = Level::DEBUG, err(level = Level::ERROR))]
     async fn list_by_user_id(&self, user_id: i64) -> Result<Vec<Favourite>, DomainError> {
         let favourites = sqlx::query_as!(
             Favourite,

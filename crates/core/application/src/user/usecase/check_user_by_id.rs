@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use core_domain::user::repository::UserRepository;
-use tracing::instrument;
+use tracing::{Level, instrument};
 
 use crate::{shared::error::ApplicationError, user::model::UserDto};
 
@@ -10,7 +10,7 @@ pub struct CheckUserByIdUsecase {
 }
 
 impl CheckUserByIdUsecase {
-    #[instrument(name = "usecase::check_user_by_id", skip_all, fields(user_id = %user_id))]
+    #[instrument(name = "usecase::check_user_by_id", skip_all, fields(user_id = %user_id), level = Level::DEBUG, err(level = Level::ERROR))]
     pub async fn execute(&self, user_id: i64) -> Result<Option<UserDto>, ApplicationError> {
         let user: Option<UserDto> = self
             .user_repository

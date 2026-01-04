@@ -4,7 +4,7 @@ use core_domain::{
     shared::error::DomainError,
 };
 use sqlx::{PgPool, Postgres, QueryBuilder};
-use tracing::{info, instrument};
+use tracing::{Level, info, instrument};
 
 pub struct PostgreSQLMangaTagRepository {
     pub pool: PgPool,
@@ -12,7 +12,7 @@ pub struct PostgreSQLMangaTagRepository {
 
 #[async_trait]
 impl MangaTagRepository for PostgreSQLMangaTagRepository {
-    #[instrument(name = "repository::insert_manga_tags", skip_all)]
+    #[instrument(name = "repository::insert_manga_tags", skip_all, level = Level::DEBUG, err(level = Level::ERROR))]
     async fn insert(&self, manga_tags: Vec<MangaTag>) -> Result<(), DomainError> {
         info!("inserting {} manga tags", manga_tags.len());
 

@@ -9,7 +9,7 @@ use core_application::{
     tag::model::TagDto,
 };
 use serde::{Deserialize, Serialize};
-use tracing::instrument;
+use tracing::{Level, instrument};
 
 #[derive(Deserialize, Serialize)]
 pub struct TagRequest {
@@ -68,7 +68,7 @@ pub struct UserFavouriteRequest {
 }
 
 impl From<UserFavouriteRequest> for FavouriteResourceInput {
-    #[instrument(name = "shared::transform_user_favourite_request_to_dto", skip_all)]
+    #[instrument(name = "shared::transform_user_favourite_request_to_dto", skip_all, level = Level::DEBUG)]
     fn from(value: UserFavouriteRequest) -> Self {
         let mut manga_seen = HashSet::new();
         let manga: Vec<MangaDto> = value
@@ -197,7 +197,7 @@ pub struct UserHistoryRequest {
 }
 
 impl From<UserHistoryRequest> for HistoryResourceInput {
-    #[instrument(name = "shared::transform_user_history_request_to_dto", skip_all)]
+    #[instrument(name = "shared::transform_user_history_request_to_dto", skip_all, level = Level::DEBUG)]
     fn from(value: UserHistoryRequest) -> Self {
         let mut manga_seen = HashSet::new();
         let manga: Vec<MangaDto> = value

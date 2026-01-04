@@ -4,7 +4,7 @@ use core_domain::{
     shared::error::DomainError,
 };
 use sqlx::{PgPool, Postgres, QueryBuilder};
-use tracing::{info, instrument};
+use tracing::{Level, info, instrument};
 
 pub struct PostgreSQLCategoryRepository {
     pub pool: PgPool,
@@ -12,7 +12,7 @@ pub struct PostgreSQLCategoryRepository {
 
 #[async_trait]
 impl CategoryRepository for PostgreSQLCategoryRepository {
-    #[instrument(name = "repository::insert_categories", skip_all)]
+    #[instrument(name = "repository::insert_categories", skip_all, level = Level::DEBUG, err(level = Level::ERROR))]
     async fn insert(&self, categories: Vec<Category>) -> Result<(), DomainError> {
         info!("inserting {} categories", categories.len());
 
@@ -67,7 +67,7 @@ impl CategoryRepository for PostgreSQLCategoryRepository {
         Ok(())
     }
 
-    #[instrument(name = "repository::list_user_categories", skip(self))]
+    #[instrument(name = "repository::list_user_categories", skip(self), level = Level::DEBUG)]
     async fn list_by_user_id(&self, user_id: i64) -> Result<Vec<Category>, DomainError> {
         let categories = sqlx::query_as!(
             Category,

@@ -4,7 +4,7 @@ use core_domain::{
     shared::error::DomainError,
 };
 use sqlx::{PgPool, Postgres, QueryBuilder};
-use tracing::{info, instrument};
+use tracing::{Level, info, instrument};
 
 pub struct PostgreSQLHistoryRepository {
     pub pool: PgPool,
@@ -12,7 +12,7 @@ pub struct PostgreSQLHistoryRepository {
 
 #[async_trait]
 impl HistoryRepository for PostgreSQLHistoryRepository {
-    #[instrument(name = "repository::insert_history", skip_all)]
+    #[instrument(name = "repository::insert_history", skip_all, level = Level::DEBUG, err(level = Level::ERROR))]
     async fn insert(&self, history: Vec<History>) -> Result<(), DomainError> {
         info!("inserting {} history", history.len());
 
@@ -71,7 +71,7 @@ impl HistoryRepository for PostgreSQLHistoryRepository {
         Ok(())
     }
 
-    #[instrument(name = "repository::list_user_history", skip(self))]
+    #[instrument(name = "repository::list_user_history", skip(self), level = Level::DEBUG, err(level = Level::ERROR))]
     async fn list_by_user_id(&self, user_id: i64) -> Result<Vec<History>, DomainError> {
         let history = sqlx::query_as!(
             History,

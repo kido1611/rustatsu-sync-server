@@ -7,7 +7,7 @@ use core_application::{
     tag::model::TagDto,
 };
 use serde::{Deserialize, Serialize};
-use tracing::instrument;
+use tracing::{Level, instrument};
 
 #[derive(Serialize, Deserialize)]
 pub struct TagResponse {
@@ -103,7 +103,7 @@ pub struct UserFavouriteResponse {
 }
 
 impl From<FavouriteResourceOutput> for UserFavouriteResponse {
-    #[instrument(name = "shared::transform_dto_to_user_favourite_response", skip_all)]
+    #[instrument(name = "shared::transform_dto_to_user_favourite_response", skip_all, level = Level::DEBUG)]
     fn from(value: FavouriteResourceOutput) -> Self {
         let manga_tags_response: Vec<(i64, Arc<TagResponse>)> = value
             .manga_tags
@@ -204,7 +204,7 @@ pub struct UserHistoryResponse {
 }
 
 impl From<HistoryResourceOutput> for UserHistoryResponse {
-    #[instrument(name = "shared::transform_dto_to_user_history_response", skip_all)]
+    #[instrument(name = "shared::transform_dto_to_user_history_response", skip_all, level = Level::DEBUG)]
     fn from(value: HistoryResourceOutput) -> Self {
         let manga_tags_response: Vec<(i64, Arc<TagResponse>)> = value
             .manga_tags
@@ -272,7 +272,7 @@ impl From<HistoryResourceOutput> for UserHistoryResponse {
     }
 }
 
-#[instrument(name = "shared::transform_dto_to_manga_list_response", skip_all)]
+#[instrument(name = "shared::transform_dto_to_manga_list_response", skip_all, level = Level::DEBUG)]
 pub fn list_manga_resource_to_list_manga_response(
     list_manga_resource: ListMangaResourceOutput,
 ) -> Vec<MangaResponse> {

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use core_domain::{manga::repository::MangaRepository, tag::repository::TagRepository};
-use tracing::instrument;
+use tracing::{Level, instrument};
 
 use crate::{
     manga::model::{MangaDto, MangaResourceOutput},
@@ -15,7 +15,7 @@ pub struct GetMangaByIdUsecase {
 }
 
 impl GetMangaByIdUsecase {
-    #[instrument(name = "usecase::get_manga_by_id", skip_all, fields(manga_id = %manga_id))]
+    #[instrument(name = "usecase::get_manga_by_id", skip_all, fields(manga_id = %manga_id), level = Level::DEBUG, err(level = Level::ERROR))]
     pub async fn execute(
         &self,
         manga_id: i64,

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use core_domain::{manga::repository::MangaRepository, tag::repository::TagRepository};
-use tracing::{instrument, warn};
+use tracing::{Level, instrument, warn};
 
 use crate::{
     manga::model::{ListMangaQuery, ListMangaResourceOutput, MangaDto},
@@ -15,7 +15,7 @@ pub struct ListMangaUsecase {
 }
 
 impl ListMangaUsecase {
-    #[instrument(name = "usecase::list_manga", skip_all, fields(limit = %query.limit, offset = %query.offset))]
+    #[instrument(name = "usecase::list_manga", skip_all, fields(limit = %query.limit, offset = %query.offset), level = Level::DEBUG, err(level = Level::ERROR))]
     pub async fn execute(
         &self,
         query: ListMangaQuery,

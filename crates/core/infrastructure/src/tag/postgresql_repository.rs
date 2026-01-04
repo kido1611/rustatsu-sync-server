@@ -5,7 +5,7 @@ use core_domain::{
 };
 use futures::TryStreamExt;
 use sqlx::{PgPool, Postgres, QueryBuilder, Row};
-use tracing::{info, instrument};
+use tracing::{Level, info, instrument};
 
 pub struct PostgreSQLTagRepository {
     pub pool: PgPool,
@@ -13,7 +13,7 @@ pub struct PostgreSQLTagRepository {
 
 #[async_trait]
 impl TagRepository for PostgreSQLTagRepository {
-    #[instrument(name = "repository::insert_tags", skip_all)]
+    #[instrument(name = "repository::insert_tags", skip_all, level = Level::DEBUG, err(level = Level::ERROR))]
     async fn insert(&self, tags: Vec<Tag>) -> Result<(), DomainError> {
         info!("inserting {} tags", tags.len());
 
@@ -57,7 +57,7 @@ impl TagRepository for PostgreSQLTagRepository {
         Ok(())
     }
 
-    #[instrument(name = "repository::list_tags_by_manga_ids", skip_all, fields(manga_count = %manga_ids.len()))]
+    #[instrument(name = "repository::list_tags_by_manga_ids", skip_all, fields(manga_count = %manga_ids.len()), level = Level::DEBUG, err(level = Level::ERROR))]
     async fn list_by_manga_ids(&self, manga_ids: &[i64]) -> Result<Vec<(i64, Tag)>, DomainError> {
         let mut builder: QueryBuilder<Postgres> = QueryBuilder::new(
             r#"

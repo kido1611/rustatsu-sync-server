@@ -7,7 +7,7 @@ use core_domain::{
     tag::{model::Tag, repository::TagRepository},
     user::{model::UserUpdateSyncTime, repository::UserRepository},
 };
-use tracing::instrument;
+use tracing::{Level, instrument};
 
 use crate::{history::model::HistoryResourceInput, shared::error::ApplicationError};
 
@@ -20,7 +20,7 @@ pub struct InsertUserHistoryResourceUsecase {
 }
 
 impl InsertUserHistoryResourceUsecase {
-    #[instrument(name = "usecase::insert_user_history_resource", skip_all, fields(user_id = %user_id))]
+    #[instrument(name = "usecase::insert_user_history_resource", skip_all, fields(user_id = %user_id), level = Level::DEBUG, err(level = Level::ERROR))]
     pub async fn execute(
         &self,
         user_id: i64,
