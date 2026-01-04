@@ -36,6 +36,7 @@ pub struct MangaResponse {
     pub url: String,
     pub public_url: String,
     pub rating: f32,
+    pub nsfw: bool,
     pub content_rating: Option<String>,
     pub cover_url: String,
     pub large_cover_url: Option<String>,
@@ -61,7 +62,12 @@ impl From<MangaResourceOutput> for MangaResponse {
             url: value.manga.url,
             public_url: value.manga.public_url,
             rating: value.manga.rating,
-            content_rating: value.manga.content_rating,
+            content_rating: value.manga.content_rating.clone(),
+            nsfw: if let Some(content_rating) = value.manga.content_rating {
+                content_rating == "ADULT"
+            } else {
+                false
+            },
             cover_url: value.manga.cover_url,
             large_cover_url: value.manga.large_cover_url,
             state: value.manga.state,
@@ -128,7 +134,12 @@ impl From<FavouriteResourceOutput> for UserFavouriteResponse {
                     url: m.url,
                     public_url: m.public_url,
                     rating: m.rating,
-                    content_rating: m.content_rating,
+                    content_rating: m.content_rating.clone(),
+                    nsfw: if let Some(content_rating) = m.content_rating {
+                        content_rating == "ADULT"
+                    } else {
+                        false
+                    },
                     cover_url: m.cover_url,
                     large_cover_url: m.large_cover_url,
                     state: m.state,
@@ -229,7 +240,12 @@ impl From<HistoryResourceOutput> for UserHistoryResponse {
                     url: m.url,
                     public_url: m.public_url,
                     rating: m.rating,
-                    content_rating: m.content_rating,
+                    content_rating: m.content_rating.clone(),
+                    nsfw: if let Some(content_rating) = m.content_rating {
+                        content_rating == "ADULT"
+                    } else {
+                        false
+                    },
                     cover_url: m.cover_url,
                     large_cover_url: m.large_cover_url,
                     state: m.state,
@@ -299,7 +315,12 @@ pub fn list_manga_resource_to_list_manga_response(
                 url: m.url,
                 public_url: m.public_url,
                 rating: m.rating,
-                content_rating: m.content_rating,
+                content_rating: m.content_rating.clone(),
+                nsfw: if let Some(content_rating) = m.content_rating {
+                    content_rating == "ADULT"
+                } else {
+                    false
+                },
                 cover_url: m.cover_url,
                 large_cover_url: m.large_cover_url,
                 state: m.state,
