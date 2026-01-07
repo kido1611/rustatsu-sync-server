@@ -27,7 +27,7 @@ pub struct MangaRequest {
     pub url: String,
     pub public_url: String,
     pub rating: f32,
-    pub nsfw: Option<u8>,
+    pub nsfw: bool,
     pub content_rating: Option<String>,
     pub cover_url: String,
     pub large_cover_url: Option<String>,
@@ -84,9 +84,7 @@ impl From<UserFavouriteRequest> for FavouriteResourceInput {
                 rating: item.manga.rating,
                 content_rating: if item.manga.content_rating.is_some() {
                     item.manga.content_rating.clone()
-                } else if let Some(is_nfsw) = item.manga.nsfw
-                    && is_nfsw > 0
-                {
+                } else if item.manga.nsfw {
                     Some("ADULT".to_string())
                 } else {
                     None
@@ -213,9 +211,7 @@ impl From<UserHistoryRequest> for HistoryResourceInput {
                 rating: item.manga.rating,
                 content_rating: if item.manga.content_rating.is_some() {
                     item.manga.content_rating.clone()
-                } else if let Some(is_nfsw) = item.manga.nsfw
-                    && is_nfsw > 0
-                {
+                } else if item.manga.nsfw {
                     Some("ADULT".to_string())
                 } else {
                     None
