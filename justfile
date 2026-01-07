@@ -5,8 +5,8 @@ help:
 [doc("Generate SQLX metadata")]
 prepare:
   @echo "Generate SQLX metadata"
-  @cargo sqlx prepare
-  @cargo sqlx prepare -- --tests
+  @cargo sqlx prepare --workspace
+  @cargo sqlx prepare --workspace -- --tests
 
 [doc("Running tests")]
 test:

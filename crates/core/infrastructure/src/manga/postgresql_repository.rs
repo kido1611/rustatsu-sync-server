@@ -28,7 +28,7 @@ impl MangaRepository for PostgreSQLMangaRepository {
 
         for chunk in manga.chunks(300) {
             let mut builder: QueryBuilder<Postgres> = QueryBuilder::new(
-                r#"INSERT INTO mangas (id, title, alt_title, url, public_url, rating, content_rating, cover_url, large_cover_url, state, author, source)"#,
+                r#"INSERT INTO mangas (id, title, alt_title, url, public_url, rating, nsfw, content_rating, cover_url, large_cover_url, state, author, source)"#,
             );
 
             builder.push_values(chunk, |mut b, m| {
@@ -38,6 +38,7 @@ impl MangaRepository for PostgreSQLMangaRepository {
                     .push_bind(&m.url)
                     .push_bind(&m.public_url)
                     .push_bind(m.rating)
+                    .push_bind(m.nsfw)
                     .push_bind(&m.content_rating)
                     .push_bind(&m.cover_url)
                     .push_bind(&m.large_cover_url)
@@ -54,6 +55,7 @@ impl MangaRepository for PostgreSQLMangaRepository {
                         url = EXCLUDED.url, 
                         public_url = EXCLUDED.public_url, 
                         rating = EXCLUDED.rating, 
+                        nsfw = EXCLUDED.nsfw,
                         content_rating = EXCLUDED.content_rating, 
                         cover_url = EXCLUDED.cover_url, 
                         large_cover_url = EXCLUDED.large_cover_url, 
@@ -85,7 +87,7 @@ impl MangaRepository for PostgreSQLMangaRepository {
                 SELECT
                     id, title, alt_title,
                     url, public_url, rating,
-                    content_rating, cover_url, large_cover_url,
+                    nsfw, content_rating, cover_url, large_cover_url,
                     state, author, source
                 FROM
                     mangas
@@ -104,7 +106,7 @@ impl MangaRepository for PostgreSQLMangaRepository {
         let mut builder: QueryBuilder<Postgres> = QueryBuilder::new(
             r#"
                 SELECT 
-                    id, title, alt_title, url, public_url, rating, content_rating, cover_url, large_cover_url, state, author, source
+                    id, title, alt_title, url, public_url, rating, nsfw, content_rating, cover_url, large_cover_url, state, author, source
                 FROM mangas
                 WHERE id in (
             "#,
@@ -130,6 +132,7 @@ impl MangaRepository for PostgreSQLMangaRepository {
                 url: row.get("url"),
                 public_url: row.get("public_url"),
                 rating: row.get("rating"),
+                nsfw: row.get("nsfw"),
                 content_rating: row.get("content_rating"),
                 cover_url: row.get("cover_url"),
                 large_cover_url: row.get("large_cover_url"),
@@ -153,7 +156,7 @@ impl MangaRepository for PostgreSQLMangaRepository {
                 SELECT
                     id, title, alt_title,
                     url, public_url, rating,
-                    content_rating, cover_url, large_cover_url,
+                    nsfw, content_rating, cover_url, large_cover_url,
                     state, author, source
                 FROM
                     mangas

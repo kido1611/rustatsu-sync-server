@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    id, title, alt_title,\n                    url, public_url, rating,\n                    content_rating, cover_url, large_cover_url,\n                    state, author, source\n                FROM\n                    mangas\n                ORDER BY id\n                LIMIT $1\n                OFFSET $2\n            ",
+  "query": "\n                SELECT\n                    id, title, alt_title,\n                    url, public_url, rating,\n                    nsfw, content_rating, cover_url, large_cover_url,\n                    state, author, source\n                FROM\n                    mangas\n                WHERE\n                    id = $1;\n            ",
   "describe": {
     "columns": [
       {
@@ -35,38 +35,42 @@
       },
       {
         "ordinal": 6,
+        "name": "nsfw",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
         "name": "content_rating",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "cover_url",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "large_cover_url",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "state",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "author",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "source",
         "type_info": "Varchar"
       }
     ],
     "parameters": {
       "Left": [
-        "Int8",
         "Int8"
       ]
     },
@@ -74,6 +78,7 @@
       false,
       false,
       true,
+      false,
       false,
       false,
       false,
@@ -85,5 +90,5 @@
       false
     ]
   },
-  "hash": "3c3a295546721871ec18f1cf817bfd759b93ed18f03f2be897f836d857b0cf58"
+  "hash": "19d66ace7667cbf201b0c56627149ab609576092bef47eb5019175fb7fd85632"
 }
