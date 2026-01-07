@@ -86,40 +86,40 @@ jobs:
       - name: Run tarpaulin
         run: cargo tarpaulin
 
-  build:
-    name: Build app
-    runs-on: ubuntu-latest
-    needs: [test]
-    env:
-      DATABASE__HOST: "127.0.0.1"
-      DATABASE__PORT: 5432
-      DATABASE__USERNAME: postgres
-      DATABASE__PASSWORD: password
-      DATABASE__DATABASE_NAME: postgres
-      SQLX_OFFLINE: true
-    services:
-      postgres:
-        image: postgres:17
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-      - name: Run build
-        run: cargo build --release
-      - name: Copy binary file
-        run: |
-          cp target/release/rustatsu-sync .
-      - name: Upload build to artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: rustatsu-linux
-          path: |
-            rustatsu-sync
-            configuration/
-            migrations/
+  # build:
+  #   name: Build app
+  #   runs-on: ubuntu-latest
+  #   needs: [test]
+  #   env:
+  #     DATABASE__HOST: "127.0.0.1"
+  #     DATABASE__PORT: 5432
+  #     DATABASE__USERNAME: postgres
+  #     DATABASE__PASSWORD: password
+  #     DATABASE__DATABASE_NAME: postgres
+  #     SQLX_OFFLINE: true
+  #   services:
+  #     postgres:
+  #       image: postgres:17
+  #       env:
+  #         POSTGRES_USER: postgres
+  #         POSTGRES_PASSWORD: password
+  #         POSTGRES_DB: postgres
+  #       ports:
+  #         - 5432:5432
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: dtolnay/rust-toolchain@stable
+  #     - uses: Swatinem/rust-cache@v2
+  #     - name: Run build
+  #       run: cargo build --release
+  #     - name: Copy binary file
+  #       run: |
+  #         cp target/release/rustatsu-sync .
+  #     - name: Upload build to artifacts
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: rustatsu-linux
+  #         path: |
+  #           rustatsu-sync
+  #           configuration/
+  #           migrations/
