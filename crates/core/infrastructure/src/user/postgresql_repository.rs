@@ -114,7 +114,7 @@ impl UserRepository for PostgreSQLUserRepository {
     #[instrument(name = "repository::update_user_history_sync_time", skip_all, level = Level::DEBUG, err(level = Level::ERROR))]
     async fn update_history_sync_time(&self, data: UserUpdateSyncTime) -> Result<(), DomainError> {
         info!(
-            "update user({}) favourite sync timestamp to {}",
+            "update user({}) history sync timestamp to {}",
             data.user_id, data.time
         );
 
