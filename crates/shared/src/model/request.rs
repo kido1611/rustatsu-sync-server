@@ -17,6 +17,7 @@ pub struct TagRequest {
     pub title: String,
     pub key: String,
     pub source: String,
+    pub pinned: Option<bool>,
 }
 
 #[derive(serde::Deserialize, Serialize)]
@@ -116,6 +117,7 @@ impl From<UserFavouriteRequest> for FavouriteResourceInput {
                         title: item_tag.title.clone(),
                         key: item_tag.key.clone(),
                         source: item_tag.source.clone(),
+                        pinned: item_tag.pinned.unwrap_or_default(),
                     })
                     .collect::<Vec<TagDto>>()
             })
@@ -248,6 +250,7 @@ impl From<UserHistoryRequest> for HistoryResourceInput {
                         title: item_tag.title.clone(),
                         key: item_tag.key.clone(),
                         source: item_tag.source.clone(),
+                        pinned: item_tag.pinned.unwrap_or_default(),
                     })
                     .collect::<Vec<TagDto>>()
             })

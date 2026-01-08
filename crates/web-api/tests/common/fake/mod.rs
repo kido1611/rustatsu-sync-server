@@ -44,6 +44,7 @@ pub async fn insert_fake_manga(app_state: &AppState, tags_size: Option<u64>) -> 
                 title: format!("tag title {}", Name().fake::<String>()),
                 key: format!("key-{}", key_random),
                 source: "source".to_string(),
+                pinned: false,
             }
         };
         manga_tags_dto.push(MangaTagDto {

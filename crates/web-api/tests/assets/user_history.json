@@ -21,19 +21,22 @@
             "tag_id": -4898812033056964106,
             "title": "Adventure",
             "key": "3",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           },
           {
             "tag_id": -4898812005544349995,
             "title": "Fantasy",
             "key": "4",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           },
           {
             "tag_id": -4898812060569578217,
             "title": "Action",
             "key": "2",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           }
         ]
       },
@@ -67,31 +70,36 @@
             "tag_id": -4898811978031735884,
             "title": "Shounen",
             "key": "5",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           },
           {
             "tag_id": -4898812060569578217,
             "title": "Action",
             "key": "2",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           },
           {
             "tag_id": -4289223306115140388,
             "title": "Comedy",
             "key": "14",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           },
           {
             "tag_id": -4898812005544349995,
             "title": "Fantasy",
             "key": "4",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           },
           {
             "tag_id": -4289222563274559391,
             "title": "Slice of Life",
             "key": "20",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           }
         ]
       },
@@ -125,19 +133,22 @@
             "tag_id": -4289221490282609062,
             "title": "Magic",
             "key": "38",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           },
           {
             "tag_id": -4898812033056964106,
             "title": "Adventure",
             "key": "3",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           },
           {
             "tag_id": -4898812060569578217,
             "title": "Action",
             "key": "2",
-            "source": "KIRYUU"
+            "source": "KIRYUU",
+            "pinned": false
           }
         ]
       },
