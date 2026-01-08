@@ -15,6 +15,7 @@ pub struct TagResponse {
     pub title: String,
     pub key: String,
     pub source: String,
+    pub pinned: bool,
 }
 
 impl From<TagDto> for TagResponse {
@@ -24,6 +25,7 @@ impl From<TagDto> for TagResponse {
             title: value.title,
             key: value.key,
             source: value.source,
+            pinned: value.pinned,
         }
     }
 }

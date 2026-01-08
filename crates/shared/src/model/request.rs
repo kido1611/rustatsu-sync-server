@@ -17,6 +17,7 @@ pub struct TagRequest {
     pub title: String,
     pub key: String,
     pub source: String,
+    pub pinned: Option<bool>,
 }
 
 #[derive(serde::Deserialize, Serialize)]
@@ -27,7 +28,7 @@ pub struct MangaRequest {
     pub url: String,
     pub public_url: String,
     pub rating: f32,
-    pub nsfw: bool,
+    pub nsfw: Option<bool>,
     pub content_rating: Option<String>,
     pub cover_url: String,
     pub large_cover_url: Option<String>,
@@ -82,10 +83,15 @@ impl From<UserFavouriteRequest> for FavouriteResourceInput {
                 url: item.manga.url.clone(),
                 public_url: item.manga.public_url.clone(),
                 rating: item.manga.rating,
+                nsfw: item.manga.nsfw.unwrap_or_default(),
                 content_rating: if item.manga.content_rating.is_some() {
                     item.manga.content_rating.clone()
-                } else if item.manga.nsfw {
-                    Some("ADULT".to_string())
+                } else if let Some(nsfw) = item.manga.nsfw {
+                    if nsfw {
+                        Some("ADULT".to_string())
+                    } else {
+                        None
+                    }
                 } else {
                     None
                 },
@@ -111,6 +117,7 @@ impl From<UserFavouriteRequest> for FavouriteResourceInput {
                         title: item_tag.title.clone(),
                         key: item_tag.key.clone(),
                         source: item_tag.source.clone(),
+                        pinned: item_tag.pinned.unwrap_or_default(),
                     })
                     .collect::<Vec<TagDto>>()
             })
@@ -209,10 +216,15 @@ impl From<UserHistoryRequest> for HistoryResourceInput {
                 url: item.manga.url.clone(),
                 public_url: item.manga.public_url.clone(),
                 rating: item.manga.rating,
+                nsfw: item.manga.nsfw.unwrap_or_default(),
                 content_rating: if item.manga.content_rating.is_some() {
                     item.manga.content_rating.clone()
-                } else if item.manga.nsfw {
-                    Some("ADULT".to_string())
+                } else if let Some(nsfw) = item.manga.nsfw {
+                    if nsfw {
+                        Some("ADULT".to_string())
+                    } else {
+                        None
+                    }
                 } else {
                     None
                 },
@@ -238,6 +250,7 @@ impl From<UserHistoryRequest> for HistoryResourceInput {
                         title: item_tag.title.clone(),
                         key: item_tag.key.clone(),
                         source: item_tag.source.clone(),
+                        pinned: item_tag.pinned.unwrap_or_default(),
                     })
                     .collect::<Vec<TagDto>>()
             })

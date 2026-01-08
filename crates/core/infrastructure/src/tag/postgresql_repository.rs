@@ -25,13 +25,14 @@ impl TagRepository for PostgreSQLTagRepository {
 
         for chunk in tags.chunks(300) {
             let mut builder: QueryBuilder<Postgres> =
-                QueryBuilder::new(r#"INSERT INTO tags (id, title, key, source)"#);
+                QueryBuilder::new(r#"INSERT INTO tags (id, title, key, source, pinned)"#);
 
             builder.push_values(chunk, |mut b, tag| {
                 b.push_bind(tag.id)
                     .push_bind(&tag.title)
                     .push_bind(&tag.key)
-                    .push_bind(&tag.source);
+                    .push_bind(&tag.source)
+                    .push_bind(tag.pinned);
             });
 
             builder.push(
@@ -39,7 +40,8 @@ impl TagRepository for PostgreSQLTagRepository {
                     DO UPDATE SET
                         title = EXCLUDED.title,
                         key = EXCLUDED.key,
-                        source = EXCLUDED.source;
+                        source = EXCLUDED.source,
+                        pinned = EXCLUDED.pinned;
                 "#,
             );
 
@@ -62,7 +64,7 @@ impl TagRepository for PostgreSQLTagRepository {
         let mut builder: QueryBuilder<Postgres> = QueryBuilder::new(
             r#"
                 SELECT 
-                    manga_tags.manga_id, tags.id, tags.title, tags."key", tags.source
+                    manga_tags.manga_id, tags.id, tags.title, tags."key", tags.source, tags.pinned
                 FROM manga_tags
                 INNER JOIN tags ON manga_tags.tag_id = tags.id
                 WHERE manga_tags.manga_id in (
@@ -90,6 +92,7 @@ impl TagRepository for PostgreSQLTagRepository {
                     title: row.get("title"),
                     key: row.get("key"),
                     source: row.get("source"),
+                    pinned: row.get("pinned"),
                 },
             ));
         }

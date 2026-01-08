@@ -5,6 +5,7 @@ pub struct TagDto {
     pub title: String,
     pub key: String,
     pub source: String,
+    pub pinned: bool,
 }
 
 impl From<TagDto> for Tag {
@@ -14,6 +15,7 @@ impl From<TagDto> for Tag {
             title: value.title,
             key: value.key,
             source: value.source,
+            pinned: value.pinned,
         }
     }
 }
@@ -25,6 +27,7 @@ impl From<Tag> for TagDto {
             title: value.title,
             key: value.key,
             source: value.source,
+            pinned: value.pinned,
         }
     }
 }

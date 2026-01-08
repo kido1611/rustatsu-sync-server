@@ -3,4 +3,5 @@ pub struct Tag {
     pub title: String,
     pub key: String,
     pub source: String,
+    pub pinned: bool,
 }
