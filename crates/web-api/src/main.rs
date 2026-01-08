@@ -4,6 +4,7 @@ use rustatsu_sync::{
     run,
     telemetry::{get_subscriber, init_subscriber},
 };
+use tracing::info;
 use tracing_panic::panic_hook;
 
 #[tokio::main]
@@ -11,6 +12,11 @@ async fn main() -> ExitCode {
     let subscriber = get_subscriber("rustatsu-sync".into(), "info".into(), std::io::stdout);
     init_subscriber(subscriber);
     std::panic::set_hook(Box::new(panic_hook));
+
+    info!(
+        "starting rustatsu sync server - v{}",
+        env!("CARGO_PKG_VERSION")
+    );
 
     match run().await {
         Ok(_) => ExitCode::SUCCESS,
