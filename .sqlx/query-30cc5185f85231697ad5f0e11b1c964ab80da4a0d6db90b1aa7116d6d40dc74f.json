@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT \n                    *\n                FROM\n                    users\n                WHERE \n                    id = $1;\n            ",
+  "query": "\n            SELECT * FROM users\n            WHERE password_reset_token_expires_at IS NOT NULL\n            AND password_reset_token_expires_at > $1;\n            ",
   "describe": {
     "columns": [
       {
@@ -60,5 +60,5 @@
       true
     ]
   },
-  "hash": "28104f0baa45184af7acc1203e9bd821f0f40101c127c48c1af806d1f8d3a248"
+  "hash": "30cc5185f85231697ad5f0e11b1c964ab80da4a0d6db90b1aa7116d6d40dc74f"
 }

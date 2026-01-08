@@ -11,3 +11,12 @@ core-domain = { workspace = true }
 futures.workspace = true
 sqlx.workspace = true
 tracing.workspace = true
+base64.workspace = true
+rand.workspace = true
+hmac.workspace = true
+sha2.workspace = true
+subtle.workspace = true
+chrono.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["full"] }

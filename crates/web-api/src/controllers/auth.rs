@@ -36,11 +36,11 @@ impl Validate for AuthRequest {
         }
 
         let password = self.password.expose_secret();
-        if !password.validate_length(Some(1), Some(32), None) {
+        if !password.validate_length(Some(8), Some(32), None) {
             errors.add(
                 "password",
                 ValidationError::new("password_length")
-                    .with_message(Cow::from("Password length must be between 1 and 32")),
+                    .with_message(Cow::from("Password length must be between 8 and 32")),
             );
         }
 

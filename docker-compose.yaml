@@ -9,10 +9,15 @@ services:
       - DATABASE__USERNAME=postgres
       - DATABASE__PASSWORD=password
       - DATABASE__DATABASE_NAME=rustatsu
-      # - APPLICATION__PORT=8080
-      # - APPLICATION__HOST=0.0.0.0
+      - APPLICATION__PORT=8000
+      - APPLICATION__HOST=0.0.0.0
+      - APPLICATION__BASE_URL=http://127.0.0.1:8000
       # - APPLICATION__ALLOW_REGISTRATION=true
       # - APPLICATION__RUN_MIGRATION=TRUE
+      #
+      # - APPLICATION__HMAC_SECRET=7rKPtEepmdUQSLjQuv5RzjI+uCg/GYHdpgbD6t7ZVrM=
+      # HMAC secret can be generate using: `openssl rand -base64 32`
+      #
       # - JWT__SECRET=my-secret-key
       # - JWT__ISS=rustatsu
       # - JWT__AUD=rustatsu

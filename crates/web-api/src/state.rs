@@ -12,6 +12,8 @@ use core_application::{
     manga::usecase::{get_manga_by_id::GetMangaByIdUsecase, list_manga::ListMangaUsecase},
     user::usecase::{
         check_or_create_user::CheckOrCreateUserUsecase, check_user_by_id::CheckUserByIdUsecase,
+        request_reset_password::RequestResetPasswordUseCase,
+        reset_user_password::ResetUserPasswordUseCase,
     },
 };
 use core_infrastructure::{
@@ -20,10 +22,16 @@ use core_infrastructure::{
     history::postgresql_repository::PostgreSQLHistoryRepository,
     manga::postgresql_repository::PostgreSQLMangaRepository,
     manga_tag::postgresql_repository::PostgreSQLMangaTagRepository,
-    security::argon_password_manager::ArgonPasswordManager,
+    notification::log_mailer::LogMailer,
+    security::{
+        argon_password_manager::ArgonPasswordManager,
+        hmac_sha256_token_hasher::HmacSha256TokenHasher,
+        secure_random_token_generator::SecureRandomTokenGenerator,
+    },
     tag::postgresql_repository::PostgreSQLTagRepository,
     user::postgresql_repository::PostgreSQLUserRepository,
 };
+use secrecy::ExposeSecret;
 use sqlx::{PgPool, postgres::PgPoolOptions};
 
 use crate::config::Config;
@@ -37,6 +45,8 @@ pub struct AppState {
     pub list_manga_usecase: Arc<ListMangaUsecase>,
     pub check_or_create_user_usecase: Arc<CheckOrCreateUserUsecase>,
     pub check_user_by_id_usecase: Arc<CheckUserByIdUsecase>,
+    pub reset_user_password_use_case: Arc<ResetUserPasswordUseCase>,
+    pub request_reset_password_use_case: Arc<RequestResetPasswordUseCase>,
     pub insert_user_favourite_resource_usecase: Arc<InsertUserFavouriteResourceUsecase>,
     pub get_user_favourite_resource_usecase: Arc<GetUserFavouriteResourceUsecase>,
     pub insert_user_history_resource_usecase: Arc<InsertUserHistoryResourceUsecase>,
@@ -66,6 +76,11 @@ impl AppState {
         let category_repository = Arc::new(PostgreSQLCategoryRepository { pool: pool.clone() });
         let favourite_repository = Arc::new(PostgreSQLFavouriteRepository { pool: pool.clone() });
         let history_repository = Arc::new(PostgreSQLHistoryRepository { pool: pool.clone() });
+        let token_generator = Arc::new(SecureRandomTokenGenerator {});
+        let token_hasher = Arc::new(HmacSha256TokenHasher::new(
+            config.application.hmac_secret.expose_secret().to_string(),
+        ));
+        let mailer = Arc::new(LogMailer {});
 
         let get_manga_by_id_usecase = Arc::new(GetMangaByIdUsecase {
             manga_repository: manga_repository.clone(),
@@ -108,10 +123,23 @@ impl AppState {
 
         let check_or_create_user_usecase = Arc::new(CheckOrCreateUserUsecase {
             user_repository: user_repository.clone(),
-            password_manager,
+            password_manager: password_manager.clone(),
             allow_to_register: config.application.allow_registration,
         });
-        let check_user_by_id_usecase = Arc::new(CheckUserByIdUsecase { user_repository });
+        let check_user_by_id_usecase = Arc::new(CheckUserByIdUsecase {
+            user_repository: user_repository.clone(),
+        });
+        let reset_user_password_use_case = Arc::new(ResetUserPasswordUseCase {
+            user_repository: user_repository.clone(),
+            password_manager,
+            token_hasher: token_hasher.clone(),
+        });
+        let request_reset_password_use_case = Arc::new(RequestResetPasswordUseCase {
+            user_repository: user_repository.clone(),
+            token_generator,
+            token_hasher,
+            mailer,
+        });
 
         Ok(AppState {
             pool,
@@ -124,6 +152,8 @@ impl AppState {
             // user usecase
             check_or_create_user_usecase,
             check_user_by_id_usecase,
+            reset_user_password_use_case,
+            request_reset_password_use_case,
 
             // favourite
             insert_user_favourite_resource_usecase,

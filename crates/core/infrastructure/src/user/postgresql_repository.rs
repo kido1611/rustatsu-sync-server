@@ -1,8 +1,9 @@
 use async_trait::async_trait;
+use chrono::Utc;
 use core_domain::{
     shared::error::DomainError,
     user::{
-        model::{User, UserCreate, UserUpdateSyncTime},
+        model::{User, UserCreate, UserPasswordReset, UserUpdatePassword, UserUpdateSyncTime},
         repository::UserRepository,
     },
 };
@@ -80,6 +81,8 @@ impl UserRepository for PostgreSQLUserRepository {
             nickname: data.nickname,
             favourites_sync_timestamp: None,
             history_sync_timestamp: None,
+            password_reset_token_hash: None,
+            password_reset_token_expires_at: None,
         })
     }
 
@@ -134,5 +137,68 @@ impl UserRepository for PostgreSQLUserRepository {
         .map_err(|e| DomainError::DatabaseError(e.into()))?;
 
         Ok(())
+    }
+
+    #[instrument(name = "repository::update_user_password_reset_token", skip_all, level=Level::DEBUG, err(level=Level::ERROR))]
+    async fn update_password_reset_token(
+        &self,
+        data: UserPasswordReset,
+    ) -> Result<(), DomainError> {
+        sqlx::query!(
+            r#"
+                UPDATE users
+                SET
+                    password_reset_token_hash = $1,
+                    password_reset_token_expires_at = $2
+                WHERE id = $3;
+            "#,
+            data.token,
+            data.expires_at,
+            data.user_id,
+        )
+        .execute(&self.pool)
+        .await
+        .map_err(|e| DomainError::DatabaseError(e.into()))?;
+
+        Ok(())
+    }
+
+    #[instrument(name = "repository::update_user_password", skip_all, level = Level::DEBUG, err(level = Level::ERROR))]
+    async fn update_user_password(&self, data: UserUpdatePassword) -> Result<(), DomainError> {
+        sqlx::query!(
+            r#"
+                UPDATE users
+                SET 
+                    password = $1,
+                    password_reset_token_hash = NULL,
+                    password_reset_token_expires_at = NULL
+                WHERE id = $2;
+            "#,
+            data.password,
+            data.user_id
+        )
+        .execute(&self.pool)
+        .await
+        .map_err(|e| DomainError::DatabaseError(e.into()))?;
+
+        Ok(())
+    }
+
+    #[instrument(name = "repository::list_users_by_active_password_reset_token", skip_all, level = Level::DEBUG, err(level = Level::ERROR))]
+    async fn list_by_active_password_reset_token(&self) -> Result<Vec<User>, DomainError> {
+        let now = Utc::now().timestamp();
+
+        sqlx::query_as!(
+            User,
+            r#"
+            SELECT * FROM users
+            WHERE password_reset_token_expires_at IS NOT NULL
+            AND password_reset_token_expires_at > $1;
+            "#,
+            now
+        )
+        .fetch_all(&self.pool)
+        .await
+        .map_err(|e| DomainError::DatabaseError(e.into()))
     }
 }

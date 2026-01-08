@@ -10,4 +10,7 @@ pub enum DomainError {
 
     #[error("password not match")]
     PasswordNotMatch,
+
+    #[error("hash token error: {0}")]
+    HashTokenError(#[source] anyhow::Error),
 }
