@@ -136,12 +136,8 @@ impl From<FavouriteResourceOutput> for UserFavouriteResponse {
                     url: m.url,
                     public_url: m.public_url,
                     rating: m.rating,
-                    content_rating: m.content_rating.clone(),
-                    nsfw: if let Some(content_rating) = m.content_rating {
-                        content_rating == "ADULT"
-                    } else {
-                        false
-                    },
+                    content_rating: m.content_rating,
+                    nsfw: m.nsfw,
                     cover_url: m.cover_url,
                     large_cover_url: m.large_cover_url,
                     state: m.state,
@@ -317,12 +313,8 @@ pub fn list_manga_resource_to_list_manga_response(
                 url: m.url,
                 public_url: m.public_url,
                 rating: m.rating,
-                content_rating: m.content_rating.clone(),
-                nsfw: if let Some(content_rating) = m.content_rating {
-                    content_rating == "ADULT"
-                } else {
-                    false
-                },
+                content_rating: m.content_rating,
+                nsfw: m.nsfw,
                 cover_url: m.cover_url,
                 large_cover_url: m.large_cover_url,
                 state: m.state,
