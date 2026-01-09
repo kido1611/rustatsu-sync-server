@@ -21,11 +21,17 @@ pub struct ApplicationConfig {
     pub host: String,
     pub allow_registration: bool,
     pub run_migration: bool,
+    pub hmac_secret: SecretString,
+    pub base_url: String,
 }
 
 impl ApplicationConfig {
     pub fn get_address(&self) -> String {
         format!("{}:{}", self.host, self.port)
+    }
+
+    pub fn get_base_url(&self) -> String {
+        self.base_url.trim_end_matches('/').to_string()
     }
 }
 

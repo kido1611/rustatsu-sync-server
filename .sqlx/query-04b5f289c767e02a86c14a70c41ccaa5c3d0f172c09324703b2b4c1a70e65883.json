@@ -32,6 +32,16 @@
         "ordinal": 5,
         "name": "history_sync_timestamp",
         "type_info": "Int8"
+      },
+      {
+        "ordinal": 6,
+        "name": "password_reset_token_hash",
+        "type_info": "Bpchar"
+      },
+      {
+        "ordinal": 7,
+        "name": "password_reset_token_expires_at",
+        "type_info": "Int8"
       }
     ],
     "parameters": {
@@ -43,6 +53,8 @@
       false,
       false,
       false,
+      true,
+      true,
       true,
       true,
       true

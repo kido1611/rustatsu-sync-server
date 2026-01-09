@@ -120,6 +120,18 @@ pub fn init_router(app_state: AppState) -> Router {
         .nest("/manga", manga_route)
         .route("/", get(crate::controllers::home::index))
         .route("/auth", post(crate::controllers::auth::store))
+        .route(
+            "/forgot-password",
+            post(crate::controllers::forgot_password::forgot_password),
+        )
+        .route(
+            "/reset-password",
+            post(crate::controllers::reset_password::reset_password),
+        )
+        .route(
+            "/deeplink/reset-password",
+            get(crate::controllers::deep_link::reset_password),
+        )
         .fallback(handler_404)
         .layer(CompressionLayer::new())
         .layer(request_id_middleware)

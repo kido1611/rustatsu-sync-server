@@ -9,6 +9,9 @@ application:
   host: 127.0.0.1
   allow_registration: true
   run_migration: true
+  # generate using: `openssl rand -base64 32`
+  hmac_secret: "7rKPtEepmdUQSLjQuv5RzjI+uCg/GYHdpgbD6t7ZVrM="
+  base_url: "http://127.0.0.1:8000"
 jwt:
   secret: "jwt-is-super-awesome"
   iss: "rustatsu"

@@ -42,6 +42,9 @@ docker run -d \
   -e DATABASE__USERNAME=postgres \
   -e DATABASE__PASSWORD=password \
   -e DATABASE__DATABASE_NAME=rustatsu \
+  -e APPLICATION__PORT=8000
+  -e APPLICATION__HOST=0.0.0.0
+  -e APPLICATION__BASE_URL=http://127.0.0.1:8000
   -e APPLICATION__RUN_MIGRATION=true \
   -e RUST_LOG=info \
   abduzzy/rustatsu-sync:latest
@@ -63,14 +66,19 @@ services:
       - DATABASE__USERNAME=postgres
       - DATABASE__PASSWORD=password
       - DATABASE__DATABASE_NAME=rustatsu
-      # - APPLICATION__PORT=8080
-      # - APPLICATION__HOST=0.0.0.0
+      - APPLICATION__PORT=8000
+      - APPLICATION__HOST=0.0.0.0
+      - APPLICATION__BASE_URL=http://127.0.0.1:8000
       # - APPLICATION__ALLOW_REGISTRATION=true
       # - APPLICATION__RUN_MIGRATION=TRUE
+      #
+      # - APPLICATION__HMAC_SECRET=7rKPtEepmdUQSLjQuv5RzjI+uCg/GYHdpgbD6t7ZVrM=
+      # HMAC secret can be generate using: `openssl rand -base64 32`
+      #
       # - JWT__SECRET=my-secret-key
       # - JWT__ISS=rustatsu
       # - JWT__AUD=rustatsu
-      - RUST_LOG=warn
+      - RUST_LOG=info
     restart: always
     depends_on:
       - postgresql
@@ -100,8 +108,10 @@ The following environment variables can be used to configure the app.
 | DATABASE\_\_DATABASE_NAME         | Name of the database                                                                             |
 | APPLICATION\_\_PORT               | Server port (Default: 8080)                                                                      |
 | APPLICATION\_\_HOST               | Server host (Default: 0.0.0.0)                                                                   |
+| APPLICATION\_\_BASE_URL           | Server public base url. Used by link in e-mail.                                                  |
 | APPLICATION\_\_ALLOW_REGISTRATION | Toggle user registration (true/false)                                                            |
 | APPLICATION\_\_RUN_MIGRATION      | Automatically run migrations on start (required on first run or after upgrade to setup database) |
+| APPLICATION\_\_HMAC_SECRET        | Secret key for hashing (generate with command `openssl rand -base64 32`)                         |
 | JWT\_\_SECRET                     | Secret key for JWT signing                                                                       |
 | RUST_LOG                          | Logging level (error, warn, info, debug)                                                         |
 
@@ -110,4 +120,3 @@ The following environment variables can be used to configure the app.
 This project is licensed under the GNU General Public License v3.0.
 
 - Original Project: [kotatsu-syncserver](https://github.com/KotatsuApp/kotatsu-syncserver) (GPL-3.0)
-
