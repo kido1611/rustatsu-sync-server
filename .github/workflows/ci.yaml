@@ -59,6 +59,7 @@ jobs:
         run: cargo test
 
   coverage:
+    if: github.event_name == 'push'
     name: Tarpaulin
     runs-on: ubuntu-latest
     needs: [test]
