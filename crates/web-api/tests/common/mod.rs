@@ -8,9 +8,7 @@ use figment::{
     Figment,
     providers::{Env, Format, Yaml},
 };
-use rustatsu_sync::{
-    auth::encode_jwt, config::Config, model::User, routes::init_router, state::AppState,
-};
+use rustatsu_sync::{config::Config, model::User, routes::init_router, state::AppState};
 use sqlx::{Executor, postgres::PgPoolOptions};
 use tower::ServiceExt;
 use uuid::Uuid;
@@ -86,19 +84,16 @@ impl TestState {
     }
 
     pub async fn generate_jwt_with_user(&self) -> (User, String) {
-        let user_dto = self
+        let (user_dto, token) = self
             .app_state
-            .check_or_create_user_usecase
+            .login_or_create_user_use_case
             .execute(core_application::user::model::UserInput {
                 email: "test@email.com".to_string(),
                 password: "password".into(),
                 nickname: None,
             })
             .await
-            .expect("failed to create test user");
-
-        let token = encode_jwt(user_dto.id, &self.app_state.config.jwt)
-            .expect("failed to create jwt token");
+            .expect("failed generating user");
 
         (user_dto.into(), token)
     }

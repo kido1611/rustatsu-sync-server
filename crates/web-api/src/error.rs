@@ -57,6 +57,9 @@ impl IntoResponse for Error {
                     core_domain::shared::error::DomainError::HashTokenError(_) => {
                         StatusCode::INTERNAL_SERVER_ERROR.into_response()
                     }
+                    core_domain::shared::error::DomainError::AuthTokenError(_) => {
+                        StatusCode::INTERNAL_SERVER_ERROR.into_response()
+                    }
                 },
                 ApplicationError::RegisterIsForbidden => StatusCode::UNAUTHORIZED.into_response(),
                 ApplicationError::ResourceNotFound(message) => {

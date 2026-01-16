@@ -11,7 +11,8 @@ use core_application::{
     },
     manga::usecase::{get_manga_by_id::GetMangaByIdUsecase, list_manga::ListMangaUsecase},
     user::usecase::{
-        check_or_create_user::CheckOrCreateUserUsecase, check_user_by_id::CheckUserByIdUsecase,
+        check_user_by_id::CheckUserByIdUsecase, get_user_by_auth_token::GetUserByAuthTokenUseCase,
+        login_or_create_user::LoginOrCreateUserUseCase,
         request_reset_password::RequestResetPasswordUseCase,
         reset_user_password::ResetUserPasswordUseCase,
     },
@@ -25,7 +26,7 @@ use core_infrastructure::{
     notification::log_mailer::LogMailer,
     security::{
         argon_password_manager::ArgonPasswordManager,
-        hmac_sha256_token_hasher::HmacSha256TokenHasher,
+        hmac_sha256_token_hasher::HmacSha256TokenHasher, jwt_auth_token::JwtAuthToken,
         secure_random_token_generator::SecureRandomTokenGenerator,
     },
     tag::postgresql_repository::PostgreSQLTagRepository,
@@ -43,10 +44,11 @@ pub struct AppState {
 
     pub get_manga_by_id_usecase: Arc<GetMangaByIdUsecase>,
     pub list_manga_usecase: Arc<ListMangaUsecase>,
-    pub check_or_create_user_usecase: Arc<CheckOrCreateUserUsecase>,
     pub check_user_by_id_usecase: Arc<CheckUserByIdUsecase>,
     pub reset_user_password_use_case: Arc<ResetUserPasswordUseCase>,
     pub request_reset_password_use_case: Arc<RequestResetPasswordUseCase>,
+    pub get_user_by_auth_token_use_case: Arc<GetUserByAuthTokenUseCase>,
+    pub login_or_create_user_use_case: Arc<LoginOrCreateUserUseCase>,
     pub insert_user_favourite_resource_usecase: Arc<InsertUserFavouriteResourceUsecase>,
     pub get_user_favourite_resource_usecase: Arc<GetUserFavouriteResourceUsecase>,
     pub insert_user_history_resource_usecase: Arc<InsertUserHistoryResourceUsecase>,
@@ -81,6 +83,11 @@ impl AppState {
             config.application.hmac_secret.expose_secret().to_string(),
         ));
         let mailer = Arc::new(LogMailer {});
+        let auth_token = Arc::new(JwtAuthToken {
+            secret: config.jwt.secret.expose_secret().into(),
+            iss: config.jwt.iss.expose_secret().into(),
+            aud: config.jwt.aud.expose_secret().into(),
+        });
 
         let get_manga_by_id_usecase = Arc::new(GetMangaByIdUsecase {
             manga_repository: manga_repository.clone(),
@@ -121,17 +128,12 @@ impl AppState {
             user_repository: user_repository.clone(),
         });
 
-        let check_or_create_user_usecase = Arc::new(CheckOrCreateUserUsecase {
-            user_repository: user_repository.clone(),
-            password_manager: password_manager.clone(),
-            allow_to_register: config.application.allow_registration,
-        });
         let check_user_by_id_usecase = Arc::new(CheckUserByIdUsecase {
             user_repository: user_repository.clone(),
         });
         let reset_user_password_use_case = Arc::new(ResetUserPasswordUseCase {
             user_repository: user_repository.clone(),
-            password_manager,
+            password_manager: password_manager.clone(),
             token_hasher: token_hasher.clone(),
         });
         let request_reset_password_use_case = Arc::new(RequestResetPasswordUseCase {
@@ -139,6 +141,16 @@ impl AppState {
             token_generator,
             token_hasher,
             mailer,
+        });
+        let get_user_by_auth_token_use_case = Arc::new(GetUserByAuthTokenUseCase {
+            user_repository: user_repository.clone(),
+            auth_token: auth_token.clone(),
+        });
+        let login_or_create_user_use_case = Arc::new(LoginOrCreateUserUseCase {
+            user_repository,
+            password_manager,
+            auth_token,
+            allow_to_register: config.application.allow_registration,
         });
 
         Ok(AppState {
@@ -150,10 +162,11 @@ impl AppState {
             list_manga_usecase,
 
             // user usecase
-            check_or_create_user_usecase,
             check_user_by_id_usecase,
             reset_user_password_use_case,
             request_reset_password_use_case,
+            get_user_by_auth_token_use_case,
+            login_or_create_user_use_case,
 
             // favourite
             insert_user_favourite_resource_usecase,
