@@ -1,14 +1,12 @@
 use std::borrow::Cow;
 
-use anyhow::Context;
 use axum::{Json, extract::State};
+use core_application::user::model::UserInput;
 use secrecy::{ExposeSecret, SecretString};
 use serde::{Deserialize, Serialize};
 use validator::{Validate, ValidateEmail, ValidateLength, ValidationError, ValidationErrors};
 
-use crate::{
-    auth::encode_jwt, error::Error, state::SharedAppState, telemetry::spawn_blocking_with_tracing,
-};
+use crate::{error::Error, state::SharedAppState};
 
 #[derive(Deserialize)]
 pub struct AuthRequest {
@@ -64,23 +62,16 @@ pub async fn store(
 ) -> Result<Json<AuthResponse>, Error> {
     request.validate().map_err(Error::Validation)?;
 
-    let user_dto = app_state
-        .check_or_create_user_usecase
-        .execute(core_application::user::model::UserInput {
+    let (_, token) = app_state
+        .login_or_create_user_use_case
+        .execute(UserInput {
             email: request.email,
             password: request.password,
             nickname: None,
         })
         .await?;
 
-    let token = spawn_blocking_with_tracing(move || encode_jwt(user_dto.id, &app_state.config.jwt))
-        .await
-        .context("encode jwt")
-        .map_err(Error::UnexpectedError)??;
-
-    let token = AuthResponse {
-        token: token.to_string(),
-    };
+    let token = AuthResponse { token };
 
     Ok(Json(token))
 }

@@ -1,5 +1,7 @@
 use axum::{body::Body, http::Request, http::StatusCode};
-use rustatsu_sync::auth::encode_jwt;
+use core_domain::security::{auth_token::AuthToken, model::AuthTokenClaim};
+use core_infrastructure::security::jwt_auth_token::JwtAuthToken;
+use secrecy::ExposeSecret;
 
 use crate::common::TestState;
 
@@ -84,7 +86,22 @@ async fn should_throw_error_when_bearer_value_is_empty() {
 async fn should_throw_error_when_user_is_missing() {
     let mut test_state = TestState::new(true).await;
 
-    let token = encode_jwt(1000, &test_state.app_state.config.jwt).unwrap();
+    let auth_token: Box<dyn AuthToken> = Box::new(JwtAuthToken {
+        secret: test_state
+            .app_state
+            .config
+            .jwt
+            .secret
+            .expose_secret()
+            .into(),
+        iss: test_state.app_state.config.jwt.iss.expose_secret().into(),
+        aud: test_state.app_state.config.jwt.aud.expose_secret().into(),
+    });
+
+    let token = auth_token
+        .encode(&AuthTokenClaim { user_id: 1000 })
+        .unwrap();
+
     let request = Request::builder()
         .uri("/me")
         .header(

@@ -13,4 +13,7 @@ pub enum DomainError {
 
     #[error("hash token error: {0}")]
     HashTokenError(#[source] anyhow::Error),
+
+    #[error("auth token error: {0}")]
+    AuthTokenError(#[source] anyhow::Error),
 }

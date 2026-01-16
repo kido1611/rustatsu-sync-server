@@ -6,7 +6,6 @@ use state::AppState;
 use tokio::{net::TcpListener, signal};
 use tracing::info;
 
-pub mod auth;
 pub mod config;
 pub mod controllers;
 pub mod error;
