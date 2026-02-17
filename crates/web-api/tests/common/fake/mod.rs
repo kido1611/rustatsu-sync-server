@@ -3,7 +3,7 @@ use core_application::{
     tag::model::TagDto,
 };
 use fake::{Fake, faker::name::en::Name};
-use rand::Rng;
+use rand::RngExt;
 use rustatsu_sync::state::AppState;
 
 #[allow(dead_code)]
