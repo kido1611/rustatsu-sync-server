@@ -43,6 +43,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Ensure repository was not modified by CI
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "❌ CI modified tracked files during release."
+            git status --porcelain
+            exit 1
+          fi
+
+      - uses: dtolnay/rust-toolchain@stable
+
       - name: Create matrix
         id: platforms
         run: |
@@ -94,6 +104,10 @@ jobs:
       matrix:
         platform: ${{ fromJson(needs.prepare.outputs.matrix) }}
     steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
       - name: Prepare
         run: |
           platform=${{ matrix.platform }}
@@ -127,6 +141,8 @@ jobs:
           targets: rustatsu-sync
           set: |
             *.platform=${{ matrix.platform }}
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
             *.output=type=image,push-by-digest=true,name-canonical=true,push=true
             *.tags=${{ env.REGISTRY_IMAGE }}
 
