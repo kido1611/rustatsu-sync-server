@@ -45,7 +45,7 @@ pub async fn jwt_auth_middleware(
 
             Error::Unauthorized
         })?
-        .ok_or({
+        .ok_or_else(|| {
             error!("user is missing but token is valid");
 
             Error::Unauthorized
