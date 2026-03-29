@@ -20,12 +20,16 @@ pub struct MangaDto {
 
 impl From<MangaDto> for Manga {
     fn from(mut value: MangaDto) -> Self {
-        value.title = value.title.chars().take(250).collect();
+        value.title = value.title.chars().take(1020).collect();
+        let alt_title = value.alt_title.map(|val| val.chars().take(1020).collect());
 
-        let alt_title = value.alt_title.map(|val| val.chars().take(120).collect());
+        value.url = value.url.chars().take(1020).collect();
+        value.public_url = value.public_url.chars().take(1020).collect();
 
-        value.url = value.url.chars().take(250).collect();
-        value.public_url = value.public_url.chars().take(250).collect();
+        value.cover_url = value.cover_url.chars().take(1020).collect();
+        let large_cover_url = value
+            .large_cover_url
+            .map(|val| val.chars().take(1020).collect());
 
         let author = value.author.map(|val| val.chars().take(120).collect());
 
@@ -41,7 +45,7 @@ impl From<MangaDto> for Manga {
             nsfw: value.nsfw,
             content_rating: value.content_rating,
             cover_url: value.cover_url,
-            large_cover_url: value.large_cover_url,
+            large_cover_url,
             state: value.state,
             author,
             source: value.source,
