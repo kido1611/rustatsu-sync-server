@@ -1,7 +1,4 @@
-use argon2::{
-    Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier, Version,
-    password_hash::{SaltString, rand_core::OsRng},
-};
+use argon2::{Algorithm, Argon2, Params, PasswordHash, PasswordHasher, PasswordVerifier, Version};
 use core_domain::{security::password_manager::PasswordManager, shared::error::DomainError};
 use tracing::{Level, instrument};
 
@@ -10,13 +7,12 @@ pub struct ArgonPasswordManager {}
 impl PasswordManager for ArgonPasswordManager {
     #[instrument(name = "security::hash_password", skip_all, fields(use = "argon2id"), level = Level::DEBUG, err(level = Level::ERROR))]
     fn hash_password(&self, password: &str) -> Result<String, DomainError> {
-        let salt = SaltString::generate(&mut OsRng);
         let password_hash = Argon2::new(
             Algorithm::Argon2id,
             Version::V0x13,
             Params::new(15000, 2, 1, None).unwrap(),
         )
-        .hash_password(password.as_bytes(), &salt)
+        .hash_password(password.as_bytes())
         .map_err(|e| DomainError::PasswordManagerError(e.into()))?
         .to_string();
 
